@@ -8,20 +8,20 @@
     <title>@section('title') AdminUI @show</title>
     <!-- =============== VENDOR STYLES ===============-->
     <!-- FONT AWESOME-->
-    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ asset('bower_components/fontawesome/css/font-awesome.min.css')}}">
     <!-- SIMPLE LINE ICONS-->
-    <link rel="stylesheet" href="bower_components/simple-line-icons/css/simple-line-icons.css">
+    <link rel="stylesheet" href="{{ asset('bower_components/simple-line-icons/css/simple-line-icons.css')}}">
     <!-- ANIMATE.CSS-->
-    <link rel="stylesheet" href="bower_components/animate.css/animate.min.css">
+    <link rel="stylesheet" href="{{ asset("bower_components/animate.css/animate.min.css") }}">
     <!-- WHIRL (spinners)-->
-    <link rel="stylesheet" href="bower_components/whirl/dist/whirl.css">
+    <link rel="stylesheet" href="{{ asset("bower_components/whirl/dist/whirl.css") }}">
     <!-- =============== PAGE VENDOR STYLES ===============-->
     <!-- WEATHER ICONS-->
-    <link rel="stylesheet" href="bower_components/weather-icons/css/weather-icons.min.css">
+    <link rel="stylesheet" href="{{ asset("bower_components/weather-icons/css/weather-icons.min.css") }}">
     <!-- =============== BOOTSTRAP STYLES ===============-->
-    <link rel="stylesheet" href="css/bootstrap.css" id="bscss">
+    <link rel="stylesheet" href="{{ asset("css/bootstrap.css") }}" id="bscss">
     <!-- =============== APP STYLES ===============-->
-    <link rel="stylesheet" href="css/app.css" id="maincss">
+    <link rel="stylesheet" href=" {{ asset("css/app.css") }}" id="maincss">
 
     @yield('styles')
 </head>

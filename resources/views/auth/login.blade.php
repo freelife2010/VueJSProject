@@ -1,61 +1,48 @@
-@extends('app')
+@extends('layouts.auth')
 
 @section('content')
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-8 col-md-offset-2">
-			<div class="panel panel-default">
-				<div class="panel-heading">{{ Lang::get('titles.login') }}</div>
-				<div class="panel-body">
-					@if (count($errors) > 0)
-						<div class="alert alert-danger">
-							<strong>{{ Lang::get('auth.whoops') }}</strong>{{ Lang::get('auth.someProblems') }}<br><br>
-							<ul>
-								@foreach ($errors->all() as $error)
-									<li>{{ $error }}</li>
-								@endforeach
-							</ul>
-						</div>
-					@endif
+    <div class="panel-body">
+        <p class="text-center pv">SIGN IN TO CONTINUE.</p>
+        @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <strong>{{ Lang::get('auth.whoops') }}</strong>{{ Lang::get('auth.someProblems') }}<br><br>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <form role="form" data-parsley-validate=""
+              class="mb-lg"
+              method="POST"
+              action="{{ url('/auth/login') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <div class="form-group has-feedback">
+                <input type="email" placeholder="Enter email" autocomplete="off"
+                       name="email"
+                       required class="form-control"
+                       value="{{ old('email') }}">
+                <span class="fa fa-envelope form-control-feedback text-muted"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" name="password" placeholder="Password" required class="form-control">
+                <span class="fa fa-lock form-control-feedback text-muted"></span>
+            </div>
+            <div class="clearfix">
+                <div class="checkbox c-checkbox pull-left mt0">
+                    <label>
+                        <input type="checkbox" name="remember" value="" name="remember">
+                        <span class="fa fa-check"></span>Remember Me</label>
+                </div>
+                <div class="pull-right"><a href="{{ url('/password/email') }}" class="text-muted">Forgot your password?</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-block btn-primary mt-lg">Login</button>
+            </div>
+        </form>
 
-					<form class="form-horizontal" role="form" method="POST" action="{{ url('/auth/login') }}">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">{{ Lang::get('auth.email') }}</label>
-							<div class="col-md-6">
-								<input type="email" class="form-control" name="email" value="{{ old('email') }}">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">{{ Lang::get('auth.password') }}</label>
-							<div class="col-md-6">
-								<input type="password" class="form-control" name="password">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								<div class="checkbox">
-									<label>
-										<input type="checkbox" name="remember"> {{ Lang::get('auth.rememberMe') }}
-									</label>
-								</div>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								<button type="submit" class="btn btn-primary">{{ Lang::get('auth.login') }}</button>
-
-								<a class="btn btn-link" href="{{ url('/password/email') }}">{{ Lang::get('auth.forgot') }}</a>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+        <p class="pt-lg text-center">Need to Signup?</p><a href="{{ url('/auth/register') }}" class="btn btn-block btn-default">Register Now</a>
+    </div>
 @endsection
