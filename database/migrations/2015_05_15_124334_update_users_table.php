@@ -12,7 +12,7 @@ class UpdateUsersTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('users', function(Blueprint $table)
+		Schema::table('accounts', function(Blueprint $table)
 		{
 			$table->string('activation_code')->after('password')->default('');
 			$table->boolean('active')

@@ -48,8 +48,7 @@ class AuthController extends Controller {
 	public function validator(array $data)
 	{
 		return Validator::make($data, [
-				'first_name' => 'required|max:255',
-				'last_name' => 'required|max:255',
+				'name' => 'required|max:255',
 				'email' => 'required|email|max:255|unique:users',
 				'password' => 'required|confirmed|min:6',
 				]);
@@ -74,8 +73,7 @@ class AuthController extends Controller {
 
         $activation_code       = str_random(60) . $request->input('email');
         $user                  = new User;
-        $user->first_name      = $request->input('first_name');
-        $user->last_name       = $request->input('last_name');
+        $user->name            = $request->input('name');
         $user->email           = $request->input('email');
         $user->password        = bcrypt($request->input('password'));
         $user->activation_code = $activation_code;
