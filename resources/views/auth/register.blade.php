@@ -20,6 +20,7 @@
                 <label for="first_name" class="text-muted">First name</label>
                 <input type="text"
                        name="first_name" id=first_name"
+                       value="{{ old('first_name') }}"
                        placeholder="First name" autocomplete="off" required class="form-control">
                 <span class="fa fa-user form-control-feedback text-muted"></span>
             </div>
@@ -27,6 +28,7 @@
                 <label for="last_name" class="text-muted">Last name</label>
                 <input type="text"
                        name="last_name" id="last_name"
+                       value="{{ old('last_name') }}"
                        placeholder="Last name" autocomplete="off" required class="form-control">
                 <span class="fa fa-user form-control-feedback text-muted"></span>
             </div>
@@ -47,7 +49,9 @@
             </div>
             <div class="form-group has-feedback">
                 <label for="signupInputRePassword1" class="text-muted">Retype Password</label>
-                <input id="signupInputRePassword1" type="password" placeholder="Retype Password" autocomplete="off" required data-parsley-equalto="#signupInputPassword1" class="form-control">
+                <input id="signupInputRePassword1" type="password" placeholder="Retype Password" autocomplete="off"
+                       name="password_confirmation"
+                       required data-parsley-equalto="#password" class="form-control">
                 <span class="fa fa-lock form-control-feedback text-muted"></span>
             </div>
             <div class="clearfix">
