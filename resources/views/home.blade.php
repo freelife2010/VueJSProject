@@ -1,5 +1,8 @@
 @extends('layouts.default')
-
+@section('title')
+    Home :: @parent
+@endsection
+@section('heading') Page heading @stop
 @section('content')
 <div class="container">
 	<div class="row">

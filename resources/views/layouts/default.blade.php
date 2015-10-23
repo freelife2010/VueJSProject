@@ -11,7 +11,7 @@
     <section>
         <div class="content-wrapper">
             <div class="content-heading">
-                @yield('title')
+                {!! $title !!}
                 <small>@yield('subtitle')</small>
             </div>
             @yield('content')

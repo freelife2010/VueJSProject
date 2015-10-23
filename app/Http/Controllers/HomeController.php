@@ -20,7 +20,8 @@ class HomeController extends Controller {
 	 */
 	public function getIndex()
 	{
-		return view('home');
+        $title = 'Home';
+		return view('home', compact('title'));
 	}
 
 }

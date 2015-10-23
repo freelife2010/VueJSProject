@@ -207,7 +207,7 @@
                               </span>
                               <span class="pull-left">
                                  <!-- Contact avatar-->
-                                 <img src="img/user/05.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                                 <img src="{{ asset('img/user/05.jpg') }}" alt="Image" class="media-box-object img-circle thumb48">
                               </span>
                                 <!-- Contact info-->
                               <span class="media-box-body">
@@ -226,7 +226,7 @@
                               </span>
                               <span class="pull-left">
                                  <!-- Contact avatar-->
-                                 <img src="img/user/06.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                                 <img src="{{ asset('img/user/06.jpg') }}" alt="Image" class="media-box-object img-circle thumb48">
                               </span>
                                 <!-- Contact info-->
                               <span class="media-box-body">
@@ -245,7 +245,7 @@
                               </span>
                               <span class="pull-left">
                                  <!-- Contact avatar-->
-                                 <img src="img/user/07.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                                 <img src="{{ asset('img/user/07.jpg') }}" alt="Image" class="media-box-object img-circle thumb48">
                               </span>
                                 <!-- Contact info-->
                               <span class="media-box-body">
@@ -264,7 +264,7 @@
                               </span>
                               <span class="pull-left">
                                  <!-- Contact avatar-->
-                                 <img src="img/user/08.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                                 <img src="{{ asset('img/user/08.jpg') }}" alt="Image" class="media-box-object img-circle thumb48">
                               </span>
                                 <!-- Contact info-->
                               <span class="media-box-body">
@@ -290,7 +290,7 @@
                               </span>
                               <span class="pull-left">
                                  <!-- Contact avatar-->
-                                 <img src="img/user/09.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                                 <img src="{{ asset('img/user/09.jpg') }}" alt="Image" class="media-box-object img-circle thumb48">
                               </span>
                                 <!-- Contact info-->
                               <span class="media-box-body">
@@ -309,7 +309,7 @@
                               </span>
                               <span class="pull-left">
                                  <!-- Contact avatar-->
-                                 <img src="img/user/10.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                                 <img src="{{ asset('img/user/10.jpg') }}" alt="Image" class="media-box-object img-circle thumb48">
                               </span>
                                 <!-- Contact info-->
                               <span class="media-box-body">

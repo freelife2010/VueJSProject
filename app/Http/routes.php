@@ -24,6 +24,7 @@ Route::resource('api', 'ApiController');
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/', 'HomeController@getIndex');
     Route::controller('/home', 'HomeController');
+    Route::controller('/emails', 'EmailController');
 });
 
 Route::get('/resendEmail', 'Auth\AuthController@resendEmail');

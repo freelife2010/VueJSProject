@@ -25,7 +25,7 @@
 
     @yield('styles')
 </head>
-<body>
+<body class="aside-hover">
     <div class="wrapper">
         @yield('wrapper_content')
     </div>

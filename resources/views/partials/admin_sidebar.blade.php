@@ -5,24 +5,7 @@
             <!-- START sidebar nav-->
             <ul class="nav">
                 <!-- START user info-->
-                <li class="has-user-block">
-                    <div id="user-block" class="collapse">
-                        <div class="item user-block">
-                            <!-- User picture-->
-                            <div class="user-block-picture">
-                                <div class="user-block-status">
-                                    <img src="img/user/02.jpg" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">
-                                    <div class="circle circle-success circle-lg"></div>
-                                </div>
-                            </div>
-                            <!-- Name and Job-->
-                            <div class="user-block-info">
-                                <span class="user-block-name">Hello, Mike</span>
-                                <span class="user-block-role">Designer</span>
-                            </div>
-                        </div>
-                    </div>
-                </li>
+                @include('partials.sidebar_user_block')
                 <!-- END user info-->
                 <!-- Iterates over all sidebar items-->
                 <li class="nav-heading ">
@@ -310,43 +293,22 @@
                     </ul>
                 </li>
                 <li class="nav-heading ">
-                    <span data-localize="sidebar.heading.MORE">More</span>
+                    <span data-localize="sidebar.heading.MORE">Settings</span>
                 </li>
-                <li class=" ">
-                    <a href="#pages" title="Pages" data-toggle="collapse">
-                        <em class="icon-doc"></em>
-                        <span data-localize="sidebar.nav.pages.PAGES">Pages</span>
+                <li class=" @yield('is_active')">
+                    <a href="##emails" title="Email configuration" data-toggle="collapse">
+                        <em class="icon-envelope-open"></em>
+                        <span>E-mail requests</span>
                     </a>
-                    <ul id="pages" class="nav sidebar-subnav collapse">
-                        <li class="sidebar-subnav-header">Pages</li>
-                        <li class=" ">
-                            <a href="login.html" title="Login">
-                                <span data-localize="sidebar.nav.pages.LOGIN">Login</span>
+                    <ul id="emails" class="nav sidebar-subnav collapse">
+                        <li class=" @yield('is_active')">
+                            <a href=" {{ url('emails/auth-content') }}" title="E-mail authorization request">
+                                <span>Authorization e-mail</span>
                             </a>
                         </li>
                         <li class=" ">
                             <a href="register.html" title="Sign up">
                                 <span data-localize="sidebar.nav.pages.REGISTER">Sign up</span>
-                            </a>
-                        </li>
-                        <li class=" ">
-                            <a href="recover.html" title="Recover Password">
-                                <span data-localize="sidebar.nav.pages.RECOVER">Recover Password</span>
-                            </a>
-                        </li>
-                        <li class=" ">
-                            <a href="lock.html" title="Lock">
-                                <span data-localize="sidebar.nav.pages.LOCK">Lock</span>
-                            </a>
-                        </li>
-                        <li class=" ">
-                            <a href="template.html" title="Starter Template">
-                                <span data-localize="sidebar.nav.pages.STARTER">Starter Template</span>
-                            </a>
-                        </li>
-                        <li class=" ">
-                            <a href="404.html" title="404">
-                                <span>404</span>
                             </a>
                         </li>
                     </ul>

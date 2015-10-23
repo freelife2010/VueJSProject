@@ -3,12 +3,12 @@
     <nav role="navigation" class="navbar topnavbar">
         <!-- START navbar header-->
         <div class="navbar-header">
-            <a href="#/" class="navbar-brand">
+            <a href="/" class="navbar-brand">
                 <div class="brand-logo">
-                    <img src="img/logo.png" alt="App Logo" class="img-responsive">
+                    <img src="{{ asset('img/logo.png') }}" alt="App Logo" class="img-responsive">
                 </div>
                 <div class="brand-logo-collapsed">
-                    <img src="img/logo-single.png" alt="App Logo" class="img-responsive">
+                    <img src="{{ asset('img/logo-single.png') }}" alt="App Logo" class="img-responsive">
                 </div>
             </a>
         </div>
