@@ -31,8 +31,23 @@
     </div>
 
     @yield('scripts')
-	<!-- Scripts -->
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <!-- =============== VENDOR SCRIPTS ===============-->
+    <!-- MODERNIZR-->
+    <script src="{{ asset('bower_components/modernizr/modernizr.js') }}"></script>
+    <!-- JQUERY-->
+    <script src="{{ asset('bower_components/jquery/dist/jquery.js') }}"></script>
+    <!-- BOOTSTRAP-->
+    <script src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.js') }}"></script>
+    <!-- STORAGE API-->
+    <script src="{{ asset('bower_components/jQuery-Storage-API/jquery.storageapi.js') }}"></script>
+    <!-- PARSLEY-->
+    <script src="{{ asset('bower_components/parsleyjs/dist/parsley.min.js') }}"></script>
+    <script src="{{ asset('bower_components/jquery-classyloader/js/jquery.classyloader.min.js') }}"></script>
+    <!-- MOMENT JS-->
+    <script src="{{ asset('bower_components/moment/min/moment-with-locales.min.js') }}"></script>
+    <!-- DEMO-->
+    <script src="{{ asset('js/demo/demo-flot.js') }}"></script>
+    <!-- =============== APP SCRIPTS ===============-->
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

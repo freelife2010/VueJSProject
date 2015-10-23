@@ -23,8 +23,8 @@ class RoleSeeder extends Seeder
             'slug' => 'developer'
         ]);
 
-        $admin = User::whereLogin('admin')->first();
-        $user  = User::whereLogin('user')->first();
+        $admin = User::whereFirstName('Admin')->first();
+        $user  = User::whereFirstName('Developer')->first();
 
         $admin->attachRole($adminRole);
         $user->attachRole($userRole);

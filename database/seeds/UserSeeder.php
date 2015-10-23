@@ -13,19 +13,21 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-            'name'      => 'Admin',
-            'email'     => 'admin@admin-ui.cn',
-            'password'  => 'admin',
-            'active'    => true,
-            'resent'    => 0
+            'first_name' => 'Admin',
+            'last_name'  => '',
+            'email'      => 'admin@admin-ui.cn',
+            'password'   => 'admin',
+            'active'     => true,
+            'resent'     => 0
         ]);
 
         User::create([
-            'name'      => 'Developer',
-            'email'     => 'developer@admin-ui.cn',
-            'password'  => 'user',
-            'active'    => true,
-            'resent'    => 0
+            'first_name' => 'Developer',
+            'last_name'  => '',
+            'email'      => 'developer@admin-ui.cn',
+            'password'   => 'user',
+            'active'     => true,
+            'resent'     => 0
         ]);
     }
 }

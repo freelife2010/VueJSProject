@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use Hash;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -42,5 +43,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		}
 		return true;
 	}
+
+    public function setPasswordAttribute($pass){
+
+        $this->attributes['password'] = Hash::make($pass);
+
+    }
 	
 }

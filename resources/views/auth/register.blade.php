@@ -1,65 +1,66 @@
-@extends('app')
+@extends('layouts.auth')
 
 @section('content')
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-8 col-md-offset-2">
-			<div class="panel panel-default">
-				<div class="panel-heading">{{ Lang::get('titles.register') }}</div>
-				<div class="panel-body">
-					@if (count($errors) > 0)
-						<div class="alert alert-danger">
-							<strong>{{ Lang::get('auth.whoops') }}</strong> {{ Lang::get('auth.someProblems') }}<br><br>
-							<ul>
-								@foreach ($errors->all() as $error)
-									<li>{{ $error }}</li>
-								@endforeach
-							</ul>
-						</div>
-					@endif
-
-					<form class="form-horizontal" role="form" method="POST" action="{{ url('/auth/register') }}">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">{{ Lang::get('auth.name') }}</label>
-							<div class="col-md-6">
-								<input type="text" class="form-control" name="name" value="{{ old('name') }}">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">{{ Lang::get('auth.email') }}</label>
-							<div class="col-md-6">
-								<input type="email" class="form-control" name="email" value="{{ old('email') }}">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">{{ Lang::get('auth.password') }}</label>
-							<div class="col-md-6">
-								<input type="password" class="form-control" name="password">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">{{ Lang::get('auth.confirmPassword') }}</label>
-							<div class="col-md-6">
-								<input type="password" class="form-control" name="password_confirmation">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								<button type="submit" class="btn btn-primary">
-									{{ Lang::get('auth.register') }}
-								</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+    <div class="panel-body">
+        @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <strong>{{ Lang::get('auth.whoops') }}</strong> {{ Lang::get('auth.someProblems') }}<br><br>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <p class="text-center pv">SIGNUP TO GET INSTANT ACCESS.</p>
+        <form role="form" data-parsley-validate="" class="mb-lg"
+              method="POST" action="{{ url('/auth/register') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <div class="form-group has-feedback">
+                <label for="first_name" class="text-muted">First name</label>
+                <input type="text"
+                       name="first_name" id=first_name"
+                       placeholder="First name" autocomplete="off" required class="form-control">
+                <span class="fa fa-user form-control-feedback text-muted"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="last_name" class="text-muted">Last name</label>
+                <input type="text"
+                       name="last_name" id="last_name"
+                       placeholder="Last name" autocomplete="off" required class="form-control">
+                <span class="fa fa-user form-control-feedback text-muted"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="email" class="text-muted">Email address</label>
+                <input type="email" placeholder="Enter email"
+                       name="email" id="email"
+                       value="{{ old('email') }}"
+                       autocomplete="off" required class="form-control">
+                <span class="fa fa-envelope form-control-feedback text-muted"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="password" class="text-muted">Password</label>
+                <input type="password"
+                       name="password" id="password"
+                       placeholder="Password" autocomplete="off" required class="form-control">
+                <span class="fa fa-lock form-control-feedback text-muted"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="signupInputRePassword1" class="text-muted">Retype Password</label>
+                <input id="signupInputRePassword1" type="password" placeholder="Retype Password" autocomplete="off" required data-parsley-equalto="#signupInputPassword1" class="form-control">
+                <span class="fa fa-lock form-control-feedback text-muted"></span>
+            </div>
+            <div class="clearfix">
+                <div class="checkbox c-checkbox pull-left mt0">
+                    <label>
+                        <input type="checkbox" value="" required name="agreed">
+                        <span class="fa fa-check"></span>I agree with the <a href="#">terms</a>
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-block btn-primary mt-lg">Create account</button>
+        </form>
+        <p class="pt-lg text-center">Have an account?</p><a href="{{ url('/auth/login') }}"
+                                                            class="btn btn-block btn-default">Signup</a>
+    </div>
 @endsection
