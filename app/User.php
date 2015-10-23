@@ -49,5 +49,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $this->attributes['password'] = Hash::make($pass);
 
     }
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name. ' ' . $this->last_name;
+    }
 	
 }

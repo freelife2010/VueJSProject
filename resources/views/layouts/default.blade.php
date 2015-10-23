@@ -2,10 +2,10 @@
 @section('wrapper_content')
     @include('partials.header')
     @role('admin')
-        @include('partials.sidebar')
+        @include('partials.admin_sidebar', ['user' => Auth::user()])
     @endrole
     @role('developer')
-        @include('partials.sidebar')
+        @include('partials.developer_sidebar' , ['user' => Auth::user()])
     @endrole
     @include('partials.offsidebar')
     <section>
