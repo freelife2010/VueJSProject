@@ -145,6 +145,11 @@ return [
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
 
+        /**
+         * Third Party Service Providers...
+         */
+        Bican\Roles\RolesServiceProvider::class,
+
 	],
 
 	/*

@@ -1,6 +1,3 @@
-@extends('app)
-
-@section('header')
 <header class="topnavbar-wrapper">
     <!-- START Top Navbar-->
     <nav role="navigation" class="navbar topnavbar">
@@ -149,4 +146,3 @@
     </nav>
     <!-- END Top Navbar-->
 </header>
-@endsection
