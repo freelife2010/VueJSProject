@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Email;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 use Illuminate\Http\Request;
@@ -49,7 +50,7 @@ class AuthController extends Controller {
 	{
 		return Validator::make($data, [
 				'name' => 'required|max:255',
-				'email' => 'required|email|max:255|unique:users',
+				'email' => 'required|email|max:255|unique:accounts',
 				'password' => 'required|confirmed|min:6',
 				]);
 	}	
@@ -80,7 +81,8 @@ class AuthController extends Controller {
         $user->resent          = 0;
 		
 		if ($user->save()) {
-
+            $role = Role::whereSlug('developer')->first();
+            $user->attachRole($role);
 			$this->sendEmail($user);
 
 			return view('auth.activateAccount')
@@ -99,13 +101,11 @@ class AuthController extends Controller {
 	public function sendEmail(User $user)
 	{
 
-		$data = [
-				'name' => $user->name,
-				'code' => $user->activation_code,
-		];
+		$email = Email::whereType('authorization')->first();
+        $email->replaceMarkers($user);
 		
-		Mail::queue('emails.activateAccount', $data, function($message) use ($user) {
-            $message->from('admin@adm.dev', 'AdminUI');
+		Mail::queue($email->content, [], function($message) use ($user) {
+            $message->from(env('MAIL_FROM', 'admin@adm.dev'), env('MAIL_FROM_NAME', 'AdminUI'));
 			$message->subject( \Lang::get('auth.pleaseActivate') );
 			$message->to($user->email);
 		});

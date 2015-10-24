@@ -44,6 +44,8 @@
     <script src="{{ asset('bower_components/jquery-classyloader/js/jquery.classyloader.min.js') }}"></script>
     <!-- MOMENT JS-->
     <script src="{{ asset('bower_components/moment/min/moment-with-locales.min.js') }}"></script>
+    <!-- NOTY JS-->
+    <script src="{{ asset('bower_components/noty/js/noty/packaged/jquery.noty.packaged.min.js') }}"></script>
     <!-- DEMO-->
     <script src="{{ asset('js/demo/demo-flot.js') }}"></script>
 
@@ -51,5 +53,6 @@
 
     <!-- =============== APP SCRIPTS ===============-->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/submit_events.js') }}"></script>
 </body>
 </html>

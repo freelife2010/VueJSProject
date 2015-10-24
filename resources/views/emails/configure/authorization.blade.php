@@ -16,14 +16,18 @@
 @section('subtitle') Modify authorization e-mail content @stop
 @section('content')
     <?php
-    $action_url = '/service-types/add';
-    $submit_label = 'Save';
+    $submit_label = 'Save changes';
+    if (isset($model)) {
+        Former::populate($model);
+    }
     ?>
-    <?= Former::vertical_open()->action($action_url) ?>
+    <?= Former::vertical_open() ?>
         <fieldset>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Simple wysiwyg</label>
                 <div class="col-sm-10">
+                    <?= Former::text('subject')->label('Subject')->required() ?>
+                    <br/>
+                    <label for="content">Content*</label>
                     <div data-role="editor-toolbar" data-target="#editor" class="btn-toolbar btn-editor">
                         <div class="btn-group dropdown">
                             <a data-toggle="dropdown" title="Font" class="btn btn-default">
@@ -127,12 +131,14 @@
                     <div style="overflow:scroll; height:250px;max-height:250px"
                          id="editor"
                          contenteditable="true"
-                         class="form-control wysiwyg mt-lg">Type something ...</div>
+                         class="form-control wysiwyg mt-lg">{!! $model->content !!}</div>
+                    <br/>
+                    <?= Former::actions(
+                            Former::primary_button($submit_label)->class('btn btn-primary btn-lg')
+                                    ->setAttribute('data-submit', 'ajax')
+                                    ->type('submit')); ?>
                 </div>
             </div>
         </fieldset>
-    <?= Former::actions(
-            Former::primary_button($submit_label)->icon('ok-circle')
-                    ->type('submit')); ?>
     <?= Former::close() ?>
 @endsection

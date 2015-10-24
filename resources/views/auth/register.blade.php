@@ -17,19 +17,11 @@
               method="POST" action="{{ url('/auth/register') }}">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="form-group has-feedback">
-                <label for="first_name" class="text-muted">First name</label>
+                <label for="name" class="text-muted">Name</label>
                 <input type="text"
-                       name="first_name" id=first_name"
-                       value="{{ old('first_name') }}"
-                       placeholder="First name" autocomplete="off" required class="form-control">
-                <span class="fa fa-user form-control-feedback text-muted"></span>
-            </div>
-            <div class="form-group has-feedback">
-                <label for="last_name" class="text-muted">Last name</label>
-                <input type="text"
-                       name="last_name" id="last_name"
-                       value="{{ old('last_name') }}"
-                       placeholder="Last name" autocomplete="off" required class="form-control">
+                       name="name" id="name"
+                       value="{{ old('name') }}"
+                       placeholder="Name" autocomplete="off" required class="form-control">
                 <span class="fa fa-user form-control-feedback text-muted"></span>
             </div>
             <div class="form-group has-feedback">

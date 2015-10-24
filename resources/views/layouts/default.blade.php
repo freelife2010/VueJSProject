@@ -14,6 +14,7 @@
                 {!! $title !!}
                 <small>@yield('subtitle')</small>
             </div>
+            @include('partials.notifications')
             @yield('content')
         </div>
     </section>
