@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\Models\Email;
+use Bican\Roles\Models\Role;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 use Illuminate\Http\Request;
@@ -45,7 +46,7 @@ class AuthController extends Controller {
 	 *
 	 * @param  array  $data
 	 * @return \Illuminate\Contracts\Validation\Validator
-	 */	
+	 */
 	public function validator(array $data)
 	{
 		return Validator::make($data, [
@@ -53,8 +54,14 @@ class AuthController extends Controller {
 				'email' => 'required|email|max:255|unique:accounts',
 				'password' => 'required|confirmed|min:6',
 				]);
-	}	
-	
+	}
+
+    public function getSend()
+    {
+        $user = User::find(8);
+        $this->sendEmail($user);
+    }
+
 	/**
 	 * Handle a registration request for the application.
 	 *
@@ -79,7 +86,7 @@ class AuthController extends Controller {
         $user->password        = bcrypt($request->input('password'));
         $user->activation_code = $activation_code;
         $user->resent          = 0;
-		
+
 		if ($user->save()) {
             $role = Role::whereSlug('developer')->first();
             $user->attachRole($role);
@@ -87,30 +94,36 @@ class AuthController extends Controller {
 
 			return view('auth.activateAccount')
 				->with('email', $request->input('email'));
-		
+
 		} else {
-			
+
 			\Session::flash('message', \Lang::get('notCreated') );
 			return redirect()->back()->withInput();
-			
+
 		}
-		
+
 	}
 	//*/
-	
+
 	public function sendEmail(User $user)
 	{
 
 		$email = Email::whereType('authorization')->first();
         $email->replaceMarkers($user);
-		
-		Mail::queue($email->content, [], function($message) use ($user) {
-            $message->from(env('MAIL_FROM', 'admin@adm.dev'), env('MAIL_FROM_NAME', 'AdminUI'));
-			$message->subject( \Lang::get('auth.pleaseActivate') );
+
+        $data = [
+            'content' => $email->content
+        ];
+
+		Mail::queue('emails.base', $data, function($message) use ($user, $email) {
+            $address = env('MAIL_FROM', 'admin@adm.dev');
+            $name    = env('MAIL_FROM_NAME', 'AdminUI');
+            $message->from($address, $name);
+			$message->subject($email->subject);
 			$message->to($user->email);
 		});
 	}
-	
+
 	public function resendEmail()
 	{
 		$user = \Auth::user();
@@ -126,7 +139,7 @@ class AuthController extends Controller {
 				->with('email', $user->email);
 		}
 	}
-	
+
 	public function activateAccount($code, User $user)
 	{
 
@@ -134,10 +147,10 @@ class AuthController extends Controller {
 			\Session::flash('message', \Lang::get('auth.successActivated') );
 			return redirect('home');
 		}
-	
+
 		\Session::flash('message', \Lang::get('auth.unsuccessful') );
 		return redirect('home');
-	
+
 	}
-	
+
 }

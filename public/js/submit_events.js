@@ -36,8 +36,6 @@ function postForm($this, form, url) {
         success: function(data) {
             var type = data.error == 0 ? 'success' : 'error';
             showMessage(type, data.alert);
-            if (type == 'success')
-                closeModalWindow();
 
             reloadTables();
 

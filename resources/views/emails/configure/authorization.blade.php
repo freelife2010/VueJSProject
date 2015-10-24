@@ -9,7 +9,11 @@
     <script src="{{ asset('bower_components/bootstrap-wysiwyg/external/jquery.hotkeys.js') }}"></script>
     <script>
         $(document).ready(function() {
-           $('#editor').wysiwyg();
+            var $editor = $('#editor');
+            $editor.wysiwyg();
+            $('#submit-btn').click(function() {
+                $('input[name=content]').val($editor.html());
+            });
         });
     </script>
 @endsection
@@ -17,11 +21,10 @@
 @section('content')
     <?php
     $submit_label = 'Save changes';
-    if (isset($model)) {
-        Former::populate($model);
-    }
+    $action_url   = url("emails/auth-content/$model->id");
+    Former::populate($model);
     ?>
-    <?= Former::vertical_open() ?>
+    <?= Former::vertical_open()->action($action_url) ?>
         <fieldset>
             <div class="form-group">
                 <div class="col-sm-10">
@@ -132,10 +135,12 @@
                          id="editor"
                          contenteditable="true"
                          class="form-control wysiwyg mt-lg">{!! $model->content !!}</div>
+                        <?= Former::hidden('content')?>
                     <br/>
                     <?= Former::actions(
                             Former::primary_button($submit_label)->class('btn btn-primary btn-lg')
                                     ->setAttribute('data-submit', 'ajax')
+                                    ->id('submit-btn')
                                     ->type('submit')); ?>
                 </div>
             </div>

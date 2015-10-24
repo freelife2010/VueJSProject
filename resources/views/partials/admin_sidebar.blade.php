@@ -306,11 +306,6 @@
                                 <span>Authorization e-mail</span>
                             </a>
                         </li>
-                        <li class=" ">
-                            <a href="register.html" title="Sign up">
-                                <span data-localize="sidebar.nav.pages.REGISTER">Sign up</span>
-                            </a>
-                        </li>
                     </ul>
                 </li>
                 <li class=" ">

@@ -15,10 +15,10 @@ class Email extends Model
     public function replaceMarkers($user)
     {
         $authUrl = sprintf('<a href="%s">%s</a>',
-            url('activate/'.$user->code),
+            url('activate/'.$user->activation_code),
             url('activate/'));
 
-        $this->content = str_replace('__authorization_url__', $authUrl, $this->content);
+        $this->content = str_replace('__activation_url__', $authUrl, $this->content);
         $this->content = str_replace('__username__', $user->name, $this->content);
     }
 

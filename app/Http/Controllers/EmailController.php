@@ -28,9 +28,14 @@ class EmailController extends Controller
         return view('emails.configure.authorization', compact('title', 'model'));
     }
 
-    public function postAuthContent(EmailAuthRequest $request)
+    public function postAuthContent(EmailAuthRequest $request, $id)
     {
-        return 'oook';
+        $result = $this->getResult(true, 'Failed to save e-mail form');
+        $model  = Email::find($id);
+        if ($model->fill($request->input()) and $model->save())
+            $result = $this->getResult(false, 'E-mail saved');
+
+        return $result;
     }
 
 
