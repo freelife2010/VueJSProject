@@ -28,7 +28,7 @@ class UpdateUsersTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('users', function(Blueprint $table)
+		Schema::table('accounts', function(Blueprint $table)
 		{
 			$table->dropColumn('activation_code');
 			$table->dropColumn('active');

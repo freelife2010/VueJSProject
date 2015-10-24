@@ -114,12 +114,6 @@
                                 <em class="fa fa-cut"></em>
                             </a>
                         </div>
-                        <div class="btn-group">
-                            <a id="pictureBtn" data-toggle="tooltip" title="Insert picture (or just drag &amp; drop)" class="btn btn-default">
-                                <em class="fa fa-picture-o"></em>
-                            </a>
-                            <input type="file" data-edit="insertImage" style="position:absolute; opacity:0; width:41px; height:34px">
-                        </div>
                         <div class="btn-group pull-right">
                             <a data-edit="undo" data-toggle="tooltip" title="Undo (Ctrl/Cmd+Z)" class="btn btn-default">
                                 <em class="fa fa-undo"></em>
