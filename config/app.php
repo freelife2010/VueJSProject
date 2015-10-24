@@ -149,6 +149,9 @@ return [
          * Third Party Service Providers...
          */
         Bican\Roles\RolesServiceProvider::class,
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
+        Former\FormerServiceProvider::class,
+        'Laracasts\Flash\FlashServiceProvider'
 
 	],
 
@@ -178,6 +181,8 @@ return [
 		'Eloquent'  => 'Illuminate\Database\Eloquent\Model',
 		'Event'     => 'Illuminate\Support\Facades\Event',
 		'File'      => 'Illuminate\Support\Facades\File',
+        'Flash'     => 'Laracasts\Flash\Flash',
+        'Former'    => 'Former\Facades\Former',
 		'Hash'      => 'Illuminate\Support\Facades\Hash',
 		'Input'     => 'Illuminate\Support\Facades\Input',
 		'Inspiring' => 'Illuminate\Foundation\Inspiring',
@@ -196,7 +201,8 @@ return [
 		'Storage'   => 'Illuminate\Support\Facades\Storage',
 		'URL'       => 'Illuminate\Support\Facades\URL',
 		'Validator' => 'Illuminate\Support\Facades\Validator',
-		'View'      => 'Illuminate\Support\Facades\View',
+		'View'       => 'Illuminate\Support\Facades\View',
+        'Datatables' => yajra\Datatables\Datatables::class,
 
 	],
 

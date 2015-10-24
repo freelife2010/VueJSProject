@@ -29,6 +29,7 @@ class Kernel extends HttpKernel {
         'guest'      => 'App\Http\Middleware\RedirectIfAuthenticated',
         'role'       => \Bican\Roles\Middleware\VerifyRole::class,
         'permission' => \Bican\Roles\Middleware\VerifyPermission::class,
+        'admin'      => \App\Http\Middleware\Admin::class,
 	];
 
 }

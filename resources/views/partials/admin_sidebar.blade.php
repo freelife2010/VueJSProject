@@ -314,6 +314,12 @@
                     </ul>
                 </li>
                 <li class=" ">
+                    <a href=" {{ url('logs') }}" title="View system logs" target="_blank">
+                        <em class="icon-docs"></em>
+                        <span>System logs</span>
+                    </a>
+                </li>
+                <li class=" ">
                     <a href="#extras" title="Extras" data-toggle="collapse">
                         <em class="icon-cup"></em>
                         <span data-localize="sidebar.nav.extra.EXTRA">Extras</span>

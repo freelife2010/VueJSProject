@@ -30,7 +30,6 @@
         @yield('wrapper_content')
     </div>
 
-    @yield('scripts')
     <!-- =============== VENDOR SCRIPTS ===============-->
     <!-- MODERNIZR-->
     <script src="{{ asset('bower_components/modernizr/modernizr.js') }}"></script>
@@ -47,6 +46,9 @@
     <script src="{{ asset('bower_components/moment/min/moment-with-locales.min.js') }}"></script>
     <!-- DEMO-->
     <script src="{{ asset('js/demo/demo-flot.js') }}"></script>
+
+    @yield('scripts')
+
     <!-- =============== APP SCRIPTS ===============-->
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

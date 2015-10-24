@@ -31,3 +31,6 @@ Route::get('/resendEmail', 'Auth\AuthController@resendEmail');
 
 Route::get('/activate/{code}', 'Auth\AuthController@activateAccount');
 
+Route::group(['middleware' => 'admin'], function() {
+    Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+});
