@@ -34,7 +34,7 @@ function postForm($this, form, url) {
             $this.prop('disabled', true);
         },
         success: function(data) {
-            var type = data.error == 0 ? 'success' : 'error';
+            var type = data.error == 0 ? 'success' : 'danger';
             showMessage(type, data.alert);
 
             reloadTables();
@@ -49,18 +49,13 @@ function postForm($this, form, url) {
                 $.each(errors, function(key, val) {
                     console.log(key);
                     form.find('label[for='+key+']').addClass('label-danger');
-                    errors_html += '<br/>'+val;
+                    errors_html += '<br/> - '+val;
                 });
-                noty({
-                    type: 'error',
-                    layout: 'bottomLeft',
-                    text: 'There were some problems with your input: ' + errors_html,
-                    timeout: 7000,
-                    animation: {
-                        open: 'animated shake',
-                        close: 'animated fadeOut'
-                    }
-                });
+                var options = {
+                    status: 'danger'
+                };
+                var text = 'There were some problems with your input: ' + errors_html;
+                $.notify(text, options || {});
             } else showErrorMessage(data);
         },
         complete: function() {
@@ -70,29 +65,20 @@ function postForm($this, form, url) {
 }
 
 function showMessage(type, alert) {
-    noty({
-        text: alert,
-        type: type,
-        layout: 'bottomLeft',
-        timeout: 4000,
-        animation: {
-            open: 'animated pulse',
-            close: 'animated fadeOut'
-        }
-    });
+    if (type == 'success')
+        alert = "<em class='fa fa-check'></em> " + alert;
+    var options = {
+        status: type
+    };
+    $.notify(alert, options || {});
 }
 
 function showErrorMessage(data) {
-    noty({
-        type: 'error',
-        layout: 'bottomLeft',
-        text: 'Error occurred: ' + data.responseJSON,
-        timeout: 4000,
-        animation: {
-            open: 'animated shake',
-            close: 'animated fadeOut'
-        }
-    });
+    var alert = 'Error occurred: ' + data.responseJSON;
+    var options = {
+        status: 'danger'
+    };
+    $.notify(alert, options || {});
 }
 
 function reloadTables() {
