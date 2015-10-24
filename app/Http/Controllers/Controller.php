@@ -8,6 +8,19 @@ abstract class Controller extends BaseController {
 
 	use DispatchesCommands, ValidatesRequests;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Returns request result
+     * @param $error
+     * @param $alert
+     * @param string $html
+     * @param array $extra
+     * @return array
+     */
     protected function getResult($error, $alert, $html='', $extra = [])
     {
         $result = [

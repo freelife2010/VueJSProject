@@ -295,15 +295,20 @@
                 <li class="nav-heading ">
                     <span data-localize="sidebar.heading.MORE">Settings</span>
                 </li>
-                <li class=" @yield('is_active')">
+                <li class=" @include('partials.is_active', ['path' => 'emails'])">
                     <a href="##emails" title="Email configuration" data-toggle="collapse">
                         <em class="icon-envelope-open"></em>
                         <span>E-mail requests</span>
                     </a>
                     <ul id="emails" class="nav sidebar-subnav collapse">
-                        <li class=" @yield('is_active')">
-                            <a href=" {{ url('emails/auth-content') }}" title="E-mail authorization request">
+                        <li class=" @include('partials.is_active', ['path' => 'emails/auth-content'])">
+                            <a href=" {{ url('emails/auth-content') }}" title="Modify authorization e-mail">
                                 <span>Authorization e-mail</span>
+                            </a>
+                        </li>
+                        <li class=" @include('partials.is_active', ['path' => 'emails/confirm-content'])">
+                            <a href=" {{ url('emails/confirm-content') }}" title="Modify confirmation e-mail">
+                                <span>Confirmation e-mail</span>
                             </a>
                         </li>
                     </ul>

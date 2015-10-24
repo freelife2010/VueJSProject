@@ -1,5 +1,4 @@
 @extends('layouts.default')
-@include('partials.is_active', ['path' => 'emails'])
 @section('title')
     {{ $title }} :: @parent
 @endsection
@@ -17,14 +16,13 @@
         });
     </script>
 @endsection
-@section('subtitle') Modify authorization e-mail content @stop
+@section('subtitle') {{ $subtitle }} @stop
 @section('content')
     <?php
     $submit_label = 'Save changes';
-    $action_url   = url("emails/auth-content/$model->id");
     Former::populate($model);
     ?>
-    <?= Former::vertical_open()->action($action_url) ?>
+    <?= Former::vertical_open()->action($actionUrl) ?>
         <fieldset>
             <div class="form-group">
                 <div class="col-sm-10">
