@@ -56,12 +56,6 @@ class AuthController extends Controller {
 				]);
 	}
 
-    public function getSend()
-    {
-        $user = User::find(8);
-        $this->sendEmail($user);
-    }
-
 	/**
 	 * Handle a registration request for the application.
 	 *
@@ -90,7 +84,7 @@ class AuthController extends Controller {
 		if ($user->save()) {
             $role = Role::whereSlug('developer')->first();
             $user->attachRole($role);
-			$this->sendEmail($user);
+			$this->sendEmail($user, 'authorization');
 
 			return view('auth.activateAccount')
 				->with('email', $request->input('email'));
@@ -105,12 +99,11 @@ class AuthController extends Controller {
 	}
 	//*/
 
-	public function sendEmail(User $user)
+	public function sendEmail(User $user, $type)
 	{
 
-		$email = Email::whereType('authorization')->first();
+		$email = Email::whereType($type)->first();
         $email->replaceMarkers($user);
-
         $data = [
             'content' => $email->content
         ];
@@ -134,7 +127,7 @@ class AuthController extends Controller {
 		} else {
 			$user->resent = $user->resent + 1;
 			$user->save();
-			$this->sendEmail($user);
+			$this->sendEmail($user, 'authorization');
 			return view('auth.activateAccount')
 				->with('email', $user->email);
 		}
@@ -144,6 +137,7 @@ class AuthController extends Controller {
 	{
 
 		if($user->accountIsActive($code)) {
+            $this->sendEmail($user, 'confirmation');
 			\Session::flash('message', \Lang::get('auth.successActivated') );
 			return redirect('home');
 		}

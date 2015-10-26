@@ -41,6 +41,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		if($user->save()) {
 			\Auth::login($user);
 		}
+        $this->fill($user->attributesToArray());
 		return true;
 	}
 
