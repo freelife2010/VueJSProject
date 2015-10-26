@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSmsSentHistory extends Migration
+class CreateSms extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,15 @@ class CreateSmsSentHistory extends Migration
      */
     public function up()
     {
-        Schema::create('sms_sent_history', function (Blueprint $table) {
+        Schema::create('sms', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->string('text');
-            $table->timestamp('starttime');
+            $table->integer('app_id', false, true);
+            $table->integer('user_id', false, true);
+            $table->timestamp('start');
+            $table->timestamp('delivered_on');
+            $table->timestamp('confirmed_on');
             $table->integer('status', false, true);
-            $table->string('sent_to');
-            $table->string('sent_from');
+            $table->timestamp('received_on');
         });
     }
 
@@ -29,6 +31,6 @@ class CreateSmsSentHistory extends Migration
      */
     public function down()
     {
-        Schema::drop('sms_sent_history');
+        Schema::drop('sms');
     }
 }

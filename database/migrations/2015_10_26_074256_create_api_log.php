@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSmsSentHistory extends Migration
+class CreateApiLog extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,13 @@ class CreateSmsSentHistory extends Migration
      */
     public function up()
     {
-        Schema::create('sms_sent_history', function (Blueprint $table) {
+        Schema::create('api_log', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->string('text');
-            $table->timestamp('starttime');
-            $table->integer('status', false, true);
-            $table->string('sent_to');
-            $table->string('sent_from');
+            $table->integer('app_id', false, true);
+            $table->string('uuid');
+            $table->string('content');
+            $table->string('secure_id');
+            $table->string('ip');
         });
     }
 
@@ -29,6 +29,6 @@ class CreateSmsSentHistory extends Migration
      */
     public function down()
     {
-        Schema::drop('sms_sent_history');
+        Schema::drop('api_log');
     }
 }
