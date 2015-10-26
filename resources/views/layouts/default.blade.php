@@ -15,7 +15,9 @@
                 <small>@yield('subtitle')</small>
             </div>
             @include('partials.notifications')
-            @yield('content')
+            <div class="container-fluid">
+                @yield('content')
+            </div>
         </div>
     </section>
 @endsection

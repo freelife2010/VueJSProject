@@ -11,13 +11,11 @@
     <link rel="stylesheet" href="{{ asset('bower_components/fontawesome/css/font-awesome.min.css')}}">
     <!-- SIMPLE LINE ICONS-->
     <link rel="stylesheet" href="{{ asset('bower_components/simple-line-icons/css/simple-line-icons.css')}}">
-    <!-- ANIMATE.CSS-->
-    <link rel="stylesheet" href="{{ asset("bower_components/animate.css/animate.min.css") }}">
     <!-- WHIRL (spinners)-->
     <link rel="stylesheet" href="{{ asset("bower_components/whirl/dist/whirl.css") }}">
     <!-- =============== PAGE VENDOR STYLES ===============-->
-    <!-- WEATHER ICONS-->
-    <link rel="stylesheet" href="{{ asset("bower_components/weather-icons/css/weather-icons.min.css") }}">
+    <!-- Loaders.css-->
+    <link rel="stylesheet" href="{{ asset('bower_components/loaders.css/loaders.css') }}">
     <!-- =============== BOOTSTRAP STYLES ===============-->
     <link rel="stylesheet" href="{{ asset("css/bootstrap.css") }}" id="bscss">
     <!-- =============== APP STYLES ===============-->
@@ -51,6 +49,34 @@
 
     <!-- =============== APP SCRIPTS ===============-->
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="{{ asset('js/submit_events.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+
+    <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 id="myModalLabel" class="modal-title">Loading data...</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="loader-demo">
+                        <div class="ball-scale-multiple block-center">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-default">
+                        <em class="icon-close"></em>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

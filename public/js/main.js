@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
     $('button[data-submit=ajax]').on('click', function(e) {
         var form = $(this).parents('form');
@@ -8,11 +9,43 @@ $(document).ready(function () {
                 postForm($(this), form, url);
         }
         else postForm($(this), form, url);
+
+        $(document).keyup(function(e) {
+            if (e.keyCode == 27) closeModalWindow();
+        });
+    });
+
+    var $body = $('body');
+
+    $body.on('hidden.bs.modal', '.modal', function () {
+        $(this).removeData('bs.modal');
+        var html = '<div class="modal-header">' +
+            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+            '<h4 class="modal-title">Loading data...</h4>' +
+            '</div>' +
+            '<div class="modal-body" style="text-align: center">' +
+            '<div class="loader-demo">' +
+            '<div class="ball-scale-multiple block-center">' +
+            '<div></div>' +
+            '<div></div>' +
+            '<div></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="modal-footer">' +
+            '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+            '</div>';
+        $(this).find('.modal-content').html(html);
+        $(this).find('.modal-dialog').css('width', 600);
+    });
+
+    $body.on('show.bs.modal', '.modal', function () {
+        $(this).find('.modal-dialog').prop('id', 'modal-dialog');
     });
 });
 
 function setModalWidth(width) {
-    var modal = $('#awsModal');
+    var modal = $('#myModal');
     modal.hide();
     modal.find('.modal-dialog').css('width', width);
     modal.show();
@@ -32,10 +65,15 @@ function postForm($this, form, url) {
         data: form.serialize(),
         beforeSend: function() {
             $this.prop('disabled', true);
+            $('.modal-body').hide();
+            $('.preloader').removeClass('hide');
         },
         success: function(data) {
             var type = data.error == 0 ? 'success' : 'danger';
             showMessage(type, data.alert);
+
+            if (type == 'success')
+                closeModalWindow();
 
             reloadTables();
 
@@ -60,6 +98,8 @@ function postForm($this, form, url) {
         },
         complete: function() {
             $this.prop('disabled', false);
+            $('.modal-body').show();
+            $('.preloader').addClass('hide');
         }
     });
 }
@@ -94,4 +134,8 @@ function executeCallback(callback, param) {
 
 function goToPage(url) {
     window.location.href = url;
+}
+
+function closeModalWindow() {
+    $('.close').click();
 }

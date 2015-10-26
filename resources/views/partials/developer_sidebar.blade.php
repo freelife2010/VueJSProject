@@ -9,29 +9,20 @@
                 <!-- END user info-->
                 <!-- Iterates over all sidebar items-->
                 <li class="nav-heading ">
-                    <span data-localize="sidebar.heading.HEADER">Main Navigation</span>
+                    <span data-localize="sidebar.heading.HEADER">Main menu</span>
                 </li>
                 <li class=" ">
-                    <a href="#dashboard" title="Dashboard" data-toggle="collapse">
-                        <div class="pull-right label label-info">3</div>
-                        <em class="icon-speedometer"></em>
-                        <span data-localize="sidebar.nav.DASHBOARD">Dashboard</span>
+                    <a href="#app_list" title="APP" data-toggle="collapse">
+                        <div class="pull-right label label-info">0</div>
+                        <em class="icon-grid"></em>
+                        <span>APP List</span>
                     </a>
-                    <ul id="dashboard" class="nav sidebar-subnav collapse">
-                        <li class="sidebar-subnav-header">Dashboard</li>
-                        <li class=" active">
-                            <a href="dashboard.html" title="Dashboard v1">
-                                <span>Dashboard v1</span>
-                            </a>
-                        </li>
+                    <ul id="app_list" class="nav sidebar-subnav collapse">
                         <li class=" ">
-                            <a href="dashboard_v2.html" title="Dashboard v2">
-                                <span>Dashboard v2</span>
-                            </a>
-                        </li>
-                        <li class=" ">
-                            <a href="dashboard_v3.html" title="Dashboard v3">
-                                <span>Dashboard v3</span>
+                            <a href="{{ url('app/create') }}" title="Create new..."
+                               data-toggle="modal"
+                               data-target="#myModal">
+                                <span>Create new...</span>
                             </a>
                         </li>
                     </ul>
@@ -40,7 +31,7 @@
                     <a href="widgets.html" title="Widgets">
                         <div class="pull-right label label-success">30</div>
                         <em class="icon-grid"></em>
-                        <span data-localize="sidebar.nav.WIDGETS">Widgets</span>
+                        <span data-localize="sidebar.nav.DASHBOARD">Widgets</span>
                     </a>
                 </li>
                 <li class=" ">
