@@ -16,9 +16,8 @@ class CreateSipDomain extends Migration
             $table->increments('id')->unsigned();
             $table->integer('app_id', false, true);
             $table->string('domain_name');
-            $table->timestamp('modified_on');
-            $table->timestamp('created_on');
             $table->integer('domain_id', false, true);
+            $table->timestamps();
         });
     }
 

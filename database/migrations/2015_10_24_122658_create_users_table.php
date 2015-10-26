@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->integer('last_status', false, true);
             $table->integer('activated', false, true);
             $table->string('last_ip');
-            $table->timestamp('created');
+            $table->timestamps();
         });
     }
 

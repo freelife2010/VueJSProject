@@ -24,7 +24,7 @@ class CreateGroupMessage extends Migration
             $table->text('url');
             $table->text('filename');
             $table->integer('group_id', false, true);
-            $table->timestamp('created');
+            $table->timestamps();
 
         });
     }

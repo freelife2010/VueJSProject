@@ -20,12 +20,11 @@ class CreateQueue extends Migration
             $table->integer('wait_msg_id', false, true);
             $table->integer('play_interval', false, true);
             $table->integer('connect_msg_id', false, true);
-            $table->timestamp('created_on');
-            $table->timestamp('modified_on');
             $table->integer('created_by', false, true);
             $table->integer('user_id', false, true);
             $table->string('queue_name');
             $table->string('description');
+            $table->timestamps();
         });
     }
 

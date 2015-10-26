@@ -24,7 +24,7 @@ class CreateChatRoomMessages extends Migration
             $table->text('url');
             $table->text('filename');
             $table->integer('chat_room_id', false, true);
-            $table->timestamp('created');
+            $table->timestamps();
 
         });
     }

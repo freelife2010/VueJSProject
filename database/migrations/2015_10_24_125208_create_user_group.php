@@ -21,7 +21,7 @@ class CreateUserGroup extends Migration
             $table->integer('app_id', false, true);
             $table->boolean('is_public');
             $table->integer('max_member', false, true);
-            $table->timestamp('created');
+            $table->timestamps();
 
         });
     }

@@ -17,7 +17,7 @@ class CreateGroupActivity extends Migration
             $table->integer('user_id', false, true);
             $table->timestamp('time');
             $table->integer('type', false, true);
-            $table->timestamp('created');
+            $table->timestamps();
 
         });
     }

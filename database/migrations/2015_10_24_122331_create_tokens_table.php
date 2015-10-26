@@ -16,7 +16,7 @@ class CreateTokensTable extends Migration
             $table->increments('id')->unsigned();
             $table->string('token');
             $table->integer('expiration', false, true);
-            $table->timestamp('created');
+            $table->timestamps();
         });
     }
 

@@ -25,7 +25,7 @@ class CreateUserMessages extends Migration
             $table->text('filename');
             $table->boolean('read');
             $table->timestamp('last_read');
-            $table->timestamp('created');
+            $table->timestamps();
         });
     }
 

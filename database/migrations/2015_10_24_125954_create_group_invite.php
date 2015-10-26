@@ -23,7 +23,7 @@ class CreateGroupInvite extends Migration
             $table->boolean('rejected');
             $table->boolean('cancelled');
             $table->integer('cancelled_by_user', false, true);
-            $table->timestamp('created');
+            $table->timestamps();
 
         });
     }

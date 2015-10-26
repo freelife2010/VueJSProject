@@ -21,7 +21,7 @@ class CreateChatRoom extends Migration
             $table->string('desc');
             $table->integer('app_id', false, true);
             $table->integer('max_member', false, true);
-            $table->timestamp('created');
+            $table->timestamps();
 
         });
     }
