@@ -11,22 +11,25 @@
                 <li class="nav-heading ">
                     <span data-localize="sidebar.heading.HEADER">Main menu</span>
                 </li>
-                <li class=" ">
-                    <a href="/app" title="APP">
-                        <div class="pull-right label label-info">
-                            {{ count(\App\Models\App::all()) }}
-                        </div>
-                        <em class="icon-grid"></em>
+                <li class=" @include('partials.is_active', ['path' => 'app/list'])">
+                    <a href="/app/list" title="APP">
+                        <em class="icon-list"></em>
                         <span>APP List</span>
                     </a>
                 </li>
-                {{--<li class=" ">--}}
-                    {{--<a href="widgets.html" title="Widgets">--}}
-                        {{--<div class="pull-right label label-success">30</div>--}}
-                        {{--<em class="icon-grid"></em>--}}
-                        {{--<span data-localize="sidebar.nav.DASHBOARD">Widgets</span>--}}
-                    {{--</a>--}}
-                {{--</li>--}}
+                <li class=" @include('partials.is_active', ['path' => 'app/dashboard/'])">
+                    <a href="#app_list" title="APP Dashboards" data-toggle="collapse">
+                        <div class="pull-right label label-info">
+                            {{ $helper->getAppCount() }}
+                        </div>
+                        <em class="icon-speedometer"></em>
+                        <span>APP Dashboards</span>
+                    </a>
+                    <ul id="app_list" class="nav sidebar-subnav collapse">
+                        <li class="sidebar-subnav-header">APP Dashboards</li>
+                        {!! $helper->generateAppMenu() !!}
+                    </ul>
+                </li>
                 {{--<li class=" ">--}}
                     {{--<a href="#layout" title="Layouts" data-toggle="collapse">--}}
                         {{--<em class="icon-layers"></em>--}}

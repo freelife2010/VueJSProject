@@ -37,4 +37,32 @@ class App extends BaseModel
 
         return $this->save();
     }
+
+    public static function getApps($fields = [])
+    {
+        $user = Auth::user();
+        $apps = App::whereAccountId($user->id);
+        if ($fields)
+            $apps->select($fields);
+        return $apps;
+    }
+
+    public static function generateAppMenu()
+    {
+        $apps = App::getApps()->get();
+        $html = '';
+
+        foreach ($apps as $app) {
+            $html .= sprintf("
+            <li class=\" \">
+                <a href=\"%1\$s\" title=\"%2\$s\">
+                    <span>%2\$s</span>
+                </a>
+            </li>", url('app/dashboard/'.$app->id),
+                    $app->name);
+        }
+
+        return $html;
+
+    }
 }

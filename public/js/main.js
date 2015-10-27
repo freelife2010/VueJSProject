@@ -137,7 +137,7 @@ function goToPage(url) {
 }
 
 function closeModalWindow() {
-    $('.close').click();
+    $('#close-modal').click();
 }
 
 function getTableTemplate() {

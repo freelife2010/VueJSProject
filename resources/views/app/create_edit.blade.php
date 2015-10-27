@@ -6,12 +6,12 @@
 @stop
 @section('modal_body')
     <?php
-    $action_url = '/app/create/';
+    $action_url = url("app/create");
     $submit_label = 'Create';
     $edit = false;
     if (isset($model)) {
         Former::populate($model);
-        $action_url   = '/app/edit/' . $model->id;
+        $action_url   = url("app/edit/$model->id");
         $submit_label = 'Сохранить';
         $edit         = true;
     }

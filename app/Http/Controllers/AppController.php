@@ -16,10 +16,24 @@ class AppController extends Controller
      */
     public function getIndex()
     {
+        return redirect('app/list');
+    }
+
+    public function getList()
+    {
         $title = 'APP List';
         $subtitle = 'Manage APP';
 
         return view('app.index', compact('title', 'subtitle'));
+    }
+
+    public function getDashboard($id)
+    {
+        $subtitle = 'Manage APP';
+        $model    = App::find($id);
+        $title    = 'APP Dashboard: ' . $model->name;
+
+        return view('app.index', compact('title', 'subtitle', 'model'));
     }
 
     public function getCreate()
@@ -61,7 +75,7 @@ class AppController extends Controller
 
     public function getData()
     {
-        $apps = App::select([
+        $apps = App::getApps([
             'id',
             'name',
             'presence']);

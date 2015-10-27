@@ -15,7 +15,7 @@
                 "processing": false,
                 "order": [[ 2, "desc" ]],
                 "ajax": {
-                    url : "app/data"
+                    url : "/app/data"
                 },
                 "columns": [
                     {data: 'id'},
@@ -49,7 +49,7 @@
                                     <em class="fa fa-plus-circle"></em> Create APP</a>
                         </div>
                     </div>
-                    <table id="table" class="table table-striped table-hover cursor-pointer" width="1548px;">
+                    <table id="table" class="table table-striped table-hover cursor-pointer">
                         <thead>
                         <tr>
                             <th>ID</th>
