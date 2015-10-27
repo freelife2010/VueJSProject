@@ -1,0 +1,20 @@
+.cursor-pointer tr {
+    cursor: pointer;
+}
+
+.col-filter {
+    width: 16.2%;
+    float: left;
+}
+
+.col-title {
+    width: 63.3%;
+}
+
+.paging-div {
+    width: 63.7%;
+}
+
+.create-wrapper-div {
+    width: 19.5%;
+}

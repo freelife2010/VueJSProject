@@ -3,6 +3,7 @@
 use App\Http\Controllers\Controller;
 use App\Models\Email;
 use Bican\Roles\Models\Role;
+use Hash;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 use Illuminate\Http\Request;
@@ -77,7 +78,7 @@ class AuthController extends Controller {
         $user                  = new User;
         $user->name            = $request->input('name');
         $user->email           = $request->input('email');
-        $user->password        = bcrypt($request->input('password'));
+        $user->password        = $request->input('password');
         $user->activation_code = $activation_code;
         $user->resent          = 0;
 
