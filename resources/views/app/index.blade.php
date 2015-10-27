@@ -29,9 +29,26 @@
                 ],
                 "fnDrawCallback": function() {
                     $('.col-filter').css('width', '16%');
+                    bindRowEvents();
                 }
             });
         });
+
+        function bindRowEvents() {
+            var $tr = $('#table').find('tr:not(:first)');
+            $.each($tr, function (key, val) {
+                var $this = $(val);
+                var td = $this.find('td:not(:last)');
+                var id = $this.find('td:first').text();
+                td.click(function(e) {
+                    openAppDashboard(id);
+                });
+            });
+        }
+
+        function openAppDashboard(id) {
+            window.location.href = '/app/dashboard/'+id;
+        }
     </script>
 @endsection
 @section('subtitle') {{ $subtitle }} @stop
