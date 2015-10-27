@@ -10,7 +10,7 @@
                     </a>
                 </li>
                 <li role="presentation">
-                    <a href="#app-chat" aria-controls="app-chat" role="tab" data-toggle="tab">
+                    <a href="#app-chat_dummy" aria-controls="app-chat" role="tab" data-toggle="tab">
                         <em class="icon-users fa-lg"></em>
                     </a>
                 </li>

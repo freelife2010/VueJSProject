@@ -139,3 +139,9 @@ function goToPage(url) {
 function closeModalWindow() {
     $('.close').click();
 }
+
+function getTableTemplate() {
+    return "<'row'<'col-md-6 paging-div'l>" +
+        "<'col-md-3 create-wrapper-div'<'#create-btn-div'>>" +
+        "<'col-md-2 col-filter'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>";
+}

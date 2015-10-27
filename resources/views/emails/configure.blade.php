@@ -4,8 +4,8 @@
 @endsection
 @section('scripts')
     <!-- WYSIWYG-->
-    <script src="{{ asset('bower_components/bootstrap-wysiwyg/bootstrap-wysiwyg.js') }}"></script>
-    <script src="{{ asset('bower_components/bootstrap-wysiwyg/external/jquery.hotkeys.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap-wysiwyg/bootstrap-wysiwyg.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap-wysiwyg/external/jquery.hotkeys.js') }}"></script>
     <script>
         $(document).ready(function() {
             var $editor = $('#editor');

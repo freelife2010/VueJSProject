@@ -12,20 +12,11 @@
                     <span data-localize="sidebar.heading.HEADER">Main menu</span>
                 </li>
                 <li class=" ">
-                    <a href="#app_list" title="APP" data-toggle="collapse">
+                    <a href="/app" title="APP">
                         <div class="pull-right label label-info">0</div>
                         <em class="icon-grid"></em>
                         <span>APP List</span>
                     </a>
-                    <ul id="app_list" class="nav sidebar-subnav collapse">
-                        <li class=" ">
-                            <a href="{{ url('app/create') }}" title="Create new..."
-                               data-toggle="modal"
-                               data-target="#myModal">
-                                <span>Create new...</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
                 <li class=" ">
                     <a href="widgets.html" title="Widgets">

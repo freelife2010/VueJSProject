@@ -6,5 +6,5 @@
 .project
 .settings/
 composer.lock
-/Angle theme
 /.idea
+/angle_theme

@@ -8,18 +8,20 @@
     <title>@section('title') AdminUI @show</title>
     <!-- =============== VENDOR STYLES ===============-->
     <!-- FONT AWESOME-->
-    <link rel="stylesheet" href="{{ asset('bower_components/fontawesome/css/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/font-awesome.min.css')}}">
     <!-- SIMPLE LINE ICONS-->
-    <link rel="stylesheet" href="{{ asset('bower_components/simple-line-icons/css/simple-line-icons.css')}}">
+    <link rel="stylesheet" href="{{ asset('vendor/simple-line-icons/css/simple-line-icons.css')}}">
     <!-- WHIRL (spinners)-->
-    <link rel="stylesheet" href="{{ asset("bower_components/whirl/dist/whirl.css") }}">
+    <link rel="stylesheet" href="{{ asset("vendor/whirl/dist/whirl.css") }}">
     <!-- =============== PAGE VENDOR STYLES ===============-->
     <!-- Loaders.css-->
-    <link rel="stylesheet" href="{{ asset('bower_components/loaders.css/loaders.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/loaders.css/loaders.css') }}">
     <!-- =============== BOOTSTRAP STYLES ===============-->
     <link rel="stylesheet" href="{{ asset("css/bootstrap.css") }}" id="bscss">
     <!-- =============== APP STYLES ===============-->
     <link rel="stylesheet" href=" {{ asset("css/app.css") }}" id="maincss">
+
+    <link rel="stylesheet" href=" {{ asset("css/custom.css") }}" id="customcss">
 
     @yield('styles')
 </head>
@@ -30,18 +32,18 @@
 
     <!-- =============== VENDOR SCRIPTS ===============-->
     <!-- MODERNIZR-->
-    <script src="{{ asset('bower_components/modernizr/modernizr.js') }}"></script>
+    <script src="{{ asset('vendor/modernizr/modernizr.js') }}"></script>
     <!-- JQUERY-->
-    <script src="{{ asset('bower_components/jquery/dist/jquery.js') }}"></script>
+    <script src="{{ asset('vendor/jquery/dist/jquery.js') }}"></script>
     <!-- BOOTSTRAP-->
-    <script src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/dist/js/bootstrap.js') }}"></script>
     <!-- STORAGE API-->
-    <script src="{{ asset('bower_components/jQuery-Storage-API/jquery.storageapi.js') }}"></script>
+    <script src="{{ asset('vendor/jQuery-Storage-API/jquery.storageapi.js') }}"></script>
     <!-- PARSLEY-->
-    <script src="{{ asset('bower_components/parsleyjs/dist/parsley.min.js') }}"></script>
-    <script src="{{ asset('bower_components/jquery-classyloader/js/jquery.classyloader.min.js') }}"></script>
+    <script src="{{ asset('vendor/parsleyjs/dist/parsley.min.js') }}"></script>
+    <script src="{{ asset('vendor/jquery-classyloader/js/jquery.classyloader.min.js') }}"></script>
     <!-- MOMENT JS-->
-    <script src="{{ asset('bower_components/moment/min/moment-with-locales.min.js') }}"></script>
+    <script src="{{ asset('vendor/moment/min/moment-with-locales.min.js') }}"></script>
     <!-- DEMO-->
     <script src="{{ asset('js/demo/demo-flot.js') }}"></script>
 

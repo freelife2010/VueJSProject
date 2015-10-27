@@ -19,7 +19,7 @@
               action="{{ url('/auth/login') }}">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="form-group has-feedback">
-                <input type="email" placeholder="Enter email" autocomplete="off"
+                <input type="email" placeholder="Enter email"
                        name="email"
                        required class="form-control"
                        value="{{ old('email') }}">
