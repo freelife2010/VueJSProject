@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AppRequest;
 use App\Models\App;
-use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
 use yajra\Datatables\Facades\Datatables;
 
 class AppController extends Controller
@@ -30,21 +29,64 @@ class AppController extends Controller
         return view('app/create_edit', compact('title'));
     }
 
+    public function postCreate(AppRequest $request)
+    {
+        $result = $this->getResult(true, 'Could not create APP');
+
+        $app = new App();
+        if ($app->createApp($request->input()))
+            $result = $this->getResult(false, 'App created successfully');
+
+        return $result;
+    }
+
+    public function getEdit($id)
+    {
+        $title = 'Edit APP';
+        $model = App::find($id);
+        return view('app/create_edit', compact('title', 'model'));
+    }
+
+    public function postEdit(AppRequest $request, $id)
+    {
+        $result = $this->getResult(true, 'Could not edit APP');
+        $model  = App::find($id);
+        if ($model->fill($request->input())
+            and $model->save()
+        )
+            $result = $this->getResult(false, 'App saved successfully');
+
+        return $result;
+    }
+
     public function getData()
     {
         $apps = App::select([
             'id',
             'name',
-            'account_id']);
+            'presence']);
 
         return Datatables::of($apps)
             ->add_column('users', function ($app) {
                 $users = $app->users;
                 return count($users->all());
             })
-            ->add_column('actions', function($group) {
-                return $group->getDefaultActionButtons('groups');
+            ->add_column('actions', function($app) {
+                return $app->getDefaultActionButtons('app');
             })
-            ->make();
+            ->add_column('daily_active', function($app) {
+                return '';
+            })
+            ->add_column('weekly_active', function($app) {
+                return '';
+            })
+            ->add_column('monthly_active', function($app) {
+                return '';
+            })
+            ->edit_column('presence', function($app) {
+                $icon = $app->presence ? 'fa fa-check' : 'fa fa-remove';
+                return '<em class="'.$icon.'"></em>';
+            })
+            ->make(true);
     }
 }

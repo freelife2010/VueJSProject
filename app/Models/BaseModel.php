@@ -37,7 +37,7 @@ class BaseModel extends Model
                            data-toggle="modal"
                            title="Edit"
                            class="btn btn-success btn-sm" >
-                            <span class="glyphicon glyphicon-pencil"></span></a>
+                            <span class="fa fa-pencil"></span></a>
                     ', URL::to($urls['edit']));
         if (!isset($exclude['delete'])) {
             $html .= sprintf('
@@ -46,7 +46,7 @@ class BaseModel extends Model
                            data-toggle="modal"
                            title="Remove"
                            class="btn btn-danger btn-sm" >
-                            <span class="glyphicon glyphicon-remove"></span></a>
+                            <span class="fa fa-remove"></span></a>
                     ', URL::to($urls['delete']));
         }
 

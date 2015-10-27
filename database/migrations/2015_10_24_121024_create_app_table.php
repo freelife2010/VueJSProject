@@ -21,7 +21,6 @@ class CreateAppTable extends Migration
             $table->boolean('presence');
             $table->string('secret');
             $table->string('token');
-            $table->longText('content');
 
             $this->createBooleanFields($table);
 

@@ -14,12 +14,8 @@
             setTimeout(function() {
                 var $create_button_div = $('#create-btn');
                 $('#create-btn-div').append($create_button_div);
-                var filter_div = $('#table_filter');
-                var $filter_input = filter_div.find('input');
-                filter_div.text('');
-                filter_div.append($filter_input);
                 $create_button_div.removeClass('hide');
-            }, 10);
+            }, 50);
         }
     }
 </script>

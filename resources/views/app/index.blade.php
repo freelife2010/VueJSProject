@@ -2,6 +2,7 @@
 @section('title')
     {{ $title }} :: @parent
 @endsection
+@include('styles.datatables')
 @section('scripts')
    @include('scripts.datatables')
     <script>
@@ -19,12 +20,15 @@
                 "columns": [
                     {data: 'id'},
                     {data: 'name'},
-                    {data: 'created_at'},
-                    {data: 'status'},
-                    {data: 'orig_ip'}
+                    {data: 'users'},
+                    {data: 'daily_active'},
+                    {data: 'weekly_active'},
+                    {data: 'monthly_active'},
+                    {data: 'presence'},
+                    {data: 'actions'}
                 ],
                 "fnDrawCallback": function() {
-                    $('.col-filter').css('width', '24.4%');
+                    $('.col-filter').css('width', '16%');
                 }
             });
         });
@@ -38,14 +42,14 @@
                 <div class="panel-body">
                     <div class="pull-right" id="create-btn">
                         <div class="pull-right">
-                            <a href="{{{ URL::to('folders/create') }}}"
-                               data-target="#mobitechModal"
+                            <a href="{{{ URL::to('app/create') }}}"
+                               data-target="#myModal"
                                data-toggle="modal"
-                               class="btn btn-lg btn-primary"><em
-                                        class="fa fa-plus-circle"></em> Create APP</a>
+                               class="btn btn-primary">
+                                    <em class="fa fa-plus-circle"></em> Create APP</a>
                         </div>
                     </div>
-                    <table id="table" class="table table-striped table-hover cursor-pointer">
+                    <table id="table" class="table table-striped table-hover cursor-pointer" width="1548px;">
                         <thead>
                         <tr>
                             <th>ID</th>

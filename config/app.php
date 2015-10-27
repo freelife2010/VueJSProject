@@ -151,7 +151,8 @@ return [
         Bican\Roles\RolesServiceProvider::class,
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
         Former\FormerServiceProvider::class,
-        'Laracasts\Flash\FlashServiceProvider'
+        'Laracasts\Flash\FlashServiceProvider',
+        yajra\Datatables\DatatablesServiceProvider::class
 
 	],
 

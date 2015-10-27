@@ -18,3 +18,7 @@
 .create-wrapper-div {
     width: 19.5%;
 }
+
+.dataTable, .dataTable th {
+    text-align: center;
+}
