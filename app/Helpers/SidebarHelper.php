@@ -12,8 +12,18 @@ namespace App\Helpers;
 use App\Models\App;
 use Request;
 
+/**
+ * This helper instantiates  with every view render of "layouts.default" layout
+ * Helper is created in app/Providers/AppServiceProvider
+ * Class SidebarHelper
+ * @package App\Helpers
+ */
 class SidebarHelper {
 
+    /**
+     * This model is taken from app/Providers/AppServiceProvider
+     * @var null
+     */
     public $model;
 
     function __construct($model = null)
@@ -26,11 +36,32 @@ class SidebarHelper {
         return count(App::getApps()->get());
     }
 
-    public function generateAppMenu()
+    public function generateDashboardAppMenu()
     {
-        $activeApp = $this->model ? $this->model->id : 0;
+        $activeApp = $this->getActiveApp();
 
-        return App::generateAppMenu($activeApp);
+        return App::generateDashboardAppMenu($activeApp);
+    }
+
+    public function generateManageAppMenu()
+    {
+        $html = '';
+        if ($this->model) {
+            $menuItems = $this->model->getManageAppMenu();
+
+            $html     .= '<li class="nav-heading ">
+                            <span data-localize="sidebar.heading.HEADER">Manage APP: '
+                            . $this->model->name .'</span>
+                          </li>';
+            foreach ($menuItems as $menuItem) {
+                $name = $menuItem['name'];
+                $icon = $menuItem['icon'];
+                $url  = $menuItem['url'];
+                $html .= $this->generateMenuItem($name, $url, $icon);
+            }
+        }
+
+        return $html;
     }
 
     public function isActive($path)
@@ -45,4 +76,26 @@ class SidebarHelper {
 
         return $path;
     }
+
+    protected function generateMenuItem($name, $url, $icon)
+    {
+        $activeApp = $this->getActiveApp();
+        return sprintf('
+                <li class="%1$s">
+                    <a href="%2$s" title="APP">
+                        <em class="%3$s"></em>
+                        <span>%4$s</span>
+                    </a>
+                </li>',
+                    $activeApp,
+                    url($url.'/'.$activeApp),
+                    $icon,
+                    $name);
+    }
+
+    protected function getActiveApp()
+    {
+       return $this->model ? $this->model->id : 0;
+    }
+
 }

@@ -18,21 +18,19 @@
                     </a>
                 </li>
                 <li class=" {{ $helper->isActive('app/dashboard') }}">
-                    <a href="#app_list" title="APP Dashboards" data-toggle="collapse">
+                    <a href="#app_list" title="APP Dashboard" data-toggle="collapse">
                         <div class="pull-right label label-info">
                             {{ $helper->getAppCount() }}
                         </div>
                         <em class="icon-speedometer"></em>
-                        <span>APP Dashboards</span>
+                        <span>APP Dashboard</span>
                     </a>
                     <ul id="app_list" class="nav sidebar-subnav collapse">
-                        <li class="sidebar-subnav-header">APP Dashboards</li>
-                        {!! $helper->generateAppMenu('app/dashboard') !!}
+                        <li class="sidebar-subnav-header">APP Dashboard</li>
+                        {!! $helper->generateDashboardAppMenu('app/dashboard') !!}
                     </ul>
                 </li>
-                <li class="nav-heading ">
-                    <span data-localize="sidebar.heading.HEADER">Manage APP</span>
-                </li>
+                {!! $helper->generateManageAppMenu() !!}
             </ul>
             <!-- END sidebar nav-->
         </nav>

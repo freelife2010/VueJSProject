@@ -140,11 +140,11 @@ class AuthController extends Controller {
 		if($user->accountIsActive($code)) {
             $this->sendEmail($user, 'confirmation');
 			\Session::flash('message', \Lang::get('auth.successActivated') );
-			return redirect('home');
+			return redirect('app/list');
 		}
 
 		\Session::flash('message', \Lang::get('auth.unsuccessful') );
-		return redirect('home');
+		return redirect('app/list');
 
 	}
 

@@ -26,6 +26,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::controller('home', 'HomeController');
     Route::controller('emails', 'EmailController');
     Route::controller('app', 'AppController');
+    Route::controller('app-users', 'AppUsersController');
+    Route::controller('app-cdr', 'AppCDRController');
 });
 
 Route::get('/resendEmail', 'Auth\AuthController@resendEmail');

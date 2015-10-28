@@ -12,7 +12,7 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-        //Adds sidebar helper to view
+        //Adds sidebar helper to every view of this layout
         app('view')->composer('layouts.default', function ($view) {
             $viewData = $view->getData();
             $model    = isset($viewData['model']) ? $viewData['model'] : null;

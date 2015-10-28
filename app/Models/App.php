@@ -48,7 +48,7 @@ class App extends BaseModel
         return $apps;
     }
 
-    public static function generateAppMenu($activeApp = '')
+    public static function generateDashboardAppMenu($activeApp = '')
     {
         $apps = App::getApps()->get();
         $html = '';
@@ -66,5 +66,31 @@ class App extends BaseModel
 
         return $html;
 
+    }
+
+    public function getManageAppMenu()
+    {
+        return [
+            [
+                'name' => 'Users',
+                'icon' => 'icon-user',
+                'url'  => 'app-users/index',
+            ],
+            [
+                'name' => 'CDR',
+                'icon' => 'icon-call-out',
+                'url'  => 'app-cdr/index',
+            ],
+            [
+                'name' => 'Number',
+                'icon' => 'icon-screen-smartphone',
+                'url'  => 'app-numbers/index',
+            ],
+            [
+                'name' => 'Conference',
+                'icon' => 'icon-earphones-alt',
+                'url'  => 'app-conference/index',
+            ],
+        ];
     }
 }
