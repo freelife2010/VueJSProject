@@ -54,7 +54,8 @@ return [
 	|
 	*/
 
-	'from' => ['address' => env('MAIL_USERNAME'), 'name' => null],
+	'from' => ['address' => env('MAIL_FROM', 'admin@admin-ui.cn'),
+               'name' => env('MAIL_FROM_NAME', 'AdminUI')],
 
 	/*
 	|--------------------------------------------------------------------------
