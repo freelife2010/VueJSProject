@@ -16,6 +16,6 @@
         </div>
     </div>
 </div>
-<div class="modal-body">
+<div class="modal-body" style="overflow: auto">
     @yield('modal_body')
 </div>

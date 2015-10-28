@@ -1,5 +1,6 @@
 <?php namespace App\Providers;
 
+use App\Helpers\SidebarHelper;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider {
@@ -11,7 +12,13 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		//
+        //Adds sidebar helper to view
+        app('view')->composer('layouts.default', function ($view) {
+            $viewData = $view->getData();
+            $model    = isset($viewData['model']) ? $viewData['model'] : null;
+            $helper   = new SidebarHelper($model);
+            $view->with(compact('helper'));
+        });
 	}
 
 	/**

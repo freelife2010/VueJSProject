@@ -29,11 +29,11 @@ class AppController extends Controller
 
     public function getDashboard($id)
     {
-        $subtitle = 'Manage APP';
-        $model    = App::find($id);
-        $title    = 'APP Dashboard: ' . $model->name;
+        $subtitle        = 'Manage APP';
+        $model           = App::find($id);
+        $title           = 'APP Dashboard: ' . $model->name;
 
-        return view('app.index', compact('title', 'subtitle', 'model'));
+        return view('app.dashboard', compact('title', 'subtitle', 'model'));
     }
 
     public function getCreate()

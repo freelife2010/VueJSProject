@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Auth;
 use DB;
+use Request;
 
 class App extends BaseModel
 {
@@ -47,19 +48,20 @@ class App extends BaseModel
         return $apps;
     }
 
-    public static function generateAppMenu()
+    public static function generateAppMenu($activeApp = '')
     {
         $apps = App::getApps()->get();
         $html = '';
 
         foreach ($apps as $app) {
             $html .= sprintf("
-            <li class=\" \">
+            <li class=\" %3\$s\">
                 <a href=\"%1\$s\" title=\"%2\$s\">
                     <span>%2\$s</span>
                 </a>
             </li>", url('app/dashboard/'.$app->id),
-                    $app->name);
+                    $app->name,
+                    $app->id == $activeApp ? "active" : '');
         }
 
         return $html;

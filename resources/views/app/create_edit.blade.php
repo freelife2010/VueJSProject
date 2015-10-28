@@ -12,7 +12,7 @@
     if (isset($model)) {
         Former::populate($model);
         $action_url   = url("app/edit/$model->id");
-        $submit_label = 'Сохранить';
+        $submit_label = 'Save';
         $edit         = true;
     }
     ?>
@@ -22,7 +22,7 @@
     </div>
     <div style="clear: both"></div>
     <br/>
-    <div class="modal-footer">
+    <div class="pull-right">
         <?= Former::actions(
                 Former::primary_button($submit_label)
                         ->type('submit')->setAttribute('data-submit', 'ajax')->id('task-submit-btn'),

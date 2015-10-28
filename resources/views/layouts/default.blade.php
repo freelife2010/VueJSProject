@@ -3,11 +3,11 @@
     @include('partials.header')
     @role('admin')
         @include('partials.admin_sidebar', ['user' => Auth::user(),
-                                            'helper' => new App\Helpers\DashboardHelper()])
+                                            'helper' => $helper])
     @endrole
     @role('developer')
         @include('partials.developer_sidebar' , ['user' => Auth::user(),
-                                                 'helper' => new App\Helpers\DashboardHelper()])
+                                                 'helper' => $helper])
     @endrole
     @include('partials.offsidebar')
     <section>
