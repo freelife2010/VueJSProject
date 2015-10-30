@@ -18,10 +18,10 @@ class CreateAppTable extends Migration
             $table->string('email');
             $table->string('password');
             $table->integer('account_id', false, true);
-            $table->boolean('presence');
-            $table->string('secret');
-            $table->string('app_uuid');
-            $table->string('token');
+            $table->boolean('presence')->default(1);
+            $table->string('secret')->default('');
+            $table->string('app_uuid')->default('');
+            $table->string('token')->default('');
 
             $this->createBooleanFields($table);
 

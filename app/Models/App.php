@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Auth;
 use DB;
-use Request;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class App extends BaseModel
 {
+    use RevisionableTrait;
+
     protected $table = 'app';
 
     protected $fillable = [
@@ -32,9 +34,6 @@ class App extends BaseModel
         ])->find($user->id);
         $this->fill((array) $user);
         $this->name = $attributes['name'];
-        $this->presence = 1;
-        $this->secret = '';
-        $this->token  = '';
 
         return $this->save();
     }

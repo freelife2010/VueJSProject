@@ -17,11 +17,11 @@ class CreateUsersTable extends Migration
             $table->string('uuid');
             $table->string('name');
             $table->string('email');
-            $table->string('phone');
+            $table->string('phone')->default('');
             $table->string('password');
             $table->integer('app_id', false, true);
-            $table->integer('last_status', false, true);
-            $table->integer('activated', false, true);
+            $table->integer('last_status', false, true)->default(1);
+            $table->integer('activated', false, true)->default(1);
             $table->string('last_ip');
             $table->timestamps();
         });
