@@ -2,12 +2,21 @@
 
 namespace App\Models;
 
+use App\Models\ApiClient\GuzzleClient;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 use Illuminate\Support\Facades\URL;
 
 class BaseModel extends Model
 {
+    use GuzzleClient;
+
+
+    function __construct()
+    {
+        $this->client = $this->createHttpClient();
+    }
+
     /**
      * Returns date in "dd.mm.YY" format
      * @param string $field DB property to use

@@ -21,7 +21,7 @@ class AppController extends Controller
 
     public function getList()
     {
-        $title = 'APP List';
+        $title    = 'APP List';
         $subtitle = 'Manage APP';
 
         return view('app.index', compact('title', 'subtitle'));
