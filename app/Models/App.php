@@ -58,7 +58,7 @@ class App extends BaseModel
                 <a href=\"%1\$s\" title=\"%2\$s\">
                     <span>%2\$s</span>
                 </a>
-            </li>", url('app/dashboard/'.$app->id),
+            </li>", url('app/dashboard/?app='.$app->id),
                     $app->name,
                     $app->id == $activeApp ? "active" : '');
         }

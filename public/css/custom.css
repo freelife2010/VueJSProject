@@ -22,3 +22,7 @@
 .dataTable, .dataTable th {
     text-align: center;
 }
+
+.manage-btn {
+    width: 10%;
+}

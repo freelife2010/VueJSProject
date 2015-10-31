@@ -11,7 +11,7 @@ class AppCDRController extends AppBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function getIndex($id)
+    public function getIndex()
     {
         //
     }

@@ -88,7 +88,7 @@ class SidebarHelper {
                     </a>
                 </li>',
                     $activeApp,
-                    url($url.'/'.$activeApp),
+                    url($url.'/?app='.$activeApp),
                     $icon,
                     $name);
     }

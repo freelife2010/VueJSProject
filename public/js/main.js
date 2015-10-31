@@ -140,6 +140,13 @@ function closeModalWindow() {
     $('#close-modal').click();
 }
 
+function getUrlParam(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 function getTableTemplate() {
     return "<'row'<'col-md-6 paging-div'l>" +
         "<'col-md-3 create-wrapper-div'<'#create-btn-div'>>" +

@@ -7,7 +7,7 @@ use App\Models\App;
 use App\Http\Requests;
 use yajra\Datatables\Facades\Datatables;
 
-class AppController extends Controller
+class AppController extends AppBaseController
 {
     /**
      * Display a listing of the resource.
@@ -27,13 +27,13 @@ class AppController extends Controller
         return view('app.index', compact('title', 'subtitle'));
     }
 
-    public function getDashboard($id)
+    public function getDashboard()
     {
-        $subtitle        = 'Manage APP';
-        $model           = App::find($id);
-        $title           = 'APP Dashboard: ' . $model->name;
+        $app      = $this->app;
+        $title    = 'APP Dashboard: ' . $app->name;
+        $subtitle = 'Manage APP';
 
-        return view('app.dashboard', compact('title', 'subtitle', 'model'));
+        return view('app.dashboard', compact('title', 'subtitle', 'app'));
     }
 
     public function getCreate()

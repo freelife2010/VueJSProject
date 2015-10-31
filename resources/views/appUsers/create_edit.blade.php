@@ -6,7 +6,7 @@
 @stop
 @section('modal_body')
     <?php
-    $action_url = url("app/create");
+    $action_url = url("app-users/create");
     $submit_label = 'Create';
     $edit = false;
     if (isset($model)) {

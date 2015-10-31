@@ -13,8 +13,7 @@ class AppBaseController extends Controller
 
     function __construct(Request $request)
     {
-        $segments  = $request->segments();
-        $appId     = (int) array_pop($segments);
+        $appId     = (int) $request->input('app');
         if ($appId != 0)
             $this->app = App::find($appId);
         else Redirect::to('')->send();
