@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AppUserRequest;
 use App\Models\AppUser;
 use yajra\Datatables\Datatables;
 
@@ -17,27 +18,27 @@ class AppUsersController extends AppBaseController
      */
     public function getIndex()
     {
-        $app      = $this->app;
-        $title    = $app->name . ': Users';
+        $APP      = $this->app;
+        $title    = $APP->name . ': Users';
         $subtitle = 'Manage users';
 
-        return view('appUsers.index', compact('app', 'title', 'subtitle'));
+        return view('appUsers.index', compact('APP', 'title', 'subtitle'));
     }
 
     public function getCreate()
     {
+        $APP   = $this->app;
         $title = 'Create new user';
 
-        return view('appUsers.create_edit', compact('title'));
+        return view('appUsers.create_edit', compact('title', 'APP'));
     }
 
-    public function postCreate(AppRequest $request)
+    public function postCreate(AppUserRequest $request)
     {
-        $result = $this->getResult(true, 'Could not create APP');
+        $result = $this->getResult(true, 'Could not create user');
 
-        $app = new App();
-        if ($app->createApp($request->input()))
-            $result = $this->getResult(false, 'App created successfully');
+        if (AppUser::create($request->input()))
+            $result = $this->getResult(false, 'User created successfully');
 
         return $result;
     }

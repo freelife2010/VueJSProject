@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\URL;
 
 class BaseModel extends Model
 {
-    use GuzzleClient;
-
 
     /**
      * Returns date in "dd.mm.YY" format

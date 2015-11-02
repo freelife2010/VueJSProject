@@ -21,9 +21,10 @@ trait GuzzleClient {
         'timeout'  => 2.5
     ];
 
-    protected function createHttpClient()
+    protected function createHttpClient($config =[])
     {
-        return new Client($this->config);
+        $config = $config ?: $this->config;
+        return new Client($config);
     }
 
     public function sendRequest($method = 'GET', $resource, $data = [])

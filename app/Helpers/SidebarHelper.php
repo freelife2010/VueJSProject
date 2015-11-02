@@ -54,10 +54,11 @@ class SidebarHelper {
                             . $this->model->name .'</span>
                           </li>';
             foreach ($menuItems as $menuItem) {
-                $name = $menuItem['name'];
-                $icon = $menuItem['icon'];
-                $url  = $menuItem['url'];
-                $html .= $this->generateMenuItem($name, $url, $icon);
+                $name  = $menuItem['name'];
+                $icon  = $menuItem['icon'];
+                $url   = $menuItem['url'];
+                $extra = $menuItem['url'];
+                $html .= $this->generateMenuItem($name, $url, $icon, $extra);
             }
         }
 

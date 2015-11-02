@@ -29,11 +29,11 @@ class AppController extends AppBaseController
 
     public function getDashboard()
     {
-        $app      = $this->app;
-        $title    = 'APP Dashboard: ' . $app->name;
+        $APP      = $this->app;
+        $title    = 'APP Dashboard: ' . $APP->name;
         $subtitle = 'Manage APP';
 
-        return view('app.dashboard', compact('title', 'subtitle', 'app'));
+        return view('app.dashboard', compact('title', 'subtitle', 'APP'));
     }
 
     public function getCreate()

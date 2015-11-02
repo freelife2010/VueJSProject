@@ -2,23 +2,30 @@
 @section('title')
     <em class="icon-plus"></em>&nbsp; {{$title}}
     <script type="text/javascript">
+        $(document).ready(function() {
+           setModalWidth(350);
+        });
     </script>
 @stop
 @section('modal_body')
     <?php
-    $action_url = url("app-users/create");
+    $action_url = url("app-users/create?app=$APP->id");
     $submit_label = 'Create';
     $edit = false;
     if (isset($model)) {
         Former::populate($model);
-        $action_url   = url("app/edit/$model->id");
+        $action_url   = url("app-users/edit/$model->id?app=$APP->id");
         $submit_label = 'Save';
         $edit         = true;
     }
     ?>
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
+        <?= Former::hidden('app_id')->value($APP->id);?>
         <?= Former::text('name')->label('Name');?>
+        <?= Former::text('password')->type('password')->label('Password');?>
+        <?= Former::text('email')->label('E-mail');?>
+        <?= Former::text('phone')->label('Phone');?>
     </div>
     <div style="clear: both"></div>
     <br/>

@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->string('uuid');
+            $table->string('uuid')->default('');
             $table->string('name');
             $table->string('email');
             $table->string('phone')->default('');
@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->integer('app_id', false, true);
             $table->integer('last_status', false, true)->default(1);
             $table->integer('activated', false, true)->default(1);
-            $table->string('last_ip');
+            $table->string('last_ip')->default('');
             $table->timestamps();
         });
     }

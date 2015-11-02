@@ -39,7 +39,7 @@
         <div class="col-lg-12">
             <div class="row">
                 <div class="col-md-1 manage-btn">
-                    <a href="{{{ URL::to('app-users/create/?app='.$app->id) }}}"
+                    <a href="{{{ URL::to('app-users/create/?app='.$APP->id) }}}"
                        data-target="#myModal"
                        data-toggle="modal"
                        class="btn btn-labeled btn-info">

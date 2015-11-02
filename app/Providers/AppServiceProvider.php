@@ -16,8 +16,8 @@ class AppServiceProvider extends ServiceProvider {
         //Adds sidebar helper to every view of this layout
         app('view')->composer('layouts.default', function ($view) {
             $viewData = $view->getData();
-            $model    = (isset($viewData['app'])
-                            and $viewData['app'] instanceof App) ? $viewData['app'] : null;
+            $model    = (isset($viewData['APP'])
+                            and $viewData['APP'] instanceof App) ? $viewData['APP'] : null;
             $helper   = new SidebarHelper($model);
             $view->with(compact('helper'));
         });
