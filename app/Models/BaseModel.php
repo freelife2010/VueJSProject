@@ -26,31 +26,40 @@ class BaseModel extends Model
         return $date;
     }
 
-    public function getDefaultActionButtons($controller_url, $urls = [], $exclude = [])
+    public function getDefaultActionButtons($controller_url, $urls = [])
     {
-        $exclude = array_flip($exclude);
-        $html    = '';
         $this->getActionUrls($urls, $controller_url);
 
-        if (!isset($exclude['edit']))
-            $html .= sprintf('
-                        <a href="%s"
-                           data-target="#myModal"
-                           data-toggle="modal"
-                           title="Edit"
-                           class="btn btn-success btn-sm" >
-                            <span class="fa fa-pencil"></span></a>
-                    ', URL::to($urls['edit']));
-        if (!isset($exclude['delete'])) {
-            $html .= sprintf('
-                        <a href="%s"
-                           data-target="#myModal"
-                           data-toggle="modal"
-                           title="Remove"
-                           class="btn btn-danger btn-sm" >
-                            <span class="fa fa-remove"></span></a>
-                    ', URL::to($urls['delete']));
-        }
+        return $this->getButtonsHtml($urls);
+    }
+
+    public function getActionButtonsWithAPP($controller, $app)
+    {
+        $urls     = [];
+        $getParam = '?app=' . $app->id;
+        $this->getActionUrls($urls, $controller, $getParam);
+
+        return $this->getButtonsHtml($urls);
+    }
+
+    protected function getButtonsHtml($urls)
+    {
+        $html = sprintf('
+                    <a href="%s"
+                       data-target="#myModal"
+                       data-toggle="modal"
+                       title="Edit"
+                       class="btn btn-success btn-sm" >
+                        <span class="fa fa-pencil"></span></a>
+                ', URL::to($urls['edit']));
+        $html .= sprintf('
+                    <a href="%s"
+                       data-target="#myModal"
+                       data-toggle="modal"
+                       title="Remove"
+                       class="btn btn-danger btn-sm" >
+                        <span class="fa fa-remove"></span></a>
+                ', URL::to($urls['delete']));
 
         return $html;
     }
@@ -75,11 +84,11 @@ class BaseModel extends Model
         return $html;
     }
 
-    protected function getActionUrls(&$urls, $controller_url) {
+    protected function getActionUrls(&$urls, $controller_url, $getParams = '') {
 
         if (empty($urls['edit']))
-            $urls['edit'] = '/'.$controller_url.'/edit/'.$this->id;
+            $urls['edit'] = '/'.$controller_url.'/edit/'.$this->id . $getParams;
         if (empty($urls['delete']))
-            $urls['delete'] = '/'.$controller_url.'/delete/'.$this->id;
+            $urls['delete'] = '/'.$controller_url.'/delete/'.$this->id . $getParams;
     }
 }

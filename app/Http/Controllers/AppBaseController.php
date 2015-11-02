@@ -20,7 +20,9 @@ class AppBaseController extends Controller
     {
         $path        = $request->getPathInfo();
         $exceptPath  = array_flip($this->getExceptPaths());
-        if (!isset($exceptPath[$path])) {
+        if (!isset($exceptPath[$path])
+        and !isset($exceptPath[dirname($path)])
+        and $request->method() != 'POST') {
             $appId     = (int) $request->input('app');
             if ($appId != 0)
                 $this->app = App::find($appId);
@@ -37,7 +39,9 @@ class AppBaseController extends Controller
         return [
             '/app/list',
             '/app/create',
-            '/app/data'
+            '/app/data',
+            '/app/edit',
+            '/app/delete',
         ];
     }
 }

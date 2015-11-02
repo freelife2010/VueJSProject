@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AppRequest;
+use App\Http\Requests\DeleteRequest;
 use App\Models\App;
 use App\Http\Requests;
+use URL;
 use yajra\Datatables\Datatables;
 
 class AppController extends AppBaseController
@@ -25,6 +27,37 @@ class AppController extends AppBaseController
         $subtitle = 'Manage APP';
 
         return view('app.index', compact('title', 'subtitle'));
+    }
+
+    public function getData()
+    {
+        $apps = App::getApps([
+            'id',
+            'name',
+            'presence']);
+
+        return Datatables::of($apps)
+            ->add_column('users', function ($app) {
+                $users = $app->users;
+                return count($users->all());
+            })
+            ->add_column('actions', function($app) {
+                return $app->getDefaultActionButtons('app');
+            })
+            ->add_column('daily_active', function($app) {
+                return '';
+            })
+            ->add_column('weekly_active', function($app) {
+                return '';
+            })
+            ->add_column('monthly_active', function($app) {
+                return '';
+            })
+            ->edit_column('presence', function($app) {
+                $icon = $app->presence ? 'fa fa-check' : 'fa fa-remove';
+                return '<em class="'.$icon.'"></em>';
+            })
+            ->make(true);
     }
 
     public function getDashboard()
@@ -73,34 +106,24 @@ class AppController extends AppBaseController
         return $result;
     }
 
-    public function getData()
+    public function getDelete($id)
     {
-        $apps = App::getApps([
-            'id',
-            'name',
-            'presence']);
+        $title = 'Delete APP ?';
+        $model = App::find($id);
+        $url   = Url::to('app/delete/'.$model->id);
+        return view('appUsers.delete', compact('title', 'model', 'url'));
+    }
 
-        return Datatables::of($apps)
-            ->add_column('users', function ($app) {
-                $users = $app->users;
-                return count($users->all());
-            })
-            ->add_column('actions', function($app) {
-                return $app->getDefaultActionButtons('app');
-            })
-            ->add_column('daily_active', function($app) {
-                return '';
-            })
-            ->add_column('weekly_active', function($app) {
-                return '';
-            })
-            ->add_column('monthly_active', function($app) {
-                return '';
-            })
-            ->edit_column('presence', function($app) {
-                $icon = $app->presence ? 'fa fa-check' : 'fa fa-remove';
-                return '<em class="'.$icon.'"></em>';
-            })
-            ->make(true);
+    public function postDelete(DeleteRequest $request, $id)
+    {
+        $result = $this->getResult(true, 'Could not delete APP');
+        $model  = App::find($id);
+        $users  = $model->users;
+        if ($users->count())
+            $result = $this->getResult(true, 'Could not delete APP: It has users');
+        elseif ($model->delete())
+            $result = $this->getResult(false, 'APP deleted');
+
+        return $result;
     }
 }

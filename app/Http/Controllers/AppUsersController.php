@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppUserRequest;
+use App\Http\Requests\DeleteRequest;
 use App\Models\AppUser;
+use URL;
 use yajra\Datatables\Datatables;
 
 class AppUsersController extends AppBaseController
@@ -45,19 +47,39 @@ class AppUsersController extends AppBaseController
 
     public function getEdit($id)
     {
-        $title = 'Edit APP';
-        $model = App::find($id);
-        return view('app.create_edit', compact('title', 'model'));
+        $title = 'Edit User';
+        $model = AppUser::find($id);
+        $APP   = $this->app;
+        return view('appUsers.create_edit', compact('title', 'model', 'APP'));
     }
 
-    public function postEdit(AppRequest $request, $id)
+    public function postEdit(AppUserRequest $request, $id)
     {
-        $result = $this->getResult(true, 'Could not edit APP');
-        $model  = App::find($id);
+        $result = $this->getResult(true, 'Could not edit user');
+        $model  = AppUser::find($id);
         if ($model->fill($request->input())
             and $model->save()
         )
-            $result = $this->getResult(false, 'App saved successfully');
+            $result = $this->getResult(false, 'User saved successfully');
+
+        return $result;
+    }
+
+    public function getDelete($id)
+    {
+        $title = 'Delete user ?';
+        $model = AppUser::find($id);
+        $APP   = $this->app;
+        $url   = Url::to('app-users/delete/'.$model->id);
+        return view('appUsers.delete', compact('title', 'model', 'APP', 'url'));
+    }
+
+    public function postDelete(DeleteRequest $request, $id)
+    {
+        $result = $this->getResult(true, 'Could not delete user');
+        $model  = AppUser::find($id);
+        if ($model->delete())
+            $result = $this->getResult(false, 'User deleted');
 
         return $result;
     }
@@ -73,7 +95,7 @@ class AppUsersController extends AppBaseController
 
         return Datatables::of($users)
             ->add_column('actions', function($app) {
-                return $app->getDefaultActionButtons('app');
+                return $app->getActionButtonsWithAPP('app-users', $this->app);
             })
             ->make(true);
     }
