@@ -1,4 +1,5 @@
-<?
+<?php
+
 namespace App\Providers;
 
 use Dingo\Api\Auth\Auth;
@@ -7,6 +8,11 @@ use Illuminate\Support\ServiceProvider;
 
 class OAuthServiceProvider extends ServiceProvider
 {
+    /**
+     * Bootstrap the application services.
+     *
+     * @return void
+     */
     public function boot()
     {
         $this->app[Auth::class]->extend('oauth', function ($app) {
@@ -24,6 +30,11 @@ class OAuthServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
     public function register()
     {
         //
