@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AppRequest;
 use App\Models\App;
 use App\Http\Requests;
-use yajra\Datatables\Facades\Datatables;
+use yajra\Datatables\Datatables;
 
 class AppController extends AppBaseController
 {
