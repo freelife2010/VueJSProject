@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use App\Helpers\BillingTrait;
 use Hash;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Bican\Roles\Contracts\HasRoleAndPermission as HasRoleAndPermissionContract;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract, HasRoleAndPermissionContract {
 
-	use Authenticatable, CanResetPassword, HasRoleAndPermission;
+	use Authenticatable, CanResetPassword, HasRoleAndPermission, BillingTrait;
 
 	/**
 	 * The database table used by the model.
@@ -54,6 +55,32 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function getFullNameAttribute()
     {
         return $this->first_name. ' ' . $this->last_name;
+    }
+
+    /**
+     * Inserts current user to Billing DB
+     */
+    public function addToBillingDB()
+    {
+        $currencyId = $this->selectFromBillingDB("
+                            select currency_id
+                            from currency where code = ?", ['USA']);
+        if (isset($currencyId[0]))
+            $currencyId = $currencyId[0]->currency_id;
+        else return false;
+        $cliendId   = $this->insertGetIdToBillingDB("
+                            insert into client
+                            (name,currency_id,unlimited_credit,mode,enough_balance)
+                            values (?,?,?,?,?) RETURNING client_id",
+                                [$this->email, $currencyId, true, 2, true]);
+        if (isset($cliendId[0]))
+            $cliendId = $cliendId[0]->client_id;
+        $this->insertToBillingDB("
+                    insert into client_balance (client_id,balance,ingress_balance)
+                    values (?,?,?)",
+                        [$cliendId, 0, 0]);
+
+        return $cliendId;
     }
 	
 }

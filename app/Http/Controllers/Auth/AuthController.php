@@ -3,7 +3,6 @@
 use App\Http\Controllers\Controller;
 use App\Models\Email;
 use Bican\Roles\Models\Role;
-use Hash;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 use Illuminate\Http\Request;
@@ -83,6 +82,7 @@ class AuthController extends Controller {
         $user->resent          = 0;
 
 		if ($user->save()) {
+            $user->addToBillingDB();
             $role = Role::whereSlug('developer')->first();
             $user->attachRole($role);
 			$this->sendEmail($user, 'authorization');

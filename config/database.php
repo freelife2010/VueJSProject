@@ -66,14 +66,24 @@ return [
 
 		'pgsql' => [
 			'driver'   => 'pgsql',
-			'host'     => env('DB_HOST', 'localhost'),
-			'database' => env('DB_DATABASE', 'forge'),
-			'username' => env('DB_USERNAME', 'forge'),
+			'host'     => env('DB_HOST', '108.165.2.110'),
+			'database' => env('DB_DATABASE', 'class4'),
+			'username' => env('DB_USERNAME', 'postgres'),
 			'password' => env('DB_PASSWORD', ''),
 			'charset'  => 'utf8',
 			'prefix'   => '',
 			'schema'   => 'public',
 		],
+        'billing' => [
+            'driver'   => 'pgsql',
+            'host'     => env('BILLING_HOST', 'localhost'),
+            'database' => env('BILLING_DATABASE', 'forge'),
+            'username' => env('BILLING_USERNAME', 'forge'),
+            'password' => env('BILLING_PASSWORD', ''),
+            'charset'  => 'utf8',
+            'prefix'   => '',
+            'schema'   => 'public',
+        ],
 
 		'sqlsrv' => [
 			'driver'   => 'sqlsrv',
