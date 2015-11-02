@@ -15,7 +15,7 @@ class Kernel extends HttpKernel {
 		'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse',
 		'Illuminate\Session\Middleware\StartSession',
 		'Illuminate\View\Middleware\ShareErrorsFromSession',
-		'App\Http\Middleware\VerifyCsrfToken',
+        \LucaDegasperi\OAuth2Server\Middleware\OAuthExceptionHandlerMiddleware::class
 	];
 
 	/**
@@ -23,13 +23,18 @@ class Kernel extends HttpKernel {
 	 *
 	 * @var array
 	 */
-	protected $routeMiddleware = [
-        'auth'       => 'App\Http\Middleware\Authenticate',
-        'auth.basic' => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
-        'guest'      => 'App\Http\Middleware\RedirectIfAuthenticated',
-        'role'       => \Bican\Roles\Middleware\VerifyRole::class,
-        'permission' => \Bican\Roles\Middleware\VerifyPermission::class,
-        'admin'      => \App\Http\Middleware\Admin::class,
-	];
+    protected $routeMiddleware = [
+        'auth'                       => 'App\Http\Middleware\Authenticate',
+        'auth.basic'                 => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
+        'guest'                      => 'App\Http\Middleware\RedirectIfAuthenticated',
+        'csrf'                       => \App\Http\Middleware\VerifyCsrfToken::class,
+        'role'                       => \Bican\Roles\Middleware\VerifyRole::class,
+        'permission'                 => \Bican\Roles\Middleware\VerifyPermission::class,
+        'admin'                      => \App\Http\Middleware\Admin::class,
+        'oauth'                      => \LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware::class,
+        'oauth-user'                 => \LucaDegasperi\OAuth2Server\Middleware\OAuthUserOwnerMiddleware::class,
+        'oauth-client'               => \LucaDegasperi\OAuth2Server\Middleware\OAuthClientOwnerMiddleware::class,
+        'check-authorization-params' => \LucaDegasperi\OAuth2Server\Middleware\CheckAuthCodeRequestMiddleware::class
+    ];
 
 }

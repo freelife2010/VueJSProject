@@ -152,7 +152,12 @@ return [
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
         Former\FormerServiceProvider::class,
         'Laracasts\Flash\FlashServiceProvider',
-        yajra\Datatables\DatatablesServiceProvider::class
+        yajra\Datatables\DatatablesServiceProvider::class,
+        Dingo\Api\Provider\LaravelServiceProvider::class,
+        LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider::class,
+        LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class,
+        App\Providers\OAuthServiceProvider::class
+
 
 	],
 
@@ -203,7 +208,10 @@ return [
 		'URL'       => 'Illuminate\Support\Facades\URL',
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'       => 'Illuminate\Support\Facades\View',
-        'Datatables' => yajra\Datatables\Datatables::class
+        'Datatables' => yajra\Datatables\Datatables::class,
+        'API'        => Dingo\Api\Facade\API::class,
+        'APIRoute'   => Dingo\Api\Facade\Route::class,
+        'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
 
 	],
 

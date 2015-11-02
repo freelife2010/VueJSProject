@@ -19,9 +19,8 @@ Route::controllers([
     'password' => 'Auth\PasswordController'
 ]);
 
-Route::resource('api', 'ApiController');
 
-Route::group(['middleware' => 'auth'], function() {
+Route::group(['middleware' => ['auth', 'csrf']], function() {
     Route::get('/', 'HomeController@getIndex');
     Route::controller('home', 'HomeController');
     Route::controller('emails', 'EmailController');
@@ -36,4 +35,13 @@ Route::get('/activate/{code}', 'Auth\AuthController@activateAccount');
 
 Route::group(['middleware' => 'admin'], function() {
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+});
+
+
+//API Routes
+
+$api = app('Dingo\Api\Routing\Router');
+
+$api->version('v1', ['middleware' => 'api.auth'], function ($api) {
+    $api->resource('users', 'App\API\Controllers\UserController');
 });
