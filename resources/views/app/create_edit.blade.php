@@ -19,6 +19,7 @@
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
         <?= Former::text('name')->label('Name');?>
+        <?= Former::text('alias')->label('Alias');?>
     </div>
     <div style="clear: both"></div>
     <br/>

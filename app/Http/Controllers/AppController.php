@@ -93,7 +93,7 @@ class AppController extends AppBaseController
         $app = new App();
         if ($app->createApp($request->input())) {
             $result = $this->getResult(false, 'App created successfully');
-            $this->dispatch(new StoreAPPToBillingDB($app));
+//            $this->dispatch(new StoreAPPToBillingDB($app));
         }
 
         return $result;

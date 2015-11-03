@@ -14,6 +14,7 @@ class App extends BaseModel
 
     protected $fillable = [
         'name',
+        'alias',
         'email',
         'password',
         'account_id'
@@ -33,7 +34,8 @@ class App extends BaseModel
             'id AS account_id'
         ])->find($user->id);
         $this->fill((array) $user);
-        $this->name = $attributes['name'];
+        $this->name  = $attributes['name'];
+        $this->alias = $attributes['alias'];
 
         return $this->save();
     }
