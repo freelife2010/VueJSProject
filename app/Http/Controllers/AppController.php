@@ -81,8 +81,9 @@ class AppController extends AppBaseController
         $result = $this->getResult(true, 'Could not create APP');
 
         $app = new App();
-        if ($app->createApp($request->input()))
+        if ($app->createApp($request->input())) {
             $result = $this->getResult(false, 'App created successfully');
+        }
 
         return $result;
     }

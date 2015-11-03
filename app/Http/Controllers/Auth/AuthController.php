@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\StoreDeveloperToBillingDB;
 use App\Models\Email;
 use Bican\Roles\Models\Role;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -82,7 +83,7 @@ class AuthController extends Controller {
         $user->resent          = 0;
 
 		if ($user->save()) {
-            $user->addToBillingDB();
+            $this->dispatch(new StoreDeveloperToBillingDB($user));
             $role = Role::whereSlug('developer')->first();
             $user->attachRole($role);
 			$this->sendEmail($user, 'authorization');

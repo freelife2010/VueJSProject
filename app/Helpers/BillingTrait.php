@@ -33,13 +33,17 @@ trait BillingTrait {
         return $this->getDB()->insert($query, $params);
     }
 
-    protected function insertGetIdToBillingDB($query, $params = [])
+    protected function insertGetIdToBillingDB($query, $params = [], $return_id)
     {
         $pdo         = $this->getDB()->getPdo();
         $queryHandle = $pdo->prepare($query);
         $queryHandle->execute($params);
+        $result      = $queryHandle->fetchAll(PDO::FETCH_OBJ);
+        if (isset($result[0]))
+            $cliendId = $result[0]->$return_id;
+        else $cliendId = false;
 
-        return $queryHandle->fetchAll(PDO::FETCH_OBJ);
+        return $cliendId;
     }
 
 
@@ -51,5 +55,17 @@ trait BillingTrait {
     protected function deleteFromBillingDB($query, $params = [])
     {
         return $this->getDB()->delete($query, $params);
+    }
+
+    protected function getCurrencyIdFromBillingDB()
+    {
+        $currencyId = $this->selectFromBillingDB("
+                            select currency_id
+                            from currency where code = ?", ['USA']);
+        if (isset($currencyId[0]))
+            $currencyId = $currencyId[0]->currency_id;
+        else $currencyId = false;
+
+        return $currencyId;
     }
 }
