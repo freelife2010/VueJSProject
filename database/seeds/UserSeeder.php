@@ -12,7 +12,7 @@ class UserSeeder extends Seeder {
     public function run() {
         User::create([
             'name'     => 'Admin',
-            'email'    => 'admin@admin-ui.cn',
+            'email'    => 'admin@portal.dev',
             'password' => 'admin',
             'active'   => true,
             'resent'   => 0
@@ -20,7 +20,7 @@ class UserSeeder extends Seeder {
 
         User::create([
             'name'     => 'Developer',
-            'email'    => 'developer@admin-ui.cn',
+            'email'    => 'developer@portal.dev',
             'password' => 'user',
             'active'   => true,
             'resent'   => 0

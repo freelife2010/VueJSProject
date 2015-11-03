@@ -9,6 +9,7 @@
 namespace App\Helpers;
 
 
+use Auth;
 use DB;
 use PDO;
 
@@ -67,5 +68,17 @@ trait BillingTrait {
         else $currencyId = false;
 
         return $currencyId;
+    }
+
+    protected function getCurrentUserIdFromBillingDB()
+    {
+        $user   = Auth::user();
+        $result = $this->selectFromBillingDB('select client_id from client where name = ?',
+                                [$user->email]);
+        if (isset($result[0]))
+            $clientId = $result[0]->client_id;
+        else $clientId = false;
+
+        return $clientId;
     }
 }
