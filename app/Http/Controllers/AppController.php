@@ -82,8 +82,8 @@ class AppController extends AppBaseController
     public function getCheckBilling()
     {
         $currencyId = $this->getCurrencyIdFromBillingDB();
-
-        return $currencyId;
+        $clientId   = $this->getCurrentUserIdFromBillingDB();
+        return ['currencyId' => $currencyId, 'currentClientId' => $clientId];
     }
 
     public function postCreate(AppRequest $request)
