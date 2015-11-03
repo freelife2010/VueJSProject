@@ -74,7 +74,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
     {
         $routeStrategyId = $this->insertGetIdToBillingDB("
                                     insert into route_strategy (name)
-                                    value (?) RETURNING route_strategy_id",
+                                    values (?) RETURNING route_strategy_id",
                                     [$this->app->name], 'route_strategy_id');
 
         return $routeStrategyId;

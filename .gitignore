@@ -4,6 +4,7 @@
 .buildpath
 .project
 .settings/
+.env
 composer.lock
 /.idea
 /angle_theme
