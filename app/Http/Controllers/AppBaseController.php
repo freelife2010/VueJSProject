@@ -42,6 +42,7 @@ class AppBaseController extends Controller
             '/app/data',
             '/app/edit',
             '/app/delete',
+            '/app/check-billing',
         ];
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\BillingTrait;
 use App\Http\Requests\AppRequest;
 use App\Http\Requests\DeleteRequest;
+use App\Jobs\StoreAPPToBillingDB;
 use App\Models\App;
 use App\Http\Requests;
 use URL;
@@ -11,6 +13,7 @@ use yajra\Datatables\Datatables;
 
 class AppController extends AppBaseController
 {
+    use BillingTrait;
     /**
      * Display a listing of the resource.
      *
@@ -76,6 +79,13 @@ class AppController extends AppBaseController
         return view('app/create_edit', compact('title'));
     }
 
+    public function getCheckBilling()
+    {
+        $currencyId = $this->getCurrencyIdFromBillingDB();
+
+        return $currencyId;
+    }
+
     public function postCreate(AppRequest $request)
     {
         $result = $this->getResult(true, 'Could not create APP');
@@ -83,6 +93,7 @@ class AppController extends AppBaseController
         $app = new App();
         if ($app->createApp($request->input())) {
             $result = $this->getResult(false, 'App created successfully');
+            $this->dispatch(new StoreAPPToBillingDB($app));
         }
 
         return $result;
