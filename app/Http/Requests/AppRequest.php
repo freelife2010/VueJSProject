@@ -25,7 +25,7 @@ class AppRequest extends Request
     {
         return [
             'name'  => 'required',
-            'alias' => 'required|unique'
+            'alias' => 'required|unique:app'
         ];
     }
 }

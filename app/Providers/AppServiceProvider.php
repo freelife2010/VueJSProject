@@ -3,6 +3,7 @@
 use App\Helpers\SidebarHelper;
 use App\Models\App;
 use Illuminate\Support\ServiceProvider;
+use Queue;
 
 class AppServiceProvider extends ServiceProvider {
 
@@ -20,6 +21,10 @@ class AppServiceProvider extends ServiceProvider {
                             and $viewData['APP'] instanceof App) ? $viewData['APP'] : null;
             $helper   = new SidebarHelper($model);
             $view->with(compact('helper'));
+        });
+
+        Queue::failing(function ($connection, $job, $data) {
+            $job->delete();
         });
 	}
 

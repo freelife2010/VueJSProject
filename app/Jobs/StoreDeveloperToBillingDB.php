@@ -42,7 +42,5 @@ class StoreDeveloperToBillingDB extends Job implements SelfHandling, ShouldQueue
                     insert into client_balance (client_id,balance,ingress_balance)
                     values (?,?,?)",
             [$cliendId, 0, 0]);
-
-        return $cliendId;
     }
 }

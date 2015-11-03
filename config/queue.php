@@ -33,12 +33,15 @@ return [
 
 		'sync' => [
 			'driver' => 'sync',
+            'table'  => 'jobs',
+            'queue'  => 'default',
+            'expire' => 120,
 		],
         'async'    => [
             'driver' => 'async',
             'table'  => 'jobs',
             'queue'  => 'default',
-            'expire' => 60,
+            'expire' => 120,
         ],
         'database' => [
 			'driver' => 'database',

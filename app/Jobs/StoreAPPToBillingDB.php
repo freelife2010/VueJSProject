@@ -34,17 +34,16 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
     {
         $currencyId  = $this->getCurrencyIdFromBillingDB();
         $rateTableId = $this->insertGetIdToBillingDB('
-                                insert into rate_table
-                                (name,currency_id)
-                                values (?,?)  RETURNING rate_table_id',
-                        [$this->app->name, $currencyId], 'rate_table_id');
+                            insert into rate_table
+                            (name,currency_id)
+                            values (?,?)  RETURNING rate_table_id',
+            [$this->app->name, $currencyId], 'rate_table_id');
 
         $this->createRates($rateTableId);
 
         $resourceId      = $this->createResource($rateTableId);
         $routeStrategyId = $this->createRouteStrategy();
         $this->createProducts($resourceId, $routeStrategyId);
-
     }
 
     private function createRates($rateTableId)
@@ -97,5 +96,10 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
         $this->insertToBillingDB("
                   INSERT INTO route(digits, static_route_id, route_type, route_strategy_id)
                   VALUES('', ?, 2, ?)", [$productId, $routeStrategyId]);
+    }
+
+    public function failed()
+    {
+        $this->delete();
     }
 }
