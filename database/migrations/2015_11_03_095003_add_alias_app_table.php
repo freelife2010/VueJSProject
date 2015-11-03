@@ -16,7 +16,7 @@ class AddAliasAppTable extends Migration
         {
             Schema::table('app', function($table)
             {
-                $table->string('alias')->default('');
+                $table->string('alias')->unique();
             });
         }
     }
