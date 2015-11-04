@@ -6,6 +6,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppUserRequest;
 use App\Http\Requests\DeleteRequest;
+use App\Jobs\StoreAPPUserToBillingDB;
 use App\Models\AppUser;
 use URL;
 use yajra\Datatables\Datatables;
@@ -39,8 +40,10 @@ class AppUsersController extends AppBaseController
     {
         $result = $this->getResult(true, 'Could not create user');
 
-        if (AppUser::create($request->input()))
+        if ($user = AppUser::create($request->input())) {
             $result = $this->getResult(false, 'User created successfully');
+            $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
+        }
 
         return $result;
     }

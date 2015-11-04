@@ -23,10 +23,16 @@ class AppUserRequest extends Request
      */
     public function rules()
     {
-        return [
+        $id    = $this->request->get("id");
+        $rules = [
             'name'     => 'required',
             'password' => 'required|min:6',
-            'email'    => 'email'
+            'email'    => 'email|unique:users'
         ];
+
+        if ($id)
+            $rules['email'] = 'sometimes|required|unique:users,email,' . $id;
+
+        return $rules;
     }
 }

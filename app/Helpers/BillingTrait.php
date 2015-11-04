@@ -41,10 +41,10 @@ trait BillingTrait {
         $queryHandle->execute($params);
         $result      = $queryHandle->fetchAll(PDO::FETCH_OBJ);
         if (isset($result[0]))
-            $cliendId = $result[0]->$return_id;
-        else $cliendId = false;
+            $id = $result[0]->$return_id;
+        else $id = false;
 
-        return $cliendId;
+        return $id;
     }
 
 

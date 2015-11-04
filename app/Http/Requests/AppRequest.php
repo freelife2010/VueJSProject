@@ -24,7 +24,7 @@ class AppRequest extends Request
     public function rules()
     {
         return [
-            'name'  => 'required',
+            'name'  => 'required|unique:app',
             'alias' => 'required|unique:app'
         ];
     }

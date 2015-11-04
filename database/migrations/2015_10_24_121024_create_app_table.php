@@ -14,7 +14,7 @@ class CreateAppTable extends Migration
     {
         Schema::create('app', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('email');
             $table->string('password');
             $table->integer('account_id', false, true);

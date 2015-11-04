@@ -1,9 +1,11 @@
 @extends('partials.modal')
 @section('title')
     <em class="icon-plus"></em>&nbsp; {{$title}}
+    <script src="{{asset('vendor/jquery.inputmask/dist/jquery.inputmask.bundle.min.js')}}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-           setModalWidth(350);
+            setModalWidth(350);
+            $('#phone').inputmask('+9 (999) 999-99-99')
         });
     </script>
 @stop
@@ -22,6 +24,7 @@
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
         <?= Former::hidden('app_id')->value($APP->id);?>
+        <?= Former::hidden('id');?>
         <?= Former::text('name')->label('Name');?>
         <?= Former::text('password')->type('password')->label('Password');?>
         <?= Former::text('email')->label('E-mail');?>

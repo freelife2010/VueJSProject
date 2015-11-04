@@ -12,6 +12,8 @@
 */
 
 
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
+
 Route::pattern('id', '[0-9]+');
 
 Route::controllers([
@@ -44,4 +46,9 @@ $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->resource('users', 'App\API\Controllers\UserController');
+});
+
+Route::get('oauth/access_token', function(\Illuminate\Http\Request $request) {
+    $input = $request->all();
+    return Response::json(Authorizer::issueAccessToken());
 });
