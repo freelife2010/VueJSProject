@@ -44,11 +44,15 @@ Route::group(['middleware' => 'admin'], function() {
 
 $api = app('Dingo\Api\Routing\Router');
 
+$api->version('v1',  function ($api) {
+    $api->resource('accounts', 'App\API\Controllers\AccountController');
+});
+
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->resource('users', 'App\API\Controllers\UserController');
 });
 
-Route::get('oauth/access_token', function(\Illuminate\Http\Request $request) {
-    $input = $request->all();
+//Grants access token
+Route::post('api/token', function(\Illuminate\Http\Request $request) {
     return Response::json(Authorizer::issueAccessToken());
 });

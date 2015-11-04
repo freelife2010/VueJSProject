@@ -25,6 +25,11 @@ class App extends BaseModel
         return $this->hasMany('App\Models\AppUser', 'app_id');
     }
 
+    public function key()
+    {
+        return $this->hasOne('App\Models\AppKey', 'app_id');
+    }
+
     public function createApp($attributes)
     {
         $user = Auth::user();

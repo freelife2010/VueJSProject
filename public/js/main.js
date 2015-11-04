@@ -136,6 +136,10 @@ function goToPage(url) {
     window.location.href = url;
 }
 
+function reloadPage() {
+    window.location.reload();
+}
+
 function closeModalWindow() {
     $('#close-modal').click();
 }

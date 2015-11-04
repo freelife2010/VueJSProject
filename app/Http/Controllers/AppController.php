@@ -8,6 +8,8 @@ use App\Http\Requests\DeleteRequest;
 use App\Jobs\StoreAPPToBillingDB;
 use App\Models\App;
 use App\Http\Requests;
+use App\Models\AppKey;
+use Illuminate\Http\Request;
 use URL;
 use yajra\Datatables\Datatables;
 
@@ -135,6 +137,45 @@ class AppController extends AppBaseController
             $result = $this->getResult(true, 'Could not delete APP: It has users');
         elseif ($model->delete())
             $result = $this->getResult(false, 'APP deleted');
+
+        return $result;
+    }
+
+    public function getGenerateKeys()
+    {
+        $model  = $this->app;
+        $appKey = $this->app->key;
+        $title  = 'Generate APP API keys';
+
+        return view('app.generate_keys', compact('model', 'title', 'appKey'));
+    }
+
+    public function postGenerateKeys(Request $request)
+    {
+        $this->validate($request, [
+            'expire_days' => 'required|numeric'
+        ]);
+        $result     = $this->getResult(true, 'Could not generate APP keys');
+        $appKey     = new AppKey();
+        $app        = App::find($request->input('app_id'));
+        $expireDays = $request->input('expire_days');
+        if ($appKey->generateKeys($app, $expireDays))
+            $result = $this->getResult(false, 'App keys has been generated');
+
+        return $result;
+    }
+
+    public function postRegenerateKeys($id, Request $request)
+    {
+        $this->validate($request, [
+            'expire_days' => 'required|numeric'
+        ]);
+        $result     = $this->getResult(true, 'Could not generate APP keys');
+        $appKey     = AppKey::find($id);
+        $app        = App::find($request->input('app_id'));
+        $expireDays = $request->input('expire_days');
+        if ($appKey->generateKeys($app, $expireDays))
+            $result = $this->getResult(false, 'App keys has been regenerated');
 
         return $result;
     }

@@ -29,10 +29,9 @@ return [
     'database' => 'default',
 
     'grant_types' => [
-        'password' => [
-            'class' => '\League\OAuth2\Server\Grant\PasswordGrant',
-            'callback' => '\App\API\PasswordVerifier@verify',
-            'access_token_ttl' => 3600
+        'client_credentials' => [
+            'class' => '\App\API\AppCredentialsGrant',
+            'access_token_ttl' => 86400
         ]
     ],
 

@@ -213,6 +213,7 @@ return [
         'API'        => Dingo\Api\Facade\API::class,
         'APIRoute'   => Dingo\Api\Facade\Route::class,
         'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
+        'Uuid'       => 'Webpatser\Uuid\Uuid'
 
 	],
 
