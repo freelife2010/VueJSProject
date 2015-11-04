@@ -18,6 +18,7 @@
     ?>
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
+        <?= Former::hidden('id');?>
         <?= Former::text('name')->label('Name');?>
         <?= Former::text('alias')->label('Alias');?>
     </div>
