@@ -47,7 +47,7 @@ class PublicAPIController extends Controller{
                 'duration'   => App::APP_KEYS_EXPIRE_DAYS,
             ];
 
-            return $this->response->array($response);
+            return $this->defaultResponse($request, $response);
         }
     }
 

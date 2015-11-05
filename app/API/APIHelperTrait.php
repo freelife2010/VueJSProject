@@ -9,6 +9,7 @@
 namespace App\API;
 
 
+use Dingo\Api\Http\Request;
 use Validator;
 
 trait APIHelperTrait {
@@ -22,5 +23,18 @@ trait APIHelperTrait {
     protected function validationFailed($validator)
     {
         return $this->response->errorBadRequest(implode(' ',$validator->errors()->all()));
+    }
+
+    protected function defaultResponse($request, $params)
+    {
+        $defaultParams = [
+            'action' => $request->getMethod(),
+            'path'   => dirname($request->getPathInfo()),
+            'uri'    => $request->getUri(),
+            'params' => [],
+            'timestamp' => time()
+        ];
+
+        return $this->response->array(array_merge($params, $defaultParams));
     }
 }
