@@ -11,15 +11,18 @@ class StoreAPPToChatServer extends Job implements SelfHandling
 {
     use GuzzleClient;
     protected $app;
+    protected $user;
 
     /**
      * Create a new job instance.
      *
      * @param $app
+     * @param null $user
      */
-    public function __construct($app)
+    public function __construct($app, $user = null)
     {
-        $this->app = $app;
+        $this->app  = $app;
+        $this->user = $user ?: Auth::user();
     }
 
     /**
@@ -30,7 +33,7 @@ class StoreAPPToChatServer extends Job implements SelfHandling
     public function handle()
     {
         $name     = $this->app->name;
-        $owner    = Auth::user()->email;
+        $owner    = $this->user->email;
         $this->createHttpClient();
         $response = $this->sendRequest("company/$name/$owner");
     }

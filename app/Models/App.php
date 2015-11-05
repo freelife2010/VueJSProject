@@ -8,6 +8,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class App extends BaseModel
 {
+    const APP_KEYS_EXPIRE_DAYS = 5;
     use RevisionableTrait;
 
     protected $table = 'app';
@@ -30,19 +31,21 @@ class App extends BaseModel
         return $this->hasOne('App\Models\AppKey', 'app_id');
     }
 
-    public function createApp($attributes)
+    public function createApp($attributes, $user = null)
     {
-        $user = Auth::user();
+        $user = $user ?: Auth::user();
         $user = DB::table('accounts')->select([
             'email',
             'password',
             'id AS account_id'
         ])->find($user->id);
-        $this->fill((array) $user);
+        $this->fill((array)$user);
         $this->name  = $attributes['name'];
         $this->alias = $attributes['alias'];
+        $appKey      = new AppKey();
+        $expireDays  = self::APP_KEYS_EXPIRE_DAYS;
 
-        return $this->save();
+        return ($this->save() and $appKey->generateKeys($this, $expireDays));
     }
 
     public static function getApps($fields = [])

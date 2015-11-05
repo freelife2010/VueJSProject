@@ -70,9 +70,9 @@ trait BillingTrait {
         return $currencyId;
     }
 
-    protected function getCurrentUserIdFromBillingDB()
+    protected function getCurrentUserIdFromBillingDB($user = null)
     {
-        $user   = Auth::user();
+        $user   = $user ?: Auth::user();
         $result = $this->selectFromBillingDB('select client_id from client where name = ?',
                                 [$user->email]);
         if (isset($result[0]))

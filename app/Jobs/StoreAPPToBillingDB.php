@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Helpers\BillingTrait;
 use App\Jobs\Job;
+use Auth;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
@@ -14,15 +15,18 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
     use InteractsWithQueue, SerializesModels, BillingTrait;
 
     protected $app;
+    protected $user;
 
     /**
      * Create a new job instance.
      *
      * @param $app
+     * @param null $user
      */
-    public function __construct($app)
+    public function __construct($app, $user = null)
     {
-        $this->app = $app;
+        $this->app  = $app;
+        $this->user = $user ?: Auth::user();
     }
 
     /**
@@ -58,7 +62,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
 
     private function createResource($rateTableId)
     {
-        $clientId   = $this->getCurrentUserIdFromBillingDB();
+        $clientId   = $this->getCurrentUserIdFromBillingDB($this->user);
         $resourceId = $this->insertGetIdToBillingDB("
                               insert into resource
                               (alias,client_id,rate_table_id,ingress,egress,enough_balance,media_type)
