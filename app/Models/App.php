@@ -83,11 +83,6 @@ class App extends BaseModel
                 'url'  => 'app-users/index',
             ],
             [
-                'name' => 'CDR',
-                'icon' => 'icon-call-out',
-                'url'  => 'app-cdr/index',
-            ],
-            [
                 'name' => 'Number',
                 'icon' => 'icon-screen-smartphone',
                 'url'  => 'app-numbers/index',

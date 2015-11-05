@@ -31,7 +31,7 @@
         <?= Former::hidden('app_id')->value($model->id);?>
         <?= Former::text('id')->disabled();?>
         <?= Former::text('secret')->disabled();?>
-        <?= Former::text('expire_days')->label('Expired in (days)')->value(5);?>
+        <?= Former::text('expire_days')->label('Expires in (days)')->value(5);?>
     </div>
     <div style="clear: both"></div>
     <br/>
