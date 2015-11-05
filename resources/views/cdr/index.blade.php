@@ -18,13 +18,15 @@
                 "ajax": "{{ URL::to('cdr/data/') }}",
                 "columns": [
                     {data: 'session_id', name: 'session_id'},
-                    {data: 'origination_source_number', name: 'origination_source_number'},
-                    {data: 'origination_source_host_name', name: 'origination_source_host_name'},
-                    {data: 'origination_destination_number', name: 'origination_destination_number'},
-                    {data: 'origination_destination_host_name', name: 'origination_destination_host_name'},
-                    {data: 'origination_call_id', name: 'origination_call_id'},
                     {data: 'start_time_of_date', name: 'start_time_of_date'},
-                    {data: 'release_tod', name: 'release_tod'}
+                    {data: 'release_tod', name: 'release_tod'},
+                    {data: 'ani_code_id', name: 'ani_code_id'},
+                    {data: 'dnis_code_id', name: 'dnis_code_id'},
+                    {data: 'call_duration', name: 'call_duration'},
+                    {data: 'agent_rate', name: 'agent_rate'},
+                    {data: 'agent_cost', name: 'agent_cost'},
+                    {data: 'origination_source_number', name: 'origination_source_number'},
+                    {data: 'origination_destination_number', name: 'origination_destination_number'}
                 ],
                 "fnDrawCallback": function() {
                     $('.col-filter').css('width', '16%');
@@ -58,13 +60,15 @@
                         <thead>
                         <tr>
                             <th>Session ID</th>
-                            <th>Source Number</th>
-                            <th>Source Host</th>
-                            <th>Destination Number</th>
-                            <th>Destination Host</th>
-                            <th>Call ID</th>
                             <th>Start time</th>
-                            <th>Release time</th>
+                            <th>End time</th>
+                            <th>ANI</th>
+                            <th>DNIS</th>
+                            <th>Duration</th>
+                            <th>Rate</th>
+                            <th>Cost</th>
+                            <th>Source Number</th>
+                            <th>Destination Number</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
