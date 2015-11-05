@@ -44,10 +44,6 @@ Route::group(['middleware' => 'admin'], function() {
 
 $api = app('Dingo\Api\Routing\Router');
 
-$api->version('v1',  function ($api) {
-    $api->resource('accounts', 'App\API\Controllers\AccountController');
-});
-
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->resource('users', 'App\API\Controllers\UserController');
 });
