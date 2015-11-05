@@ -15,7 +15,13 @@
                 "processing": true,
                 "serverSide": true,
                 "order": [[ 2, "desc" ]],
-                "ajax": "{{ URL::to('app-cdr/data/?app='.$APP->id) }}",
+                "ajax": {
+                    url : "{{ URL::to('app-cdr/data/?app='.$APP->id) }}",
+                    type: "GET",
+                    data : function (d) {
+                        d.call_type = $('#call_type').val();
+                    }
+                },
                 "columns": [
                     {data: 'session_id', name: 'session_id'},
                     {data: 'start_time_of_date', name: 'start_time_of_date'},
@@ -31,6 +37,7 @@
                 "fnDrawCallback": function() {
                     $('.col-filter').css('width', '16%');
                     bindRowEvents();
+                    setCallTypeEvents();
                 }
             });
         });
@@ -47,6 +54,13 @@
             });
         }
 
+        function setCallTypeEvents()
+        {
+            $('#call_type').change(function() {
+                oTable.ajax.reload();
+            });
+        }
+
     </script>
 @endsection
 @section('subtitle') {{ $subtitle }} @stop
@@ -54,6 +68,12 @@
     <div class="row">
         <div class="col-lg-12">
             <br/>
+            <div style="width: 30%">
+                <?= Former::horizontal_open() ?>
+                <?= Former::select('call_type')->options($callTypes, 1)->label('Call type')
+                        ->style('width: 150px')?>
+                <?= Former::close()?>
+            </div>
             <div class="panel panel-default">
                 <div class="panel-body">
                     <table id="table" class="table table-striped table-hover cursor-pointer">

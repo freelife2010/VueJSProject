@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\BillingTrait;
 
 use App\Http\Requests;
+use Illuminate\Http\Request;
+use URL;
 use yajra\Datatables\Datatables;
 
 class AppCDRController extends AppBaseController
@@ -19,13 +21,15 @@ class AppCDRController extends AppBaseController
     {
         $APP      = $this->app;
         $title    = $APP->name . ': View CDR';
-        $subtitle    = '';
+        $subtitle = '';
+        $callTypes = ['Outgoing calls', 'Incoming calls'];
 
-        return view('appCDR.index', compact('APP', 'title', 'subtitle'));
+        return view('appCDR.index', compact('APP', 'title', 'subtitle', 'callTypes'));
     }
 
-    public function getData()
+    public function getData(Request $request)
     {
+        $callType = $request->input('call_type');
         $fields = [
             'session_id',
             'start_time_of_date',
@@ -42,7 +46,7 @@ class AppCDRController extends AppBaseController
         $resource = $this->getResourceByAliasFromBillingDB($this->app->alias);
 
         $cdr = $this->getFluentBilling('client_cdr')->select($fields)
-                    ->whereEgressClientId($resource->resource_id)->whereCallType(1);
+                    ->whereEgressClientId($resource->resource_id)->whereCallType($callType);
 
         return Datatables::of($cdr)->make(true);
     }
