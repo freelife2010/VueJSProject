@@ -6,6 +6,7 @@ use App\Helpers\BillingTrait;
 use App\Http\Requests\AppRequest;
 use App\Http\Requests\DeleteRequest;
 use App\Jobs\StoreAPPToBillingDB;
+use App\Jobs\StoreAPPToChatServer;
 use App\Models\App;
 use App\Http\Requests;
 use App\Models\AppKey;
@@ -96,6 +97,7 @@ class AppController extends AppBaseController
         if ($app->createApp($request->input())) {
             $result = $this->getResult(false, 'App created successfully');
             $this->dispatch(new StoreAPPToBillingDB($app));
+            $this->dispatch(new StoreAPPToChatServer($app));
         }
 
         return $result;
