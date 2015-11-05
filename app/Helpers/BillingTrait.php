@@ -81,4 +81,20 @@ trait BillingTrait {
 
         return $clientId;
     }
+
+    protected function getResourceByAliasFromBillingDB($alias, $fields = 'resource_id')
+    {
+        $resource = $this->selectFromBillingDB('select '.$fields.'
+                                                from resource where alias = ?',
+                                                [$alias]);
+        if (isset($resource[0]))
+            $resource = $resource[0];
+
+        return $resource;
+    }
+
+    protected function getFluentBilling($table)
+    {
+        return $this->getDB()->table($table);
+    }
 }

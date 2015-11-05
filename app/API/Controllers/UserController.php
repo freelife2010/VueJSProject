@@ -21,4 +21,8 @@ class UserController extends Controller
         return $this->response->array($users);
     }
 
+    public function store()
+    {
+    }
+
 }

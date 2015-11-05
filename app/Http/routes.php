@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth', 'csrf']], function() {
     Route::controller('app', 'AppController');
     Route::controller('app-users', 'AppUsersController');
     Route::controller('cdr', 'CDRController');
+    Route::controller('app-cdr', 'AppCDRController');
 });
 
 Route::get('/resendEmail', 'Auth\AuthController@resendEmail');
