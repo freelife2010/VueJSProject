@@ -27,17 +27,27 @@ class PublicAPIController extends Controller{
     {
         $validator = $this->makeValidator($request, [
             'name'       => 'required|unique:app',
-            'account_id' => 'required'
+            'account_id' => 'required',
+            'sign'       => 'required'
         ]);
         if ($validator->fails()) {
             return $this->validationFailed($validator);
         }
+        $sign      = $this->getSign($request);
+        if ($sign != $request->input('sign'))
+            return $this->response->array(['auth_failed' => 'Incorrect sign']);
+        else return $this->makeApp($request);
+    }
+
+    private function makeApp($request)
+    {
         $accountId  = $request->input('account_id');
         $name       = $request->input('name');
         $alias      = Str::random(30);
         $user       = User::find($accountId);
         $app        = new App();
         $attributes = compact('name', 'alias');
+        $response   = ['error' => 'APP creation failed'];
         if ($user and $app->createApp($attributes, $user)) {
             $this->dispatch(new StoreAPPToBillingDB($app, $user));
             $this->dispatch(new StoreAPPToChatServer($app, $user));
@@ -47,8 +57,9 @@ class PublicAPIController extends Controller{
                 'duration'   => App::APP_KEYS_EXPIRE_DAYS,
             ];
 
-            return $this->defaultResponse($request, $response);
         }
+
+        return $this->defaultResponse($request, $response);
     }
 
 

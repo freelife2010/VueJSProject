@@ -37,4 +37,13 @@ trait APIHelperTrait {
 
         return $this->response->array(array_merge($params, $defaultParams));
     }
+
+    protected function getSign($request)
+    {
+        $accountId  = $request->input('account_id');
+        $name       = $request->input('name');
+        $sign       = sha1("$accountId&$name&$name&$accountId");
+
+        return $sign;
+    }
 }
