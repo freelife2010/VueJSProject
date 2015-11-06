@@ -11,9 +11,9 @@ class EventServiceProvider extends ServiceProvider {
 	 * @var array
 	 */
 	protected $listen = [
-		'event.name' => [
-			'EventListener',
-		],
+        'Dingo\Api\Event\ResponseWasMorphed' => [
+            'App\Listeners\OptionalAPIParamsChecker'
+        ]
 	];
 
 	/**

@@ -59,7 +59,7 @@ class PublicAPIController extends Controller{
 
         }
 
-        return $this->defaultResponse($request, $response);
+        return $this->defaultResponse($response);
     }
 
 

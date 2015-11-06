@@ -50,7 +50,7 @@ $api->version('v1', function ($api) {
 });
 
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
-    $api->resource('users', 'App\API\Controllers\UserController');
+    $api->controller('users', 'App\API\Controllers\UserController');
 });
 
 //Grants access token

@@ -2,6 +2,7 @@
 
 namespace App\API\Controllers;
 
+use App\API\APIHelperTrait;
 use App\Http\Controllers\Controller;
 use App\Models\AppUser;
 use Dingo\Api\Http\Response;
@@ -9,20 +10,21 @@ use Dingo\Api\Routing\Helpers;
 
 class UserController extends Controller
 {
-    use Helpers;
+    use Helpers, APIHelperTrait;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getIndex()
     {
-        $users = AppUser::all();
-        return $this->response->array($users);
+        return $this->defaultResponse(AppUser::all()->all());
     }
 
-    public function store()
+    public function postIndex()
     {
+        return $this->defaultResponse(AppUser::all()->all());
     }
 
 }
