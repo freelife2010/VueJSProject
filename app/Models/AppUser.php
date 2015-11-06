@@ -17,6 +17,7 @@ class AppUser extends BaseModel
     protected $table = 'users';
     protected $fillable = [
         'app_id',
+        'uuid',
         'name',
         'password',
         'email',

@@ -50,10 +50,11 @@ $api->version('v1', function ($api) {
 });
 
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
-    $api->controller('users', 'App\API\Controllers\UserController');
+    $api->get('users', 'App\API\Controllers\UserController@getUsers');
+    $api->post('users', 'App\API\Controllers\UserController@createUsers');
 });
 
 //Grants access token
-Route::post('api/token', function(\Illuminate\Http\Request $request) {
+Route::post('api/token', function() {
     return Response::json(Authorizer::issueAccessToken());
 });

@@ -35,7 +35,7 @@ class PublicAPIController extends Controller{
         }
         $sign      = $this->getSign($request);
         if ($sign != $request->input('sign'))
-            return $this->response->array(['auth_failed' => 'Incorrect sign']);
+            return $this->makeErrorResponse('Incorrect sign');
         else return $this->makeApp($request);
     }
 

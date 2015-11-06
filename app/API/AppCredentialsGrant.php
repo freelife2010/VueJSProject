@@ -3,6 +3,7 @@
 namespace App\API;
 
 use App\Models\AppKey;
+use DB;
 use League\OAuth2\Server\Entity\AccessTokenEntity;
 use League\OAuth2\Server\Entity\ClientEntity;
 use League\OAuth2\Server\Entity\SessionEntity;
@@ -104,6 +105,7 @@ class AppCredentialsGrant extends AbstractGrant
         foreach ($session->getScopes() as $scope) {
             $accessToken->associateScope($scope);
         }
+
 
         // Save everything
         $session->save();

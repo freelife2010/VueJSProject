@@ -12,6 +12,7 @@ use App\Jobs\StoreAPPUserToBillingDB;
 use App\Jobs\StoreAPPUserToChatServer;
 use App\Models\AppUser;
 use URL;
+use Webpatser\Uuid\Uuid;
 use yajra\Datatables\Datatables;
 
 class AppUsersController extends AppBaseController
@@ -41,9 +42,12 @@ class AppUsersController extends AppBaseController
 
     public function postCreate(AppUserRequest $request)
     {
-        $result = $this->getResult(true, 'Could not create user');
+        $result             = $this->getResult(true, 'Could not create user');
+        $params             = $request->input();
+        $params['uuid']     = Uuid::generate();
+        $params['password'] = sha1($params['password']);
 
-        if ($user = AppUser::create($request->input())) {
+        if ($user = AppUser::create()) {
             $result = $this->getResult(false, 'User created successfully');
             $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
             $this->dispatch(new StoreAPPUserToChatServer($user));
