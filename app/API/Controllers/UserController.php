@@ -78,8 +78,8 @@ class UserController extends Controller
             'app_id'   => $params['app_id'],
             'uuid'     => Uuid::generate()
         ])) {
-//            $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
-//            $this->dispatch(new StoreAPPUserToChatServer($user));
+            $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
+            $this->dispatch(new StoreAPPUserToChatServer($user));
             $user = AppUser::select([
                 'uuid as user_uuid',
                 'email as username',
@@ -111,6 +111,12 @@ class UserController extends Controller
         }
 
         return $rules;
+    }
+
+
+    public function getUserInfo()
+    {
+
     }
 
 
