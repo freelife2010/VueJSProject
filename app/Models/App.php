@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Auth;
 use DB;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class App extends BaseModel
 {
     const APP_KEYS_EXPIRE_DAYS = 5;
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'app';
 

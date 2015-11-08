@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class AppUser extends BaseModel
 {
-    use RevisionableTrait;
+    use SoftDeletes, RevisionableTrait;
 
     public function app()
     {

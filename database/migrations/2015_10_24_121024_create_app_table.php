@@ -24,6 +24,7 @@ class CreateAppTable extends Migration
             $this->createBooleanFields($table);
 
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('account_id', 'accound_id');
         });

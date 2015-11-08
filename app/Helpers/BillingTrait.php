@@ -11,7 +11,6 @@ namespace App\Helpers;
 
 use Auth;
 use DB;
-use Log;
 use PDO;
 
 /**
@@ -39,7 +38,6 @@ trait BillingTrait {
     {
         $pdo         = $this->getDB()->getPdo();
         $queryHandle = $pdo->prepare($query);
-        Log::warning($query, ['context' => $params]);
         $queryHandle->queryString;
         $queryHandle->debugDumpParams();
         $queryHandle->execute($params);

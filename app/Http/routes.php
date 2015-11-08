@@ -52,6 +52,8 @@ $api->version('v1', function ($api) {
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('users', 'App\API\Controllers\UserController@getUsers');
     $api->post('users', 'App\API\Controllers\UserController@createUsers');
+
+    $api->get('users/{username}', 'App\API\Controllers\UserController@getUserInfo');
 });
 
 //Grants access token

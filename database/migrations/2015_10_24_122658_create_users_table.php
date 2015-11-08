@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->integer('activated', false, true)->default(1);
             $table->string('last_ip')->default('');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

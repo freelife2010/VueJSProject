@@ -80,17 +80,22 @@ class UserController extends Controller
         ])) {
             $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
             $this->dispatch(new StoreAPPUserToChatServer($user));
-            $user = AppUser::select([
-                'uuid as user_uuid',
-                'email as username',
-                'activated',
-                'created_at as created',
-                'updated_at as modified'
-            ])->whereId($user->id)->first();
+            $user = $this->getUserData()->whereId($user->id)->first();
 
         }
 
         return $user;
+    }
+
+    private function getUserData()
+    {
+        return AppUser::select([
+            'uuid as user_uuid',
+            'email as username',
+            'activated',
+            'created_at as created',
+            'updated_at as modified'
+        ]);
     }
 
     private function getUserCreationInputRules($request)
@@ -114,9 +119,14 @@ class UserController extends Controller
     }
 
 
-    public function getUserInfo()
+    public function getUserInfo($username)
     {
+        $user = $this->getUserData()->whereEmail($username)->first();
+        $response = $this->makeErrorResponse('Cannot find user');
+        if ($user)
+            $response = $this->defaultResponse($user->toArray());
 
+        return $response;
     }
 
 
