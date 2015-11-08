@@ -4,7 +4,7 @@
 @endsection
 @include('styles.datatables')
 @section('scripts')
-   @include('scripts.datatables')
+    @include('scripts.datatables')
     <script>
         var oTable;
         var $table = $('#table');
@@ -14,16 +14,12 @@
                 "processing": false,
                 "order": [[ 2, "desc" ]],
                 "ajax": {
-                    url : "/app/data"
+                    url : '{{ url("/app-keys/data?app=".$APP->id) }}'
                 },
                 "columns": [
+                    {data: 'app_id'},
                     {data: 'id'},
-                    {data: 'name'},
-                    {data: 'users'},
-                    {data: 'daily_active'},
-                    {data: 'weekly_active'},
-                    {data: 'monthly_active'},
-                    {data: 'presence'},
+                    {data: 'secret'},
                     {data: 'actions'}
                 ],
                 "fnDrawCallback": function() {
@@ -45,7 +41,7 @@
         }
 
         function openAppDashboard(id) {
-            window.location.href = '/app/keys/?app='+id;
+            window.location.href = '/app/dashboard/?app='+id;
         }
     </script>
 @endsection
@@ -55,13 +51,13 @@
         <div class="col-lg-12">
             <div class="row">
                 <div class="col-md-1 manage-btn">
-                    <a href="{{{ URL::to('app/create') }}}"
+                    <a href="{{{ URL::to('app-keys/create?app='.$APP->id) }}}"
                        data-target="#myModal"
                        data-toggle="modal"
                        class="btn btn-labeled btn-info">
                         <span class="btn-label">
-                               <i class="fa fa-plus"></i>
-                           </span>Create APP
+                               <i class="fa fa-key"></i>
+                           </span>Create API keys
                     </a>
                 </div>
             </div>
@@ -71,13 +67,9 @@
                     <table id="table" class="table table-striped table-hover cursor-pointer">
                         <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Users</th>
-                            <th>Daily active</th>
-                            <th>Weekly active</th>
-                            <th>Monthly active</th>
-                            <th>Status</th>
+                            <th>APP Name</th>
+                            <th>APP UUID</th>
+                            <th>Secret</th>
                             <th>Actions</th>
                         </tr>
                         </thead>

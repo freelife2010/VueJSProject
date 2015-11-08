@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth', 'csrf']], function() {
     Route::controller('emails', 'EmailController');
     Route::controller('app', 'AppController');
     Route::controller('app-users', 'AppUsersController');
+    Route::controller('app-keys', 'AppKeysController');
     Route::controller('cdr', 'CDRController');
     Route::controller('app-cdr', 'AppCDRController');
 });

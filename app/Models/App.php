@@ -82,6 +82,11 @@ class App extends BaseModel
     {
         return [
             [
+                'name' => 'API keys',
+                'icon' => 'icon-key',
+                'url'  => 'app-keys/index',
+            ],
+            [
                 'name' => 'Users',
                 'icon' => 'icon-user',
                 'url'  => 'app-users/index',

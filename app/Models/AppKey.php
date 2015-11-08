@@ -9,6 +9,11 @@ class AppKey extends BaseModel
 {
     protected $table = 'oauth_clients';
 
+    public function app()
+    {
+        return $this->belongsTo('App\Models\App', 'app_id');
+    }
+
     public function generateKeys($app, $expireDays)
     {
         $expireDate        = date('Y-m-d H:i:s', strtotime("+ $expireDays days"));

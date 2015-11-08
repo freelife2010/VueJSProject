@@ -88,7 +88,7 @@ class SidebarHelper {
                         <span>%4$s</span>
                     </a>
                 </li>',
-                    $activeApp,
+                    Request::is(dirname($url).'*') ? 'active' : '',
                     url($url.'/?app='.$activeApp),
                     $icon,
                     $name);

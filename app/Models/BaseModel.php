@@ -26,40 +26,44 @@ class BaseModel extends Model
         return $date;
     }
 
-    public function getDefaultActionButtons($controller_url, $urls = [])
+    public function getDefaultActionButtons($controller_url, $urls = [], $except = [])
     {
         $this->getActionUrls($urls, $controller_url);
 
-        return $this->getButtonsHtml($urls);
+        return $this->getButtonsHtml($urls, $except);
     }
 
-    public function getActionButtonsWithAPP($controller, $app)
+    public function getActionButtonsWithAPP($controller, $app, $except = [])
     {
         $urls     = [];
         $getParam = '?app=' . $app->id;
         $this->getActionUrls($urls, $controller, $getParam);
 
-        return $this->getButtonsHtml($urls);
+        return $this->getButtonsHtml($urls, $except);
     }
 
-    protected function getButtonsHtml($urls)
+    protected function getButtonsHtml($urls, $except = [])
     {
-        $html = sprintf('
-                    <a href="%s"
-                       data-target="#myModal"
-                       data-toggle="modal"
-                       title="Edit"
-                       class="btn btn-success btn-sm" >
-                        <span class="fa fa-pencil"></span></a>
-                ', URL::to($urls['edit']));
-        $html .= sprintf('
-                    <a href="%s"
-                       data-target="#myModal"
-                       data-toggle="modal"
-                       title="Remove"
-                       class="btn btn-danger btn-sm" >
-                        <span class="fa fa-remove"></span></a>
-                ', URL::to($urls['delete']));
+        $except = array_flip($except);
+        $html   = '';
+        if (!isset($except['edit']))
+            $html .= sprintf('
+                        <a href="%s"
+                           data-target="#myModal"
+                           data-toggle="modal"
+                           title="Edit"
+                           class="btn btn-success btn-sm" >
+                            <span class="fa fa-pencil"></span></a>
+                    ', URL::to($urls['edit']));
+        if (!isset($except['delete']))
+            $html .= sprintf('
+                        <a href="%s"
+                           data-target="#myModal"
+                           data-toggle="modal"
+                           title="Remove"
+                           class="btn btn-danger btn-sm" >
+                            <span class="fa fa-remove"></span></a>
+                    ', URL::to($urls['delete']));
 
         return $html;
     }
