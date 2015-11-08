@@ -10,7 +10,6 @@
         var $table = $('#table');
         $(document).ready(function() {
             oTable = $table.DataTable({
-                "sDom": getTableTemplate(),
                 "bPaginate": true,
                 "processing": false,
                 "order": [[ 2, "desc" ]],
@@ -28,7 +27,6 @@
                     {data: 'actions'}
                 ],
                 "fnDrawCallback": function() {
-                    $('.col-filter').css('width', '16%');
                     bindRowEvents();
                 }
             });

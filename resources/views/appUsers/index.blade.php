@@ -10,7 +10,6 @@
         var $table = $('#table_users');
         $(document).ready(function() {
             oTable = $table.DataTable({
-                "sDom": getTableTemplate(),
                 "bPaginate": true,
                 "processing": false,
                 "order": [[ 2, "desc" ]],

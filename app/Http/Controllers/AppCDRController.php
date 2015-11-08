@@ -6,6 +6,7 @@ use App\Helpers\BillingTrait;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use URL;
 use yajra\Datatables\Datatables;
 
@@ -44,9 +45,10 @@ class AppCDRController extends AppBaseController
         ];
 
         $resource = $this->getResourceByAliasFromBillingDB($this->app->alias);
-
-        $cdr = $this->getFluentBilling('client_cdr')->select($fields)
-                    ->whereEgressClientId($resource->resource_id)->whereCallType($callType);
+        $cdr      = new Collection();
+        if ($resource)
+            $cdr = $this->getFluentBilling('client_cdr')->select($fields)
+                        ->whereEgressClientId($resource->resource_id)->whereCallType($callType);
 
         return Datatables::of($cdr)->make(true);
     }

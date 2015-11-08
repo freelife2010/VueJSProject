@@ -10,7 +10,6 @@
         var $table = $('#table');
         $(document).ready(function() {
             oTable = $table.DataTable({
-                "sDom": getTableTemplate(),
                 "bPaginate": true,
                 "processing": true,
                 "serverSide": true,

@@ -150,9 +150,3 @@ function getUrlParam(name) {
         results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
-
-function getTableTemplate() {
-    return "<'row'<'col-md-6 paging-div'l>" +
-        "<'col-md-3 create-wrapper-div'<'#create-btn-div'>>" +
-        "<'col-md-2 col-filter'f>>tr<'row'<'col-md-6'i><'col-md-6'p>>";
-}

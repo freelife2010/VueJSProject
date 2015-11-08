@@ -9,7 +9,6 @@
         @include('partials.developer_sidebar' , ['user' => Auth::user(),
                                                  'helper' => $helper])
     @endrole
-    @include('partials.offsidebar')
     <section>
         <div class="content-wrapper">
             <div class="content-heading">
@@ -22,4 +21,7 @@
             </div>
         </div>
     </section>
+    <footer>
+        <span>© 2015 - Opentact</span>
+    </footer>
 @endsection
