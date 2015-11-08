@@ -47,7 +47,7 @@ class AppUsersController extends AppBaseController
         $params['uuid']     = Uuid::generate();
         $params['password'] = sha1($params['password']);
 
-        if ($user = AppUser::create()) {
+        if ($user = AppUser::create($params)) {
             $result = $this->getResult(false, 'User created successfully');
             $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
             $this->dispatch(new StoreAPPUserToChatServer($user));
