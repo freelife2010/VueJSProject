@@ -39,7 +39,6 @@ trait BillingTrait {
         $pdo         = $this->getDB()->getPdo();
         $queryHandle = $pdo->prepare($query);
         $queryHandle->queryString;
-        $queryHandle->debugDumpParams();
         $queryHandle->execute($params);
         $result      = $queryHandle->fetchAll(PDO::FETCH_OBJ);
         if (isset($result[0]))
