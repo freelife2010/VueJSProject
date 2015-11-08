@@ -14,10 +14,12 @@ use App\Jobs\StoreAPPToBillingDB;
 use App\Jobs\StoreAPPToChatServer;
 use App\Models\App;
 use App\User;
+use DB;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Helpers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 
 class PublicAPIController extends Controller{
     use Helpers, APIHelperTrait;
@@ -62,6 +64,18 @@ class PublicAPIController extends Controller{
         return $this->defaultResponse($response);
     }
 
+    public function getTokenInfo()
+    {
+        $response    = $this->makeErrorResponse('Failed to get access token info');
+        $accessToken = $this->getAccessTokenFromHeader();
+        $accessToken = DB::table('oauth_access_tokens')
+                        ->select(['created_at as created', 'expire_time as expiration'])
+                        ->whereId($accessToken)->first();
+        if ($accessToken)
+            $response = $this->defaultResponse(['entities' => (array) $accessToken]);
 
+        return $response;
+
+    }
 
 }

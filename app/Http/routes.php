@@ -51,6 +51,9 @@ $api->version('v1', function ($api) {
 });
 
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
+
+    $api->get('token', 'App\API\Controllers\PublicAPIController@getTokenInfo');
+
     $api->get('users', 'App\API\Controllers\UserController@getUsers');
     $api->post('users', 'App\API\Controllers\UserController@createUsers');
 

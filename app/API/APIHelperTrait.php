@@ -54,9 +54,7 @@ trait APIHelperTrait {
 
     protected function getAPPIdByAuthHeader()
     {
-        $request     = Request::capture();
-        $authHeader  = $request->header('Authorization');
-        $accessToken = substr($authHeader, 7, strlen($authHeader));
+        $accessToken = $this->getAccessTokenFromHeader();
         $session     = DB::table('oauth_access_tokens')->select(['session_id as id'])
                             ->whereId($accessToken)->first();
         $client      = DB::table('oauth_sessions')->select(['client_id as id'])
@@ -70,6 +68,18 @@ trait APIHelperTrait {
     protected function makeErrorResponse($message)
     {
         return $this->response->array(['error' => $message]);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAccessTokenFromHeader()
+    {
+        $request     = Request::capture();
+        $authHeader  = $request->header('Authorization');
+        $accessToken = substr($authHeader, 7, strlen($authHeader));
+
+        return $accessToken;
     }
 
     private function setGzipHeader()

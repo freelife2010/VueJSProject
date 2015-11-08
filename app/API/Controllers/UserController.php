@@ -10,11 +10,17 @@ use App\Models\AppUser;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Dingo\Api\Routing\Helpers;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Webpatser\Uuid\Uuid;
 
 class UserController extends Controller
 {
     use Helpers, APIHelperTrait;
+
+//    public function __construct()
+//    {
+//        $this->scopes('users.read', ['only' => 'getUserInfo']);
+//    }
 
     public function getUsers()
     {
@@ -121,6 +127,7 @@ class UserController extends Controller
 
     public function getUserInfo($username)
     {
+        Authorizer::getResourceOwnerId();
         $user = $this->getUserData()->whereEmail($username)->first();
         $response = $this->makeErrorResponse('Cannot find user');
         if ($user)
