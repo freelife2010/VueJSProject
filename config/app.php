@@ -158,6 +158,7 @@ return [
         LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class,
         App\Providers\OAuthServiceProvider::class,
         Barryvdh\Queue\AsyncServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
 
 	],
@@ -187,6 +188,7 @@ return [
 		'DB'        => 'Illuminate\Support\Facades\DB',
 		'Eloquent'  => 'Illuminate\Database\Eloquent\Model',
 		'Event'     => 'Illuminate\Support\Facades\Event',
+        'Excel'     => 'Maatwebsite\Excel\Facades\Excel',
 		'File'      => 'Illuminate\Support\Facades\File',
         'Flash'     => 'Laracasts\Flash\Flash',
         'Former'    => 'Former\Facades\Former',

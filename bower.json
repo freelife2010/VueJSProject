@@ -77,7 +77,8 @@
     "jquery.easy-pie-chart": "~2.1.6",
     "mjolnic-bootstrap-colorpicker": "~2.3.0",
     "jquery-knob": "~1.2.11",
-    "cropper": "~0.11.0"
+    "cropper": "~0.11.0",
+    "bootstrap-fileinput": "~4.2.7"
   },
   "resolutions": {
     "jquery-ui": "1.11.3",

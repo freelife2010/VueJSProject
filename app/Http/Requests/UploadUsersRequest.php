@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class AppUserRequest extends Request
+class UploadUsersRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,16 +23,12 @@ class AppUserRequest extends Request
      */
     public function rules()
     {
-        $id    = $this->request->get("id");
-        $rules = [
-            'name'     => 'required',
-            'password' => 'required|min:6',
-            'email'    => 'required|email|unique:users'
+        return [
+            'sheet_file' => 'required|max:5000',
+            'email'      => 'required',
+            'username'   => 'required',
+            'password'   => 'required',
+            'app_id'     => 'required',
         ];
-
-        if ($id)
-            $rules['email'] = 'sometimes|required|unique:users,email,' . $id;
-
-        return $rules;
     }
 }

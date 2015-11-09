@@ -2,9 +2,13 @@
 
 namespace App\Models;
 
+use Auth;
+use File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Validator;
 use Venturecraft\Revisionable\RevisionableTrait;
+use Webpatser\Uuid\Uuid;
 
 class AppUser extends BaseModel
 {
@@ -16,6 +20,7 @@ class AppUser extends BaseModel
     }
 
     protected $table = 'users';
+
     protected $fillable = [
         'app_id',
         'uuid',
@@ -24,5 +29,36 @@ class AppUser extends BaseModel
         'email',
         'phone'
     ];
+
+    public static function createUser($params)
+    {
+        $params['uuid']     = Uuid::generate();
+        $params['password'] = sha1($params['password']);
+
+        return AppUser::create($params);
+    }
+
+
+    public function saveFile($file)
+    {
+        $user       = Auth::user();
+        $path       = public_path() . '/upload';
+        $extension  = $file->getClientOriginalExtension();
+        $filename   = date('Y-m-d_H:i:s') . '_' . $user->id . ".$extension";
+        $pathToFile = $path . '/' . $filename;
+        $file->move($path, $filename);
+
+        return $pathToFile;
+    }
+
+    public function isValidEmail($email)
+    {
+        $validator = Validator::make(
+            ['email' => $email],
+            ['email' => 'required|unique:users']
+        );
+
+        return !$validator->fails();
+    }
 
 }

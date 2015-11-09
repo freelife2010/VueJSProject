@@ -23,26 +23,11 @@
                     {data: 'actions'}
                 ],
                 "fnDrawCallback": function() {
-                    bindRowEvents();
                 }
             });
         });
 
-        function bindRowEvents() {
-            var $tr = $('#table').find('tr:not(:first)');
-            $.each($tr, function (key, val) {
-                var $this = $(val);
-                var td = $this.find('td:not(:last)');
-                var id = $this.find('td:first').text();
-                td.click(function(e) {
-                    openAppDashboard(id);
-                });
-            });
-        }
 
-        function openAppDashboard(id) {
-            window.location.href = '/app/dashboard/?app='+id;
-        }
     </script>
 @endsection
 @section('subtitle') {{ $subtitle }} @stop
@@ -64,7 +49,7 @@
             <br/>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <table id="table" class="table table-striped table-hover cursor-pointer">
+                    <table id="table" class="table table-striped table-hover ">
                         <thead>
                         <tr>
                             <th>APP Name</th>

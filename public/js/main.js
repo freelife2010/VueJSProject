@@ -81,20 +81,7 @@ function postForm($this, form, url) {
                 executeCallback(callback, param);
         },
         error: function(data) {
-            var errors = data.responseJSON;
-            if (errors) {
-                var errors_html = '';
-                $.each(errors, function(key, val) {
-                    console.log(key);
-                    form.find('label[for='+key+']').addClass('label-danger');
-                    errors_html += '<br/> - '+val;
-                });
-                var options = {
-                    status: 'danger'
-                };
-                var text = 'There were some problems with your input: ' + errors_html;
-                $.notify(text, options || {});
-            } else showErrorMessage(data);
+            showErrorMessage(data, form)
         },
         complete: function() {
             $this.prop('disabled', false);
@@ -113,7 +100,27 @@ function showMessage(type, alert) {
     $.notify(alert, options || {});
 }
 
-function showErrorMessage(data) {
+function showErrorMessage(data, form) {
+    var errors = data.responseJSON;
+    if (errors) {
+        showValidationErrors(errors, form)
+    } else showDefaultErrorMessage(data);
+}
+
+function showValidationErrors(errors, form) {
+    var errors_html = '';
+    $.each(errors, function(key, val) {
+        form.find('label[for='+key+']').addClass('label-danger');
+        errors_html += '<br/> - '+val;
+    });
+    var options = {
+        status: 'danger'
+    };
+    var text = 'There were some problems with your input: ' + errors_html;
+    $.notify(text, options || {});
+}
+
+function showDefaultErrorMessage(data) {
     var alert = 'Error occurred: ' + data.responseJSON;
     var options = {
         status: 'danger'

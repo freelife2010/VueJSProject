@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ExcelParser;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppUserRequest;
 use App\Http\Requests\DeleteRequest;
+use App\Http\Requests\UploadUsersRequest;
 use App\Jobs\DeleteAPPUserFromChatServer;
 use App\Jobs\DeleteAPPUserToChatServer;
 use App\Jobs\StoreAPPUserToBillingDB;
 use App\Jobs\StoreAPPUserToChatServer;
+use App\Models\App;
 use App\Models\AppUser;
 use URL;
 use Webpatser\Uuid\Uuid;
@@ -44,10 +47,8 @@ class AppUsersController extends AppBaseController
     {
         $result             = $this->getResult(true, 'Could not create user');
         $params             = $request->input();
-        $params['uuid']     = Uuid::generate();
-        $params['password'] = sha1($params['password']);
 
-        if ($user = AppUser::create($params)) {
+        if ($user = AppUser::createUser($params)) {
             $result = $this->getResult(false, 'User created successfully');
             $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
             $this->dispatch(new StoreAPPUserToChatServer($user));
@@ -111,6 +112,36 @@ class AppUsersController extends AppBaseController
                 return $app->getActionButtonsWithAPP('app-users', $this->app);
             })
             ->make(true);
+    }
+
+    public function getImport()
+    {
+        $APP   = $this->app;
+        $title = 'Import users';
+
+        return view('appUsers.import', compact('title', 'APP'));
+    }
+
+    public function postImport(UploadUsersRequest $request)
+    {
+        $model  = new AppUser();
+        $result = $this->getResult(true, 'Could not import users');
+        $APP    = App::find($request->input('app_id'));
+        if ($request->hasFile('sheet_file')
+        and $APP) {
+            $columns    = [
+                'email'    => $request->input('email'),
+                'username' => $request->input('username'),
+                'password' => $request->input('password')
+            ];
+            $pathToFile = $model->saveFile($request->file('sheet_file'));
+            $parser     = new ExcelParser($model, $APP);
+            $parser->run($pathToFile, $columns);
+            $totalSaved = $parser->getTotalSaved();
+            $result = $this->getResult(false, 'Users have been imported<br/>Total saved: '. $totalSaved);
+        }
+
+        return $result;
     }
 
 }

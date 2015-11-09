@@ -37,7 +37,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="row">
-                <div class="col-md-1 manage-btn">
+                <div class="col-md-1">
                     <a href="{{{ URL::to('app-users/create/?app='.$APP->id) }}}"
                        data-target="#myModal"
                        data-toggle="modal"
@@ -45,6 +45,16 @@
                         <span class="btn-label">
                                <i class="fa fa-plus"></i>
                            </span>Create User
+                    </a>
+                </div>
+                <div class="col-md-1" style="margin-left: 1%">
+                    <a href="{{{ URL::to('app-users/import/?app='.$APP->id) }}}"
+                       data-target="#myModal"
+                       data-toggle="modal"
+                       class="btn btn-labeled btn-info">
+                        <span class="btn-label">
+                               <i class="fa fa-upload"></i>
+                           </span>Import users
                     </a>
                 </div>
             </div>

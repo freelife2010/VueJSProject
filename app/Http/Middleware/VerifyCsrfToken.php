@@ -5,6 +5,11 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 
 class VerifyCsrfToken extends BaseVerifier {
 
+    protected $except = [
+        'app-users/import*',
+        'api*'
+    ];
+
 	/**
 	 * Handle an incoming request.
 	 *
