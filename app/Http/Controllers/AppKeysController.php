@@ -51,10 +51,9 @@ class AppKeysController extends AppBaseController
     public function getCreate()
     {
         $model  = $this->app;
-        $appKey = $this->app->key;
         $title  = 'Generate APP API keys';
 
-        return view('appKeys.create', compact('model', 'title', 'appKey'));
+        return view('appKeys.create', compact('model', 'title'));
     }
 
     public function postCreate(Request $request)

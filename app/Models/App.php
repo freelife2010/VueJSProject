@@ -27,9 +27,9 @@ class App extends BaseModel
         return $this->hasMany('App\Models\AppUser', 'app_id');
     }
 
-    public function key()
+    public function keys()
     {
-        return $this->hasOne('App\Models\AppKey', 'app_id');
+        return $this->hasMany('App\Models\AppKey', 'app_id');
     }
 
     public function createApp($attributes, $user = null)
@@ -82,14 +82,16 @@ class App extends BaseModel
     {
         return [
             [
-                'name' => 'API keys',
-                'icon' => 'icon-key',
-                'url'  => 'app-keys/index',
+                'name'       => 'API keys',
+                'icon'       => 'icon-key',
+                'url'        => 'app-keys/index',
+                'labelCount' => 'keys'
             ],
             [
-                'name' => 'Users',
-                'icon' => 'icon-user',
-                'url'  => 'app-users/index',
+                'name'       => 'Users',
+                'icon'       => 'icon-user',
+                'url'        => 'app-users/index',
+                'labelCount' => 'users'
             ],
             [
                 'name' => 'View APP CDR',

@@ -54,11 +54,11 @@ class SidebarHelper {
                             . $this->model->name .'</span>
                           </li>';
             foreach ($menuItems as $menuItem) {
-                $name  = $menuItem['name'];
-                $icon  = $menuItem['icon'];
-                $url   = $menuItem['url'];
-                $extra = $menuItem['url'];
-                $html .= $this->generateMenuItem($name, $url, $icon, $extra);
+                $name       = $menuItem['name'];
+                $icon       = $menuItem['icon'];
+                $url        = $menuItem['url'];
+                $labelCount = isset($menuItem['labelCount']) ? $menuItem['labelCount'] : '';
+                $html .= $this->generateMenuItem($name, $url, $icon, $labelCount);
             }
         }
 
@@ -78,12 +78,16 @@ class SidebarHelper {
         return $path;
     }
 
-    protected function generateMenuItem($name, $url, $icon)
+    protected function generateMenuItem($name, $url, $icon, $labelCount = false)
     {
+        if ($labelCount)
+            $printLabel = $this->getMenuLabel($labelCount);
+        else $printLabel = '';
         $activeApp = $this->getActiveApp();
         return sprintf('
                 <li class="%1$s">
-                    <a href="%2$s" title="APP">
+                    <a href="%2$s" title="%4$s">
+                        %5$s
                         <em class="%3$s"></em>
                         <span>%4$s</span>
                     </a>
@@ -91,7 +95,17 @@ class SidebarHelper {
                     Request::is(dirname($url).'*') ? 'active' : '',
                     url($url.'/?app='.$activeApp),
                     $icon,
-                    $name);
+                    $name,
+                    $printLabel);
+    }
+
+    protected function getMenuLabel($labelCount)
+    {
+        return sprintf('
+                        <div class="pull-right label label-info">
+                            %s
+                        </div>',
+            count($this->model->$labelCount));
     }
 
     protected function getActiveApp()
