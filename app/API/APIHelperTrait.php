@@ -16,6 +16,12 @@ use Illuminate\Support\Collection;
 use Validator;
 
 trait APIHelperTrait {
+    protected $request;
+
+    function __construct()
+    {
+        $this->request = Request::capture();
+    }
 
     protected function makeValidator($request, $rules)
     {
@@ -28,15 +34,32 @@ trait APIHelperTrait {
         return $this->response->errorBadRequest(implode(' ',$validator->errors()->all()));
     }
 
+    /**
+     * Returns query builder
+     * @param $className Entity class name
+     * @param $fields select fields
+     * @return \Illuminate\Database\Query\Builder
+     */
+    protected function getEntities($className, $fields)
+    {
+        $className = '\\App\Models\\'.$className;
+        $entities  = $className::select($fields);
+        if ($this->request->has('skip'))
+            $entities = $entities->skip($this->request->input('skip'));
+        if ($this->request->has('length'))
+            $entities = $entities->take($this->request->input('length'));
+
+        return $entities;
+    }
+
     protected function defaultResponse($params)
     {
-        $request       = Request::capture();
-        $path          = $request->getPathInfo();
+        $path          = $this->request->getPathInfo();
         $defaultParams = [
-            'action'    => $request->getMethod(),
+            'action'    => $this->request->getMethod(),
             'path'      => substr($path, 4, strlen($path)),
-            'uri'       => $request->getUri(),
-            'params'    => [],
+            'uri'       => $this->request->getUri(),
+            'params'    => $this->request->all(),
             'timestamp' => time()
         ];
 
@@ -75,8 +98,7 @@ trait APIHelperTrait {
      */
     protected function getAccessTokenFromHeader()
     {
-        $request     = Request::capture();
-        $authHeader  = $request->header('Authorization');
+        $authHeader  = $this->request->header('Authorization');
         $accessToken = substr($authHeader, 7, strlen($authHeader));
 
         return $accessToken;

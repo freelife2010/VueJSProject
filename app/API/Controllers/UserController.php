@@ -25,7 +25,7 @@ class UserController extends Controller
     public function getUsers()
     {
         $response = [
-            'entities' => AppUser::all()
+            'entities' => $this->getUserData()->get()
         ];
         return $this->defaultResponse($response);
     }
@@ -95,7 +95,7 @@ class UserController extends Controller
 
     private function getUserData()
     {
-        return AppUser::select([
+        return $this->getEntities('AppUser', [
             'uuid as user_uuid',
             'email as username',
             'activated',
