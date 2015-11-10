@@ -20,6 +20,7 @@
                     {data: 'app_id'},
                     {data: 'id'},
                     {data: 'secret'},
+                    {data: 'status'},
                     {data: 'actions'}
                 ],
                 "fnDrawCallback": function() {
@@ -55,6 +56,7 @@
                             <th>APP Name</th>
                             <th>APP UUID</th>
                             <th>Secret</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                         </thead>

@@ -32,11 +32,15 @@ class AppKeysController extends AppBaseController
         $apps = AppKey::select([
             'id',
             'app_id',
+            'expire_time',
             'secret'])->whereAppId($this->app->id);
 
         return Datatables::of($apps)
             ->edit_column('app_id', function($key) {
                 return $key->app ? $key->app->name : $key->name;
+            })
+            ->add_column('status', function($app) {
+                return $app->isExpired() ? 'Expired' : 'Active';
             })
             ->add_column('actions', function($app) {
                 return $app->getActionButtonsWithAPP('app-keys', $this->app, ['edit']);
