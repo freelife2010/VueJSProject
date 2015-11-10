@@ -25,6 +25,7 @@ class ExcelParser {
     protected $columns;
 
     protected $saved = 0;
+    protected $errors = [];
 
     function __construct($model, $APP = null)
     {
@@ -32,17 +33,49 @@ class ExcelParser {
         $this->APP   = $APP;
     }
 
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+
+
 
     public function run($file, $columns)
     {
-        $content = Excel::load($file)->get();
+        $content = Excel::load($file);
         $this->columns = $columns;
-        $groups  = $content->groupBy($columns['email']);;
-        foreach ($groups as $name => $items) {
-            $items = $items->toArray();
-            if (isset($items[0]))
-                $this->saveResult($items[0]);
+        $groups  = $content->get()->groupBy($columns['email']);
+        $findEmail = $content->select([$columns['email']])->get();
+        if (!empty($findEmail)
+            and !empty($findEmail[0])) {
+            foreach ($groups as $name => $items) {
+                $items = $items->toArray();
+                if ($this->checkItems($items, $columns))
+                    $this->saveResult($items[0]);
+                else break;
+            }
+        } else $this->errors[] = 'Cannot find column: '.$columns['email'];
+    }
+
+    protected function checkItems($items, $columns)
+    {
+        $result = false;
+        if (isset($items[0])) {
+            foreach ($columns as $column) {
+                if (!isset($items[0][$column])) {
+                    $this->errors[] = 'Cannot find column: '.$column;
+                    return false;
+                }
+            }
+
+            $result = true;
         }
+
+        return $result;
     }
 
     protected function saveResult($items)

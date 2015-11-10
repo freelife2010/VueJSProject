@@ -29,7 +29,6 @@
                 },
                 ajaxSettings: {
                     error: function(data) {
-                        console.log(data);
                         fileinput.fileinput('unlock');
                         fileinput.fileinput('clear');
                         showErrorMessage(data, $('#upload-form'));

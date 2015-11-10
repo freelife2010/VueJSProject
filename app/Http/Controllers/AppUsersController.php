@@ -138,7 +138,12 @@ class AppUsersController extends AppBaseController
             $parser     = new ExcelParser($model, $APP);
             $parser->run($pathToFile, $columns);
             $totalSaved = $parser->getTotalSaved();
-            $result = $this->getResult(false, 'Users have been imported<br/>Total saved: '. $totalSaved);
+            $errors = $parser->getErrors();
+            if ($errors) {
+                $errors = implode('<br/>', $errors);
+                $result = $this->getResult(true, $errors);
+            }
+            else $result = $this->getResult(false, 'Users have been imported<br/>Total saved: '. $totalSaved);
         }
 
         return $result;
