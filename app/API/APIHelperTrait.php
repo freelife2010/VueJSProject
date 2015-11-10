@@ -16,6 +16,7 @@ use DateTimeZone;
 use DB;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Collection;
+use Moment\Moment;
 use Validator;
 
 trait APIHelperTrait {
@@ -141,9 +142,20 @@ trait APIHelperTrait {
             foreach ($timestamps as $timestamp) {
                 $date = new DateTime($entity->$timestamp, new DateTimeZone('UTC'));
                 $date->setTimezone(new DateTimeZone($timezone));
-                $entity->$timestamp = $date->format('Y-m-d H:i:s');
+                $entity->$timestamp = $this->getDateFormat($date);
             }
         }
+    }
+
+    private function getDateFormat($date)
+    {
+        $format = 'Y-m-d H:i:s';
+        if ($this->request->has('dateformat')) {
+            $date = new Moment($date->format($format));
+            $format = $this->request->input('dateformat');
+        }
+
+        return $date->format($format);
     }
 
     private function getOptionalParams()
