@@ -62,6 +62,7 @@ class AppUsersController extends AppBaseController
         $title = 'Edit User';
         $model = AppUser::find($id);
         $APP   = $this->app;
+        unset($model->password);
         return view('appUsers.create_edit', compact('title', 'model', 'APP'));
     }
 

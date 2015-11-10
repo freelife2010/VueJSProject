@@ -30,6 +30,8 @@ class AppUser extends BaseModel
         'phone'
     ];
 
+    protected $hidden = ['password'];
+
     public static function createUser($params)
     {
         $params['uuid']     = Uuid::generate();
@@ -59,6 +61,11 @@ class AppUser extends BaseModel
         );
 
         return !$validator->fails();
+    }
+
+    public function getDates()
+    {
+        return array(static::CREATED_AT, static::UPDATED_AT);
     }
 
 }

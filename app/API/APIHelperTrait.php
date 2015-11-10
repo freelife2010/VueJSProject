@@ -10,6 +10,9 @@ namespace App\API;
 
 
 use App\Models\App;
+use Config;
+use DateTime;
+use DateTimeZone;
 use DB;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Collection;
@@ -21,6 +24,8 @@ trait APIHelperTrait {
     function __construct()
     {
         $this->request = Request::capture();
+        if ($this->request->has('datetz'))
+            Config::set('app.timezone', $this->request->input('datetz'));
     }
 
     protected function makeValidator($request, $rules)
@@ -55,6 +60,9 @@ trait APIHelperTrait {
     protected function defaultResponse($params)
     {
         $path          = $this->request->getPathInfo();
+        if (isset($params['entities'])
+        and $this->request->has('datetz'))
+            $this->setTimezones($params['entities'], $this->request->input('datetz'));
         $defaultParams = [
             'action'    => $this->request->getMethod(),
             'path'      => substr($path, 4, strlen($path)),
@@ -124,6 +132,18 @@ trait APIHelperTrait {
         $this->response->header('Content-Encoding', 'deflate');
         $this->response->setContent($compressedContent);
         $this->response->header('Content-Length', $compressedContentLength);
+    }
+
+    private function setTimezones($entities, $timezone)
+    {
+        $timestamps = ['created', 'modified'];
+        foreach ($entities as $entity) {
+            foreach ($timestamps as $timestamp) {
+                $date = new DateTime($entity->$timestamp, new DateTimeZone('UTC'));
+                $date->setTimezone(new DateTimeZone($timezone));
+                $entity->$timestamp = $date->format('Y-m-d H:i:s');
+            }
+        }
     }
 
     private function getOptionalParams()

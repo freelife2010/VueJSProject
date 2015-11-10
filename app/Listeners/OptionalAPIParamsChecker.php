@@ -33,7 +33,8 @@ class OptionalAPIParamsChecker
         $optionalParams = $this->getOptionalParams();
         $this->response = $event->response;
         foreach ($optionalParams as $param) {
-            if ($this->request->has($param['name']))
+            if ($this->request->getMethod() == 'GET'
+            and $this->request->has($param['name']))
                 $this->$param['method']($event);
         }
 
