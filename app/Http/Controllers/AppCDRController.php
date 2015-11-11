@@ -48,7 +48,7 @@ class AppCDRController extends AppBaseController
         $cdr      = new Collection();
         if ($resource)
             $cdr = $this->getFluentBilling('client_cdr')->select($fields)
-                        ->whereEgressClientId($resource->resource_id)->whereCallType($callType);
+                        ->whereEgressClientId($resource->resource_id);
 
         return Datatables::of($cdr)->make(true);
     }
