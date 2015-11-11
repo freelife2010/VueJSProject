@@ -16,6 +16,7 @@ use DateTimeZone;
 use DB;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Collection;
+use Moment\CustomFormats\MomentJs;
 use Moment\Moment;
 use Validator;
 
@@ -153,9 +154,10 @@ trait APIHelperTrait {
         if ($this->request->has('dateformat')) {
             $date = new Moment($date->format($format));
             $format = $this->request->input('dateformat');
-        }
+            $date   = $date->format($format, new MomentJs());
+        } else $date = $date->format($format);
 
-        return $date->format($format);
+        return $date;
     }
 
     private function getOptionalParams()
