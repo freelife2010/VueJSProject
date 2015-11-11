@@ -109,8 +109,11 @@ class AppUsersController extends AppBaseController
             'last_status'])->whereAppId($this->app->id);
 
         return Datatables::of($users)
-            ->add_column('actions', function($app) {
-                return $app->getActionButtonsWithAPP('app-users', $this->app);
+            ->edit_column('last_status', function($user) {
+                return $user->last_status ? 'Active' : 'Inactive';
+            })
+            ->add_column('actions', function($user) {
+                return $user->getActionButtonsWithAPP('app-users', $this->app);
             })
             ->make(true);
     }

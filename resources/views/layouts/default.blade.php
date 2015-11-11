@@ -22,6 +22,6 @@
         </div>
     </section>
     <footer>
-        <span>© 2015 - Opentact</span>
+        <span>Opentact © 2015</span>
     </footer>
 @endsection
