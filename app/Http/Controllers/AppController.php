@@ -153,20 +153,19 @@ class AppController extends AppBaseController
         return view('app.daily_usage', compact('title', 'subtitle', 'APP'));
     }
 
-    public function getDailyUsageData(Request $request)
+    public function getDailyUsageData()
     {
-        $callType = $request->input('call_type');
         $fields =
             'report_time,
              duration,
              sum(ingress_bill_time)/60 as min,
              sum(ingress_call_cost+lnp_cost) as cost';
 
-        $resource  = $this->getResourceByAliasFromBillingDB($this->app->alias);
+        $resource   = $this->getResourceByAliasFromBillingDB($this->app->alias);
         $dailyUsage = new Collection();
         if ($resource)
             $dailyUsage = $this->getFluentBilling('cdr_report')->selectRaw($fields)
-                ->whereEgressClientId($resource->resource_id)->whereCallType($callType);
+                ->whereEgressClientId($resource->resource_id);
 
         return Datatables::of($dailyUsage)->make(true);
     }
