@@ -73,7 +73,7 @@ trait APIHelperTrait {
             'timestamp' => time()
         ];
 
-        return $this->response->array(array_merge($params, $defaultParams));
+        return $this->response->array(array_merge($defaultParams, $params));
     }
 
     protected function getSign($request)

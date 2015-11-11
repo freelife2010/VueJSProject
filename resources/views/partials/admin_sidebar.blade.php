@@ -29,10 +29,16 @@
                         </li>
                     </ul>
                 </li>
-                <li class=" ">
+                <li class=" {{ $helper->isActive('logs') }}">
                     <a href=" {{ url('logs') }}" title="View system logs" target="_blank">
                         <em class="icon-docs"></em>
                         <span>System logs</span>
+                    </a>
+                </li>
+                <li class=" {{ $helper->isActive('revisions') }}">
+                    <a href=" {{ url('revisions') }}" title="View modification log">
+                        <em class="fa fa-history"></em>
+                        <span>Modification log</span>
                     </a>
                 </li>
             </ul>

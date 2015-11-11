@@ -25,7 +25,6 @@ Route::controllers([
 Route::group(['middleware' => ['auth', 'csrf']], function() {
     Route::get('/', 'HomeController@getIndex');
     Route::controller('home', 'HomeController');
-    Route::controller('emails', 'EmailController');
     Route::controller('app', 'AppController');
     Route::controller('app-users', 'AppUsersController');
     Route::controller('app-keys', 'AppKeysController');
@@ -37,7 +36,9 @@ Route::get('/resendEmail', 'Auth\AuthController@resendEmail');
 
 Route::get('/activate/{code}', 'Auth\AuthController@activateAccount');
 
-Route::group(['middleware' => 'admin'], function() {
+Route::group(['middleware' => ['admin', 'csrf']], function() {
+    Route::controller('emails', 'EmailController');
+    Route::controller('revisions', 'RevisionsController');
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 });
 

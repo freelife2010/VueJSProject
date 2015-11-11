@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\URL;
 class BaseModel extends Model
 {
 
+    public static function getTableName()
+    {
+        return with(new static)->getTable();
+    }
+
     /**
      * Returns date in "dd.mm.YY" format
      * @param string $field DB property to use
