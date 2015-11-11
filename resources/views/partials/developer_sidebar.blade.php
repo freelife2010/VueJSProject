@@ -36,6 +36,12 @@
                         <span>View CDR</span>
                     </a>
                 </li>
+                <li class=" {{ $helper->isActive('payments') }}">
+                    <a href="{{ url('payments') }}" title="CDR">
+                        <em class="fa fa-credit-card"></em>
+                        <span>Payment history</span>
+                    </a>
+                </li>
                 {!! $helper->generateManageAppMenu() !!}
             </ul>
             <!-- END sidebar nav-->

@@ -11,20 +11,20 @@
         $(document).ready(function() {
             oTable = $table.DataTable({
                 "bPaginate": true,
-                "processing": false,
+                "processing": true,
+                "serverSide": true,
                 "order": [[ 2, "desc" ]],
-                "ajax": {
-                    url : "/app/daily-usage-data/?app=" + getUrlParam('app')
-                },
+                "ajax": "{{ URL::to('payments/data/') }}",
                 "columns": [
-                    {data: 'report_time'},
-                    {data: 'duration'},
-                    {data: 'cost'},
-                    {data: 'min'}
-                ],
-                "fnDrawCallback": function() {
-                    $('.col-filter').css('width', '16%');
-                }
+                    {data: 'client_id', name: 'client_id'},
+                    {data: 'invoice_id', name: 'invoice_id'},
+                    {data: 'country', name: 'country'},
+                    {data: 'city', name: 'city'},
+                    {data: 'address1', name: 'address1'},
+                    {data: 'chargetotal', name: 'chargetotal'},
+                    {data: 'confirmed', name: 'confirmed'},
+                    {data: 'created_time', name: 'created_time'}
+                ]
             });
         });
 
@@ -42,10 +42,14 @@
                     <table id="table" class="table table-striped table-hover">
                         <thead>
                         <tr>
-                            <th>Report time</th>
-                            <th>Duration</th>
-                            <th>Cost</th>
-                            <th>Min</th>
+                            <th>Client ID</th>
+                            <th>Invoice ID</th>
+                            <th>Country</th>
+                            <th>City</th>
+                            <th>Address</th>
+                            <th>Charged total</th>
+                            <th>Confirmed</th>
+                            <th>Date</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
