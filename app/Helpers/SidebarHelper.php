@@ -54,11 +54,7 @@ class SidebarHelper {
                             . $this->model->name .'</span>
                           </li>';
             foreach ($menuItems as $menuItem) {
-                $name       = $menuItem['name'];
-                $icon       = $menuItem['icon'];
-                $url        = $menuItem['url'];
-                $labelCount = isset($menuItem['labelCount']) ? $menuItem['labelCount'] : '';
-                $html .= $this->generateMenuItem($name, $url, $icon, $labelCount);
+                $html .= $this->generateMenuItem($menuItem);
             }
         }
 
@@ -78,34 +74,79 @@ class SidebarHelper {
         return $path;
     }
 
-    protected function generateMenuItem($name, $url, $icon, $labelCount = false)
+    protected function generateMenuItem($menuItem)
     {
-        if ($labelCount)
-            $printLabel = $this->getMenuLabel($labelCount);
-        else $printLabel = '';
-        $activeApp = $this->getActiveApp();
+        $url         = $menuItem['url'];
+        $name        = $menuItem['name'];
+        $icon        = $menuItem['icon'];
+        $activeApp   = $this->getActiveApp();
+        $labelCount  = isset($menuItem['labelCount']) ? $menuItem['labelCount'] : '';
+        $subMenu     = isset($menuItem['subMenu']) ? $menuItem['subMenu'] : '';
+        $subMenu     = $this->generateSubMenu($subMenu, $url, $activeApp);
+        $printLabel  = $this->getMenuLabel($labelCount);
+
+        $menuItem = $this->getMenuItemHtml($name, $url, $icon, $activeApp, $printLabel, $subMenu);
+
+        return $menuItem;
+    }
+
+    protected function getMenuItemHtml(
+        $name,
+        $url,
+        $icon,
+        $activeApp,
+        $printLabel = false,
+        $subMenu = false
+    ) {
         return sprintf('
                 <li class="%1$s">
-                    <a href="%2$s" title="%4$s">
+                    <a href="%2$s" title="%4$s" %6$s>
                         %5$s
                         <em class="%3$s"></em>
                         <span>%4$s</span>
                     </a>
-                </li>',
-                    Request::is(dirname($url).'*') ? 'active' : '',
-                    url($url.'/?app='.$activeApp),
-                    $icon,
-                    $name,
-                    $printLabel);
+                    %7$s
+                </li>
+                ',
+            Request::is($url . '*') ? 'active' : '',
+            $subMenu ? "#$url" : url($url . '/?app=' . $activeApp),
+            $icon,
+            $name,
+            $printLabel,
+            $subMenu ? 'data-toggle="collapse"' : '',
+            $subMenu ?: '');
+    }
+
+    protected function generateSubMenu($subMenu, $parentId, $activeApp)
+    {
+        $html = '';
+        if ($subMenu) {
+            $htmlItems = '';
+            foreach ($subMenu as $menuItem) {
+                $htmlItems .= $this->getMenuItemHtml(
+                    $menuItem['name'],
+                    $menuItem['url'],
+                    $menuItem['icon'],
+                    $activeApp);
+            }
+            $html .= sprintf('
+                        <ul id="%1$s" class="nav sidebar-subnav collapse">
+                            %2$s
+                        </ul>
+                        ',  $parentId,
+                            $htmlItems);
+        }
+
+        return $html;
     }
 
     protected function getMenuLabel($labelCount)
     {
-        return sprintf('
+        return $labelCount ? sprintf('
                         <div class="pull-right label label-info">
                             %s
                         </div>',
-            count($this->model->$labelCount));
+            count($this->model->$labelCount)) : '';
     }
 
     protected function getActiveApp()

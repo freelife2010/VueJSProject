@@ -78,9 +78,30 @@ class App extends BaseModel
 
     }
 
+    /**
+     * App menu config
+     * @return array
+     */
     public function getManageAppMenu()
     {
         return [
+            [
+                'name' => 'APP Info',
+                'icon' => 'icon-drawer',
+                'url'  => 'app-data',
+                'subMenu' => [
+                    [
+                        'name' => 'View APP CDR',
+                        'icon' => 'icon-call-out',
+                        'url'  => 'app-cdr/index',
+                    ],
+                    [
+                        'name' => 'Daily usage',
+                        'icon' => 'icon-calculator',
+                        'url'  => 'app/daily-usage',
+                    ],
+                ]
+            ],
             [
                 'name'       => 'API keys',
                 'icon'       => 'icon-key',
@@ -92,11 +113,6 @@ class App extends BaseModel
                 'icon'       => 'icon-user',
                 'url'        => 'app-users/index',
                 'labelCount' => 'users'
-            ],
-            [
-                'name' => 'View APP CDR',
-                'icon' => 'icon-call-out',
-                'url'  => 'app-cdr/index',
             ],
             [
                 'name' => 'Number',

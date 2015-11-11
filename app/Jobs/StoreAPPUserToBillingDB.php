@@ -63,11 +63,8 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
         $routeStrategyId = $this->selectFromBillingDB("
                                 select route_strategy_id from route_strategy
                                 where name = ?", [$this->app->name]);
-        if (isset($routeStrategyId[0]))
-            $routeStrategyId = $routeStrategyId[0]->route_strategy_id;
-        else $routeStrategyId = false;
 
-        return $routeStrategyId;
+        return $this->fetchField($routeStrategyId, 'route_strategy_id');
     }
 
     private function getRateTableId()
@@ -75,10 +72,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
         $rateTableId = $this->selectFromBillingDB("
                                 select rate_table_id from rate_table
                                 where name = ?", [$this->app->name]);
-        if (isset($rateTableId[0]))
-            $rateTableId = $rateTableId[0]->rate_table_id;
-        else $rateTableId = false;
 
-        return $rateTableId;
+        return $this->fetchField($rateTableId, 'rate_table_id');
     }
 }

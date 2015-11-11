@@ -20,20 +20,44 @@ use PDO;
  */
 trait BillingTrait {
 
+    /**
+     * Returns connection to billing DB
+     * @return \Illuminate\Database\Connection
+     */
     private function getDB() {
         return DB::connection('billing');
     }
 
+    /**
+     * Selects data with $query, uses $params
+     * @param $query
+     * @param array $params
+     * @return array
+     */
     protected function selectFromBillingDB($query, $params = [])
     {
         return $this->getDB()->select($query, $params);
     }
 
+    /**
+     * Inserts data to Billing DB
+     * @param $query
+     * @param array $params
+     * @return bool
+     */
     protected function insertToBillingDB($query, $params = [])
     {
         return $this->getDB()->insert($query, $params);
     }
 
+    /**
+     * Inserts data to Billing DB
+     * with returning of ID of inserted row
+     * @param $query
+     * @param array $params
+     * @param $return_id primary key field name to return
+     * @return bool
+     */
     protected function insertGetIdToBillingDB($query, $params = [], $return_id)
     {
         $pdo         = $this->getDB()->getPdo();
@@ -41,11 +65,10 @@ trait BillingTrait {
         $queryHandle->queryString;
         $queryHandle->execute($params);
         $result      = $queryHandle->fetchAll(PDO::FETCH_OBJ);
-        if (isset($result[0]))
-            $id = $result[0]->$return_id;
-        else $id = false;
 
-        return $id;
+
+        return $this->fetchField($result, $return_id);
+
     }
 
 
@@ -59,28 +82,33 @@ trait BillingTrait {
         return $this->getDB()->delete($query, $params);
     }
 
-    protected function getCurrencyIdFromBillingDB()
+    /**
+     * Returns currency ID, "USA" by default
+     * @param string $currency
+     * @return bool
+     */
+    protected function getCurrencyIdFromBillingDB($currency = 'USA')
     {
         $currencyId = $this->selectFromBillingDB("
                             select currency_id
-                            from currency where code = ?", ['USA']);
-        if (isset($currencyId[0]))
-            $currencyId = $currencyId[0]->currency_id;
-        else $currencyId = false;
+                            from currency where code = ?", [$currency]);
 
-        return $currencyId;
+        return $this->fetchField($currencyId, 'currency_id');
     }
 
+    /**
+     * Returns current developer ID as it stored in Billing DB (table "client")
+     * Uses "email" field to find client
+     * @param null $user
+     * @return bool
+     */
     protected function getCurrentUserIdFromBillingDB($user = null)
     {
         $user   = $user ?: Auth::user();
         $result = $this->selectFromBillingDB('select client_id from client where name = ?',
                                 [$user->email]);
-        if (isset($result[0]))
-            $clientId = $result[0]->client_id;
-        else $clientId = false;
 
-        return $clientId;
+        return $this->fetchField($result, 'client_id');
     }
 
     protected function getResourceByAliasFromBillingDB($alias, $fields = 'resource_id')
@@ -94,8 +122,39 @@ trait BillingTrait {
         return $resource;
     }
 
+    /**
+     * Returns Laravel Fluent Query Builder for Billing DB queries
+     * @param string $table table name
+     * @return \Illuminate\Database\Query\Builder
+     */
     protected function getFluentBilling($table)
     {
         return $this->getDB()->table($table);
+    }
+
+    /**
+     * Returns app user's id from Billing
+     * Uses App name and user's email to find the data
+     * @param $user
+     * @return bool
+     */
+    protected function getAPPUserIdFromBillingDB($user)
+    {
+        $clientName = $user->app->name."-".$user->email;
+
+        $result = $this->selectFromBillingDB('select client_id from client where name = ?',
+            [$clientName]);
+
+        return $this->fetchField($result, 'client_id');
+    }
+
+    protected function fetchField($result, $field)
+    {
+        $fieldValue = false;
+        if (isset($result[0])
+            and isset($result[0]->$field))
+            $fieldValue = $result[0]->$field;
+
+        return $fieldValue;
     }
 }

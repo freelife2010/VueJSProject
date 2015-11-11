@@ -11,6 +11,7 @@ use App\Models\App;
 use App\Http\Requests;
 use App\Models\AppKey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use URL;
 use yajra\Datatables\Datatables;
 
@@ -141,6 +142,33 @@ class AppController extends AppBaseController
             $result = $this->getResult(false, 'APP deleted');
 
         return $result;
+    }
+
+    public function getDailyUsage()
+    {
+        $APP      = $this->app;
+        $title    = $APP->name.': Daily usage';
+        $subtitle = 'View daily usage';
+
+        return view('app.daily_usage', compact('title', 'subtitle', 'APP'));
+    }
+
+    public function getDailyUsageData(Request $request)
+    {
+        $callType = $request->input('call_type');
+        $fields =
+            'report_time,
+             duration,
+             sum(ingress_bill_time)/60 as min,
+             sum(ingress_call_cost+lnp_cost) as cost';
+
+        $resource  = $this->getResourceByAliasFromBillingDB($this->app->alias);
+        $dailyUsage = new Collection();
+        if ($resource)
+            $dailyUsage = $this->getFluentBilling('cdr_report')->selectRaw($fields)
+                ->whereEgressClientId($resource->resource_id)->whereCallType($callType);
+
+        return Datatables::of($dailyUsage)->make(true);
     }
 
 }
