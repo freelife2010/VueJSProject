@@ -165,7 +165,7 @@ class AppController extends AppBaseController
         $dailyUsage = new Collection();
         if ($resource)
             $dailyUsage = $this->getFluentBilling('cdr_report')->selectRaw($fields)
-                ->whereEgressClientId($resource->resource_id);
+                ->whereEgressClientId($resource->resource_id)->groupBy('report_time', 'duration');
 
         return Datatables::of($dailyUsage)->make(true);
     }
