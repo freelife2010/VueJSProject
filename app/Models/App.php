@@ -114,16 +114,16 @@ class App extends BaseModel
                 'url'        => 'app-users/index',
                 'labelCount' => 'users'
             ],
-            [
-                'name' => 'Number',
-                'icon' => 'icon-screen-smartphone',
-                'url'  => 'app-numbers/index',
-            ],
-            [
-                'name' => 'Conference',
-                'icon' => 'icon-earphones-alt',
-                'url'  => 'app-conference/index',
-            ],
+//            [
+//                'name' => 'Number',
+//                'icon' => 'icon-screen-smartphone',
+//                'url'  => 'app-numbers/index',
+//            ],
+//            [
+//                'name' => 'Conference',
+//                'icon' => 'icon-earphones-alt',
+//                'url'  => 'app-conference/index',
+//            ],
         ];
     }
 }
