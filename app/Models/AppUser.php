@@ -68,4 +68,9 @@ class AppUser extends BaseModel
         return array(static::CREATED_AT, static::UPDATED_AT);
     }
 
+    public function getUserAlias($clientId, $app)
+    {
+        return $app->name."-".$clientId."-".$this->email;
+    }
+
 }

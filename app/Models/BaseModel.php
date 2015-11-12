@@ -78,8 +78,7 @@ class BaseModel extends Model
         $html = '';
         $html .= sprintf('
                 <a href="%1$s"
-                   data-target="#myModal"
-                   data-toggle="modal"
+
                    title="%5$s"
                    class="btn %4$s btn-sm" >
                     <span class="%3$s"> %2$s</span></a>
@@ -88,7 +87,9 @@ class BaseModel extends Model
             $options['name'],
             $options['icon'],
             $options['class'],
-            $options['title']);
+            $options['title'],
+            isset($options['modal']) ? 'data-target="#myModal"
+                                        data-toggle="modal"' : '');
 
         return $html;
     }

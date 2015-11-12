@@ -45,7 +45,7 @@
         }
 
         function openAppDashboard(id) {
-            window.location.href = '/app/keys/?app='+id;
+            window.location.href = '/app/dashboard/?app='+id;
         }
     </script>
 @endsection

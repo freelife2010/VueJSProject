@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\BillingTrait;
 use App\Helpers\ExcelParser;
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\AppUserRequest;
 use App\Http\Requests\DeleteRequest;
 use App\Http\Requests\UploadUsersRequest;
@@ -14,12 +14,13 @@ use App\Jobs\StoreAPPUserToBillingDB;
 use App\Jobs\StoreAPPUserToChatServer;
 use App\Models\App;
 use App\Models\AppUser;
+use Illuminate\Support\Collection;
 use URL;
-use Webpatser\Uuid\Uuid;
 use yajra\Datatables\Datatables;
 
 class AppUsersController extends AppBaseController
 {
+    use BillingTrait;
 
     /**
      * Display a listing of the resource.
@@ -113,7 +114,17 @@ class AppUsersController extends AppBaseController
                 return $user->last_status ? 'Active' : 'Inactive';
             })
             ->add_column('actions', function($user) {
-                return $user->getActionButtonsWithAPP('app-users', $this->app);
+                $options = [
+                    'url'   => 'app-users/daily-usage/'.$user->id.'?app=' . $this->app->id,
+                    'name'  => '',
+                    'title' => 'View daily usage',
+                    'icon'  => 'icon-calculator',
+                    'class' => 'btn-default'
+                ];
+                $html = $user->generateButton($options);
+                $html .= $user->getActionButtonsWithAPP('app-users', $this->app);
+
+                return $html;
             })
             ->make(true);
     }
@@ -151,6 +162,38 @@ class AppUsersController extends AppBaseController
         }
 
         return $result;
+    }
+
+    public function getDailyUsage($id)
+    {
+        $APP      = $this->app;
+        $model    = AppUser::find($id);
+        if (!$model)
+            return redirect()->back();
+        $title    = $model->name . ': Daily usage';
+        $subtitle = 'View daily usage';
+
+        return view('appUsers.daily_usage', compact('title', 'subtitle', 'APP', 'model'));
+    }
+
+    public function getDailyUsageData($id)
+    {
+        $fields =
+            'report_time,
+             duration,
+             sum(ingress_bill_time)/60 as min,
+             sum(ingress_call_cost+lnp_cost) as cost';
+
+        $model       = AppUser::find($id);
+        $clientId    = $this->getAPPUserIdFromBillingDB($model);
+        $clientAlias = $model->getUserAlias($clientId, $this->app);
+        $dailyUsage  = new Collection();
+        $resource    = $this->getResourceByAliasFromBillingDB($clientAlias);
+        if ($resource)
+            $dailyUsage = $this->getFluentBilling('cdr_report')->selectRaw($fields)
+                ->whereIngressClientId($resource->resource_id)->groupBy('report_time', 'duration');
+
+        return Datatables::of($dailyUsage)->make(true);
     }
 
 }
