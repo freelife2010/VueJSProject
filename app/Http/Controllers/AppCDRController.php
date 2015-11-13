@@ -42,13 +42,16 @@ class AppCDRController extends AppBaseController
             'agent_cost',
             'origination_source_number',
             'origination_destination_number',
+            'resource.alias'
         ];
 
         $resource = $this->getResourceByAliasFromBillingDB($this->app->alias);
         $cdr      = new Collection();
         if ($resource)
             $cdr = $this->getFluentBilling('client_cdr')->select($fields)
-                        ->whereEgressClientId($resource->resource_id)->whereCallType($callType);
+                    ->whereEgressClientId($resource->resource_id)
+                    ->whereCallType($callType)
+                    ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
 
         return Datatables::of($cdr)->make(true);
     }
