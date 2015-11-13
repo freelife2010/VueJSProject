@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\BillingTrait;
 use App\Http\Requests;
 use DB;
 use yajra\Datatables\Datatables;
 
 class CDRController extends Controller
 {
+    use BillingTrait;
     /**
      * Display a listing of the resource.
      *
@@ -25,6 +27,7 @@ class CDRController extends Controller
     {
         $fields = [
             'session_id',
+            'resource.alias',
             'start_time_of_date',
             'release_tod',
             'ani_code_id',
@@ -36,7 +39,9 @@ class CDRController extends Controller
             'origination_destination_number',
         ];
 
-        $cdr = DB::connection('billing')->table('client_cdr')->select($fields);
+        $cdr = $this->getFluentBilling('client_cdr')
+                    ->select($fields)
+                    ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
 
         return Datatables::of($cdr)->make(true);
     }

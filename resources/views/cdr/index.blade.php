@@ -17,6 +17,7 @@
                 "ajax": "{{ URL::to('cdr/data/') }}",
                 "columns": [
                     {data: 'session_id', name: 'session_id'},
+                    {data: 'alias', name: 'alias'},
                     {data: 'start_time_of_date', name: 'start_time_of_date'},
                     {data: 'release_tod', name: 'release_tod'},
                     {data: 'ani_code_id', name: 'ani_code_id'},
@@ -59,6 +60,7 @@
                         <thead>
                         <tr>
                             <th>Session ID</th>
+                            <th>User alias</th>
                             <th>Start time</th>
                             <th>End time</th>
                             <th>ANI</th>
