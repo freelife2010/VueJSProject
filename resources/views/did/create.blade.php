@@ -4,8 +4,8 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var $state = $('#state');
-            var $rate_center = $('#rate_center');
             $state.change(function() {
+                var $rate_center = $('#rate_center');
                 $rate_center.prop('disabled', false);
                 var ajaxCallback = function(data) {
                     $rate_center.replaceWith(data);

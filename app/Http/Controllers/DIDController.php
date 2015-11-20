@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\DID;
+use Former\Facades\Former;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use yajra\Datatables\Datatables;
 
 class DIDController extends Controller
 {
@@ -22,6 +24,13 @@ class DIDController extends Controller
         return view('did.index', compact('title', 'subtitle'));
     }
 
+    public function getData()
+    {
+        $DIDs = DID::all();
+
+        return Datatables::of($DIDs)->make(true);
+    }
+
     public function getCreate()
     {
         $title  = 'Buy DID';
@@ -35,14 +44,9 @@ class DIDController extends Controller
     public function postCreate(Request $request)
     {
         $this->validate($request, [
-            'expire_days' => 'required|numeric'
+            'state' => 'required'
         ]);
-        $result     = $this->getResult(true, 'Could not generate APP key');
-        $appKey     = new AppKey();
-        $app        = App::find($request->input('app_id'));
-        $expireDays = $request->input('expire_days');
-        if ($appKey->generateKeys($app, $expireDays))
-            $result = $this->getResult(false, 'App key has been generated');
+        $result     = $this->getResult(true, 'Could not buy DID');
 
         return $result;
     }
@@ -52,7 +56,8 @@ class DIDController extends Controller
         $state       = $request->state;
         $did         = new DID();
         $rateCenters = $did->getNPA($state);
-
+        if (!$rateCenters)
+            $rateCenters = Former::select('rate_center')->options(['All'])->raw();
         return $rateCenters;
     }
 

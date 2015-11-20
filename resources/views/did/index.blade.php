@@ -13,16 +13,15 @@
                 "bPaginate": true,
                 "processing": false,
                 "order": [[ 2, "desc" ]],
-                {{--"ajax": {--}}
-                    {{--url : '{{ url("did/data") }}'--}}
-                {{--},--}}
+                "ajax": {
+                    url : '{{ url("did/data") }}'
+                },
                 "columns": [
-                    {data: 'app_id'},
                     {data: 'id'},
-                    {data: 'secret'},
-                    {data: 'secret'},
-                    {data: 'status'},
-                    {data: 'actions'}
+                    {data: 'did'},
+                    {data: 'state'},
+                    {data: 'reserve_id'},
+                    {data: 'npa'}
                 ],
                 "fnDrawCallback": function() {
                 }
@@ -57,8 +56,7 @@
                             <th>DID</th>
                             <th>State</th>
                             <th>Rate Center</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>NPA</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
