@@ -40,10 +40,6 @@ trait GuzzleClient {
 
     public function sendPost($resource, $data)
     {
-        $jsonType = [
-            'content-type' => 'application/json'
-        ];
-
-        return $this->client->post($resource, $jsonType, $data);
+        return $this->client->post($resource, $data);
     }
 }

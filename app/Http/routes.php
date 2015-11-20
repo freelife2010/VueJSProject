@@ -26,6 +26,7 @@ Route::group(['middleware' => ['auth', 'csrf']], function() {
     Route::get('/', 'HomeController@getIndex');
     Route::controller('home', 'HomeController');
     Route::controller('app', 'AppController');
+    Route::controller('did', 'DIDController');
     Route::controller('payments', 'PaymentController');
     Route::controller('app-users', 'AppUsersController');
     Route::controller('app-keys', 'AppKeysController');

@@ -42,6 +42,12 @@
                         <span>Payment history</span>
                     </a>
                 </li>
+                <li class=" {{ $helper->isActive('did') }}">
+                    <a href="{{ url('did') }}" title="Manage DID">
+                        <em class="fa fa-phone-square"></em>
+                        <span>Manage DID</span>
+                    </a>
+                </li>
                 {!! $helper->generateManageAppMenu() !!}
             </ul>
             <!-- END sidebar nav-->
