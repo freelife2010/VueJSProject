@@ -15,12 +15,13 @@ class CreateDidTable extends Migration
         Schema::create('did', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->string('did');
-            $table->integer('reserve_id', false, true);
+            $table->string('reserve_id');
             $table->string('did_type')->default('');
             $table->string('state')->default('');
             $table->string('npa')->default('');
             $table->string('nxx')->default('');
             $table->string('rate_center')->default('');
+            $table->integer('account_id', false, true);
             $table->timestamps();
         });
     }
