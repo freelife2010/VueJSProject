@@ -56,7 +56,7 @@
 @section('modal_body')
     <?php
     $action_url = url("did/create");
-    $submit_label = 'Create';
+    $submit_label = 'Buy';
     $edit = false;
     ?>
     <?= Former::vertical_open()->action($action_url) ?>

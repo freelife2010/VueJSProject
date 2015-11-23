@@ -11,6 +11,15 @@ class DID extends BaseModel
 
     protected $table = 'did';
 
+    protected $fillable = [
+        'did',
+        'reserve_id',
+        'did_type',
+        'state',
+        'npa',
+        'nxx',
+        'city'
+    ];
 
     protected $credentials = [
         'accountno' => '',
@@ -58,6 +67,15 @@ class DID extends BaseModel
         return $this->makeResponse($response);
     }
 
+    public function reserveDID($did)
+    {
+        $category = 'Landline';
+        $data     = $this->makeData(['did' => $did, 'category' => $category]);
+        $response = $this->sendPost('reserve', $data);
+
+        return $this->makeResponse($response);
+    }
+
     protected function makeData($params = [])
     {
         $params = array_merge($this->credentials, $params);
@@ -86,9 +104,20 @@ class DID extends BaseModel
     {
         $list = $allOption ? ['All'] : [];
         foreach ($data as $index => $entry) {
-            $list[$index+1] = $entry->$labelField;
+            $list[$entry->$labelField] = $entry->$labelField;
         }
 
         return $list;
+    }
+
+    public function findReservedDID($number, $storedDIDs)
+    {
+        foreach ($storedDIDs as $did) {
+            if ($did->TN == $number)
+                return $did;
+            $a = 1;
+        }
+
+        return false;
     }
 }

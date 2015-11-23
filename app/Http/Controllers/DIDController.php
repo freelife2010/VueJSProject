@@ -31,22 +31,39 @@ class DIDController extends Controller
         return Datatables::of($DIDs)->make(true);
     }
 
-    public function getCreate()
+    public function getCreate(Request $request)
     {
         $title  = 'Buy DID';
         $did    = new DID();
         $states = $did->getStates();
-
+        $states = array_combine($states, $states);
 
         return view('did.create', compact('title', 'did', 'states'));
     }
 
+
     public function postCreate(Request $request)
     {
         $this->validate($request, [
-            'state' => 'required'
+            'did' => 'required'
         ]);
-        $result     = $this->getResult(true, 'Could not buy DID');
+        $result = $this->getResult(true, 'Could not buy DID');
+        $did    = new DID();
+        $response = $did->reserveDID($request->did);
+        if (isset($response->reserveId)) {
+            $params = $request->all();
+            $params['reserve_id'] = $request->did;
+            $storedDIDs = $request->session()->get('dids');
+            $storedDID = $did->findReservedDID($request->did, $storedDIDs);
+            if ($storedDID) {
+                $params['did_type'] = $storedDID->category;
+                $params['rate_center'] = $storedDID->RateCenter;
+            }
+            $did->fill($params);
+            if ($did->save())
+                $result = $this->getResult(false, 'DID has been acquired');
+        } elseif (isset($response->error))
+            $result = $this->getResult(true, 'Error occurred. Error message: '. $response->error);
 
         return $result;
     }
@@ -69,7 +86,10 @@ class DIDController extends Controller
                         and $request->rate_center != 'All') ? $request->rate_center : '';
         $did         = new DID();
         $numbers     = $did->getAvailableNumbers($state, $rateCenter);
-        $numbers     = !empty($numbers->Numbers) ? $did->getList($numbers->Numbers, 'TN', false) : ['Not found'];
+        if (!empty($numbers->Numbers)) {
+            $request->session()->put('dids', ($numbers->Numbers));
+            $numbers = $did->getList($numbers->Numbers, 'TN', false);
+        } else $numbers = ['Not found'];
 
         return Former::select('did')->options($numbers)->raw();
     }

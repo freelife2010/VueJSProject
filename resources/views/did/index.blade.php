@@ -20,8 +20,7 @@
                     {data: 'id'},
                     {data: 'did'},
                     {data: 'state'},
-                    {data: 'reserve_id'},
-                    {data: 'npa'}
+                    {data: 'reserve_id'}
                 ],
                 "fnDrawCallback": function() {
                 }
@@ -56,7 +55,6 @@
                             <th>DID</th>
                             <th>State</th>
                             <th>Rate Center</th>
-                            <th>NPA</th>
                         </tr>
                         </thead>
                         <tbody></tbody>

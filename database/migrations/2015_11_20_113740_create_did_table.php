@@ -20,7 +20,8 @@ class CreateDidTable extends Migration
             $table->string('state')->default('');
             $table->string('npa')->default('');
             $table->string('nxx')->default('');
-            $table->string('city')->default('');
+            $table->string('rate_center')->default('');
+            $table->timestamps();
         });
     }
 
