@@ -45,7 +45,15 @@ class DID extends BaseModel
     public function getNPA($state)
     {
         $data = $this->makeData(['state' => $state]);
-        $response = $this->sendPost('availabilitynpa', $data);
+        $response = $this->sendPost('availabilitynpanxx', $data);
+
+        return $this->makeResponse($response);
+    }
+
+    public function getAvailableNumbers($state, $rateCenter = '')
+    {
+        $data = $this->makeData(['state' => $state, 'ratecenter' => $rateCenter]);
+        $response = $this->sendPost('searchdid', $data);
 
         return $this->makeResponse($response);
     }
@@ -72,5 +80,15 @@ class DID extends BaseModel
                 $dataField ?
                     $response->$dataField :
                     $response;
+    }
+
+    public function getList($data, $labelField, $allOption = true)
+    {
+        $list = $allOption ? ['All'] : [];
+        foreach ($data as $index => $entry) {
+            $list[$index+1] = $entry->$labelField;
+        }
+
+        return $list;
     }
 }

@@ -56,9 +56,22 @@ class DIDController extends Controller
         $state       = $request->state;
         $did         = new DID();
         $rateCenters = $did->getNPA($state);
-        if (!$rateCenters)
-            $rateCenters = Former::select('rate_center')->options(['All'])->raw();
-        return $rateCenters;
+        $rateCenters = $did->getList($rateCenters, 'RateCenter');
+
+        return Former::select('rate_center')->options($rateCenters)->raw();
+
+    }
+
+    public function getNumbers(Request $request)
+    {
+        $state       = $request->state;
+        $rateCenter  = (isset($request->rate_center)
+                        and $request->rate_center != 'All') ? $request->rate_center : '';
+        $did         = new DID();
+        $numbers     = $did->getAvailableNumbers($state, $rateCenter);
+        $numbers     = !empty($numbers->Numbers) ? $did->getList($numbers->Numbers, 'TN', false) : ['Not found'];
+
+        return Former::select('did')->options($numbers)->raw();
     }
 
 }

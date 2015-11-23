@@ -4,18 +4,44 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var $state = $('#state');
+            var $rate_center = $('#rate_center');
             $state.change(function() {
-                var $rate_center = $('#rate_center');
-                $rate_center.prop('disabled', false);
+                $rate_center = $('#rate_center');
+                $rate_center.prop('disabled', true);
                 var ajaxCallback = function(data) {
                     $rate_center.replaceWith(data);
+                    $rate_center.prop('disabled', false);
+                    bindRateCenterEvent();
+                    getNumbers();
                 };
                 var params = {
                     'state': $('#state option:selected').text()
                 };
                 ajaxGetData('did/cities', params, ajaxCallback)
             });
+            bindRateCenterEvent();
         });
+
+        function bindRateCenterEvent() {
+            var $rate_center = $('#rate_center');
+            $rate_center.change(function() {
+                getNumbers();
+            });
+        }
+
+        function getNumbers() {
+            var $did = $('#did');
+            $did.prop('disabled', true);
+            var ajaxCallback = function(data) {
+                $did.replaceWith(data);
+                $did.prop('disabled', false);
+            };
+            var params = {
+                'state': $('#state option:selected').text(),
+                'rate_center': $('#rate_center option:selected').text()
+            };
+            ajaxGetData('did/numbers', params, ajaxCallback)
+        }
 
         function ajaxGetData(url, params, success) {
             $.ajax({
@@ -36,7 +62,8 @@
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
         <?= Former::select('state')->options($states)->placeholder('Select state');?>
-        <?= Former::select('rate_center')->placeholder('Rate center')->disabled();?>
+        <?= Former::select('rate_center')->disabled();?>
+        <?= Former::select('did')->disabled();?>
     </div>
     <div style="clear: both"></div>
     <br/>
