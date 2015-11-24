@@ -15,6 +15,7 @@ class CreateDidTable extends Migration
         Schema::create('did', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->string('did');
+            $table->integer('app_id', false, true)->default(0);
             $table->string('reserve_id');
             $table->string('did_type')->default('');
             $table->string('state')->default('');

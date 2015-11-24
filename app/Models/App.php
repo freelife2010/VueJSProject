@@ -32,6 +32,11 @@ class App extends BaseModel
         return $this->hasMany('App\Models\AppKey', 'app_id');
     }
 
+    public function did()
+    {
+        return $this->hasMany('App\Models\DID', 'app_id');
+    }
+
     public function createApp($attributes, $user = null)
     {
         $user = $user ?: Auth::user();
@@ -107,6 +112,12 @@ class App extends BaseModel
                 'icon'       => 'icon-key',
                 'url'        => 'app-keys/index',
                 'labelCount' => 'keys'
+            ],
+            [
+                'name'       => 'Manage DID',
+                'icon'       => 'fa fa-phone-square',
+                'url'        => 'did/index',
+                'labelCount' => 'did'
             ],
             [
                 'name'       => 'Users',

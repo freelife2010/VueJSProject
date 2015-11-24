@@ -14,7 +14,7 @@
                 "processing": false,
                 "order": [[ 2, "desc" ]],
                 "ajax": {
-                    url : '{{ url("did/data") }}'
+                    url : '{{ url("did/data?app=".$APP->id) }}'
                 },
                 "columns": [
                     {data: 'id'},
@@ -35,7 +35,7 @@
         <div class="col-lg-12">
             <div class="row">
                 <div class="col-md-1 manage-btn">
-                    <a href="{{{ URL::to('did/create') }}}"
+                    <a href="{{{ URL::to('did/create?app='.$APP->id) }}}"
                        data-target="#myModal"
                        data-toggle="modal"
                        class="btn btn-labeled btn-info">

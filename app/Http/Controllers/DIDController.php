@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use yajra\Datatables\Datatables;
 
-class DIDController extends Controller
+class DIDController extends AppBaseController
 {
     /**
      * Display a listing of the resource.
@@ -20,13 +20,14 @@ class DIDController extends Controller
     {
         $title = 'Manage DID';
         $subtitle = '';
+        $APP = $this->app;
 
-        return view('did.index', compact('title', 'subtitle'));
+        return view('did.index', compact('title', 'subtitle', 'APP'));
     }
 
     public function getData()
     {
-        $DIDs = DID::all();
+        $DIDs = DID::whereAppId($this->app->id);
 
         return Datatables::of($DIDs)->make(true);
     }
@@ -35,10 +36,11 @@ class DIDController extends Controller
     {
         $title  = 'Buy DID';
         $did    = new DID();
+        $APP    = $this->app;
         $states = $did->getStates();
         $states = array_combine($states, $states);
 
-        return view('did.create', compact('title', 'did', 'states'));
+        return view('did.create', compact('title', 'did', 'states', 'APP'));
     }
 
 
@@ -51,15 +53,7 @@ class DIDController extends Controller
         $did    = new DID();
         $response = $did->reserveDID($request->did);
         if (isset($response->reserveId)) {
-            $params = $request->all();
-            $params['reserve_id'] = $request->did;
-            $storedDIDs = $request->session()->get('dids');
-            $storedDID = $did->findReservedDID($request->did, $storedDIDs);
-            if ($storedDID) {
-                $params['did_type'] = $storedDID->category;
-                $params['rate_center'] = $storedDID->RateCenter;
-            }
-            $did->fill($params);
+            $did->fillParams($request, $response->reserveId);
             if ($did->save())
                 $result = $this->getResult(false, 'DID has been acquired');
         } elseif (isset($response->error))

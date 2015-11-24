@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\API\ApiClient\GuzzleClient;
 use App\Models\BaseModel;
+use Auth;
 
 class DID extends BaseModel
 {
@@ -13,6 +14,8 @@ class DID extends BaseModel
 
     protected $fillable = [
         'did',
+        'app_id',
+        'account_id',
         'reserve_id',
         'did_type',
         'state',
@@ -119,5 +122,20 @@ class DID extends BaseModel
         }
 
         return false;
+    }
+
+    public function fillParams($request, $reserveId)
+    {
+        $params = $request->all();
+        $user   = Auth::user();
+        $params['reserve_id'] = $reserveId;
+        $params['account_id'] = $user->id;
+        $storedDIDs = $request->session()->get('dids');
+        $storedDID = $this->findReservedDID($request->did, $storedDIDs);
+        if ($storedDID) {
+            $params['did_type'] = $storedDID->category;
+            $params['rate_center'] = $storedDID->RateCenter;
+        }
+        $this->fill($params);
     }
 }

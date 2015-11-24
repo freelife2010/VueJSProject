@@ -17,7 +17,7 @@
                 var params = {
                     'state': $('#state option:selected').text()
                 };
-                ajaxGetData('did/cities', params, ajaxCallback)
+                ajaxGetData('{{ url('did/cities?app='.$APP->id) }}', params, ajaxCallback)
             });
             bindRateCenterEvent();
         });
@@ -40,7 +40,7 @@
                 'state': $('#state option:selected').text(),
                 'rate_center': $('#rate_center option:selected').text()
             };
-            ajaxGetData('did/numbers', params, ajaxCallback)
+            ajaxGetData('{{ url('did/numbers?app='.$APP->id) }}', params, ajaxCallback)
         }
 
         function ajaxGetData(url, params, success) {
@@ -61,6 +61,7 @@
     ?>
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
+        <?= Former::hidden('app_id')->value($APP->id);?>
         <?= Former::select('state')->options($states)->placeholder('Select state');?>
         <?= Former::select('rate_center')->disabled();?>
         <?= Former::select('did')->disabled();?>
