@@ -41,6 +41,12 @@
                         <span>Modification log</span>
                     </a>
                 </li>
+                <li class=" {{ $helper->isActive('users') }}">
+                    <a href=" {{ url('users') }}" title="View developers">
+                        <em class="icon-users"></em>
+                        <span>Developers</span>
+                    </a>
+                </li>
             </ul>
             <!-- END sidebar nav-->
         </nav>

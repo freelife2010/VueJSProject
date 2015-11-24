@@ -14,6 +14,24 @@
 
 use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 
+Response::macro('xml', function(array $vars, $status = 200, array $header = [], $xml = null)
+{
+    if (is_null($xml)) {
+        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><response/>');
+    }
+    foreach ($vars as $key => $value) {
+        if (is_array($value)) {
+            Response::xml($value, $status, $header, $xml->addChild($key));
+        } else {
+            $xml->addChild($key, $value);
+        }
+    }
+    if (empty($header)) {
+        $header['Content-Type'] = 'application/xml';
+    }
+    return Response::make($xml->asXML(), $status, $header);
+});
+
 Route::pattern('id', '[0-9]+');
 
 Route::controllers([
@@ -41,6 +59,7 @@ Route::get('/activate/{code}', 'Auth\AuthController@activateAccount');
 Route::group(['middleware' => ['admin', 'csrf']], function() {
     Route::controller('emails', 'EmailController');
     Route::controller('revisions', 'RevisionsController');
+    Route::controller('users', 'UserController');
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 });
 

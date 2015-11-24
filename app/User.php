@@ -1,6 +1,7 @@
 <?php namespace App;
 
 use App\Helpers\BillingTrait;
+use App\Models\BaseModel;
 use Hash;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -9,10 +10,11 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Bican\Roles\Traits\HasRoleAndPermission;
 use Bican\Roles\Contracts\HasRoleAndPermission as HasRoleAndPermissionContract;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract, HasRoleAndPermissionContract {
+class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract, HasRoleAndPermissionContract {
 
-	use Authenticatable, CanResetPassword, HasRoleAndPermission, BillingTrait;
+	use Authenticatable, CanResetPassword, HasRoleAndPermission, BillingTrait, SoftDeletes;
 
 	/**
 	 * The database table used by the model.
@@ -26,7 +28,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'email', 'password'];
+	protected $fillable = ['name', 'email', 'password', 'active', 'resent'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -35,6 +37,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
+    public function apps() {
+        return $this->hasMany('App\Models\App', 'account_id');
+    }
 	public function accountIsActive($code) {
 		$user = User::where('activation_code', '=', $code)->first();
 		$user->active = 1;
