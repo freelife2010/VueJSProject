@@ -56,7 +56,6 @@ class UserController extends Controller
     {
         $result                    = $this->getResult(true, 'Could not create developer');
         $params                    = $request->input();
-        $params['password']        = bcrypt($params['password']);
         $params['active']          = true;
         $params['resent']          = 0;
         if ($user = User::create($params)) {
