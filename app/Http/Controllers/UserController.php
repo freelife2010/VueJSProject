@@ -7,6 +7,7 @@ use App\Http\Requests\DeleteRequest;
 use App\User;
 
 use App\Http\Requests;
+use Bican\Roles\Models\Role;
 use URL;
 use yajra\Datatables\Datatables;
 
