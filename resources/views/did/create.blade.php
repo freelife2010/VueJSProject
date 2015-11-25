@@ -91,7 +91,7 @@
         <?= Former::select('state')->options($states)->placeholder('Select state');?>
         <?= Former::select('rate_center')->disabled();?>
         <?= Former::select('did')->disabled();?>
-        <?= Former::select('action_id')->id('#did_action')->options($actions)
+        <?= Former::select('action')->id('did_action')->options($actions)
                     ->placeholder('Select action')
                     ->disabled();?>
         <div id="action_parameters"></div>

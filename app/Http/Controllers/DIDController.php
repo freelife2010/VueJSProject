@@ -50,13 +50,13 @@ class DIDController extends AppBaseController
     {
         $this->validate($request, [
             'did'        => 'required',
-            'action_id' => 'required'
+            'action'     => 'required'
         ]);
         $result = $this->getResult(true, 'Could not buy DID');
         $did    = new DID();
-        $response = $did->reserveDID($request->did);
-        if (isset($response->reserveId)) {
-            $did->fillParams($request, $response->reserveId);
+        $response = 1;
+        if (1) {
+            $did->fillParams($request, 1);
             if ($did->save()) {
                 $result = $this->getResult(false, 'DID has been acquired');
                 $did->createDIDParameters($request);

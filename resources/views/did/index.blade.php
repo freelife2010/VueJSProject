@@ -20,7 +20,7 @@
                     {data: 'id'},
                     {data: 'did'},
                     {data: 'state'},
-                    {data: 'reserve_id'}
+                    {data: 'rate_center'}
                 ],
                 "fnDrawCallback": function() {
                 }

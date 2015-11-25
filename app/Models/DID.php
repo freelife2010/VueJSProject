@@ -18,6 +18,7 @@ class DID extends BaseModel
         'app_id',
         'account_id',
         'action_id',
+        'rate_center',
         'reserve_id',
         'did_type',
         'state',
@@ -30,6 +31,10 @@ class DID extends BaseModel
         'accountno' => '',
         'token' => ''
     ];
+
+    public function actionParameters() {
+        return $this->hasMany('App\Models\DidsParameters', 'action_id');
+    }
 
 
     function __construct()
@@ -132,6 +137,7 @@ class DID extends BaseModel
         $user   = Auth::user();
         $params['reserve_id'] = $reserveId;
         $params['account_id'] = $user->id;
+        $params['action_id'] = $params['action'];
         $storedDIDs = $request->session()->get('dids');
         $storedDID = $this->findReservedDID($request->did, $storedDIDs);
         if ($storedDID) {
@@ -144,6 +150,15 @@ class DID extends BaseModel
     public function createDIDParameters($request)
     {
         $parameters = $request->parameters;
+
+        if ($parameters)
+            foreach ($parameters as $paramId => $value) {
+                $didParameter = new DIDActionParameters();
+                $didParameter->action_id = $request->action;
+                $didParameter->parameter_id = $paramId;
+                $didParameter->parameter_value = $value;
+                $didParameter->save();
+            }
     }
 
     public static function getActionParameterHtml($parameter, $app)
@@ -152,8 +167,8 @@ class DID extends BaseModel
         if (strpos($parameter->name, 'APP user id') !== false) {
             $users = AppUser::whereAppId($app->id)->lists('name', 'id');
             $html  = Former::select($selectName)->options($users)
-                        ->placeholder($parameter->name)->label('');
-        } else $html = Former::text($selectName)
+                        ->placeholder($parameter->name)->label('')->required();
+        } else $html = Former::text($selectName)->required()
             ->placeholder($parameter->name)->raw().'<br/>';
 
         return $html;
