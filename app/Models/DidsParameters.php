@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class DidsParameters extends BaseModel
 {
-    protected $table = 'dids_parameters';
+    protected $table = 'did_actions_parameters';
 }

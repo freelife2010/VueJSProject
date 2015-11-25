@@ -12,14 +12,14 @@ class CreateDidsParameters extends Migration
      */
     public function up()
     {
-        Schema::create('dids_parameters', function (Blueprint $table) {
+        Schema::create('did_actions_parameters', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->integer('did_id', false, true)->default(0);
+            $table->integer('action_id', false, true)->default(0);
             $table->integer('parameter_id', false, true)->default(0);
             $table->string('parameter_value')->default('');
             $table->timestamps();
 
-            $table->index(['did_id', 'parameter_id'], 'did_parameter');
+            $table->index(['action_id', 'parameter_id'], 'action_parameter');
         });
     }
 
@@ -30,6 +30,6 @@ class CreateDidsParameters extends Migration
      */
     public function down()
     {
-        Schema::drop('dids_parameters');
+        Schema::drop('did_actions_parameters');
     }
 }

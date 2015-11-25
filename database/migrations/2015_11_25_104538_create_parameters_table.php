@@ -62,6 +62,10 @@ class CreateParametersTable extends Migration
                 'action' => 'Forward to number'
             ],
             [
+                'name' => 'URL to an audio stream',
+                'action' => 'Stream Audio'
+            ],
+            [
                 'name' => 'APP user id (or the user that own the voice mail box)',
                 'action' => 'Voicemail'
             ],

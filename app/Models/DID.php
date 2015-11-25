@@ -5,6 +5,7 @@ namespace App\Models;
 use App\API\ApiClient\GuzzleClient;
 use App\Models\BaseModel;
 use Auth;
+use Former\Facades\Former;
 
 class DID extends BaseModel
 {
@@ -16,6 +17,7 @@ class DID extends BaseModel
         'did',
         'app_id',
         'account_id',
+        'action_id',
         'reserve_id',
         'did_type',
         'state',
@@ -137,5 +139,23 @@ class DID extends BaseModel
             $params['rate_center'] = $storedDID->RateCenter;
         }
         $this->fill($params);
+    }
+
+    public function createDIDParameters($request)
+    {
+        $parameters = $request->parameters;
+    }
+
+    public static function getActionParameterHtml($parameter, $app)
+    {
+        $selectName = "parameters[$parameter->id]";
+        if (strpos($parameter->name, 'APP user id') !== false) {
+            $users = AppUser::whereAppId($app->id)->lists('name', 'id');
+            $html  = Former::select($selectName)->options($users)
+                        ->placeholder($parameter->name)->label('');
+        } else $html = Former::text($selectName)
+            ->placeholder($parameter->name)->raw().'<br/>';
+
+        return $html;
     }
 }
