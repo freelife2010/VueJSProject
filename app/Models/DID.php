@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\API\ApiClient\GuzzleClient;
-use App\Models\BaseModel;
 use Auth;
 use Former\Facades\Former;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DID extends BaseModel
 {
-    use GuzzleClient;
+    use GuzzleClient, SoftDeletes;
 
     protected $table = 'did';
 
@@ -33,9 +33,9 @@ class DID extends BaseModel
     ];
 
     public function actionParameters() {
-        return $this->hasMany('App\Models\DidsParameters', 'action_id');
+        return $this->hasMany('App\Models\DIDActionParameters', 'action_id', 'action_id')
+                    ->whereDidId($this->id);
     }
-
 
     function __construct()
     {
@@ -154,6 +154,7 @@ class DID extends BaseModel
         if ($parameters)
             foreach ($parameters as $paramId => $value) {
                 $didParameter = new DIDActionParameters();
+                $didParameter->did_id    = $this->id;
                 $didParameter->action_id = $request->action;
                 $didParameter->parameter_id = $paramId;
                 $didParameter->parameter_value = $value;

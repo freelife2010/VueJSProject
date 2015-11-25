@@ -12,7 +12,7 @@
             oTable = $table.DataTable({
                 "bPaginate": true,
                 "processing": false,
-                "order": [[ 2, "desc" ]],
+                "order": [[ 0, "desc" ]],
                 "ajax": {
                     url : '{{ url("did/data?app=".$APP->id) }}'
                 },
@@ -20,7 +20,10 @@
                     {data: 'id'},
                     {data: 'did'},
                     {data: 'state'},
-                    {data: 'rate_center'}
+                    {data: 'rate_center'},
+                    {data: 'name'},
+                    {data: 'created_at'},
+                    {data: 'actions'}
                 ],
                 "fnDrawCallback": function() {
                 }
@@ -55,6 +58,9 @@
                             <th>DID</th>
                             <th>State</th>
                             <th>Rate Center</th>
+                            <th>DID Action</th>
+                            <th>Created at</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody></tbody>

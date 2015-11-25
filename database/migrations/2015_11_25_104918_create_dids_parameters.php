@@ -14,6 +14,7 @@ class CreateDidsParameters extends Migration
     {
         Schema::create('did_actions_parameters', function (Blueprint $table) {
             $table->increments('id')->unsigned();
+            $table->integer('did_id', false, true);
             $table->integer('action_id', false, true)->default(0);
             $table->integer('parameter_id', false, true)->default(0);
             $table->string('parameter_value')->default('');

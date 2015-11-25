@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteRequest;
 use App\Models\DID;
 use DB;
 use Former\Facades\Former;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use URL;
 use yajra\Datatables\Datatables;
 
 class DIDController extends AppBaseController
@@ -28,9 +30,25 @@ class DIDController extends AppBaseController
 
     public function getData()
     {
-        $DIDs = DID::whereAppId($this->app->id);
+        $selectFields = [
+            'did.id',
+            'account_id',
+            'action_id',
+            'created_at',
+            'did',
+            'state',
+            'rate_center',
+            'reserve_id',
+            'did_action.name'
+        ];
+        $DIDs = DID::select($selectFields)->whereAppId($this->app->id)
+            ->join('did_action', 'action_id', '=' ,'did_action.id');
 
-        return Datatables::of($DIDs)->make(true);
+        return Datatables::of($DIDs)
+            ->add_column('actions', function($did) {
+                return $did->getActionButtonsWithAPP('did', $this->app);
+            })
+            ->make(true);
     }
 
     public function getCreate(Request $request)
@@ -63,6 +81,37 @@ class DIDController extends AppBaseController
             }
         } elseif (isset($response->error))
             $result = $this->getResult(true, 'Error occurred. Error message: '. $response->error);
+
+        return $result;
+    }
+
+    public function getEdit($id)
+    {
+        $title   = 'See DID';
+        $APP     = $this->app;
+        $model   = DID::find($id);
+        $params  = $model->actionParameters()->joinParamTable()->get();
+        $actions = DB::table('did_action')->lists('name', 'id');
+
+        return view('did.edit', compact('title', 'model', 'APP', 'actions', 'params'));
+    }
+
+    public function getDelete($id)
+    {
+        $title = 'Delete DID ?';
+        $model = DID::find($id);
+        $APP   = $this->app;
+        $url   = Url::to('did/delete/'.$model->id);
+        return view('did.delete', compact('title', 'model', 'APP', 'url'));
+    }
+
+    public function postDelete(DeleteRequest $request, $id)
+    {
+        $result = $this->getResult(true, 'Could not delete DID');
+        $model  = DID::find($id);
+        if ($model->delete()) {
+            $result = $this->getResult(false, 'DID deleted');
+        }
 
         return $result;
     }

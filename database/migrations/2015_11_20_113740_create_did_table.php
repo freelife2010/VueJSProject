@@ -25,6 +25,7 @@ class CreateDidTable extends Migration
             $table->integer('account_id', false, true)->default(0);
             $table->integer('action_id', false, true)->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
