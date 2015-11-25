@@ -9,8 +9,6 @@ use App\Jobs\StoreAPPToBillingDB;
 use App\Jobs\StoreAPPToChatServer;
 use App\Models\App;
 use App\Http\Requests;
-use App\Models\AppKey;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use URL;
 use yajra\Datatables\Datatables;

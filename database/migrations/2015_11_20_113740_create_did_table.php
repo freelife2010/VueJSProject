@@ -22,12 +22,8 @@ class CreateDidTable extends Migration
             $table->string('npa')->default('');
             $table->string('nxx')->default('');
             $table->string('rate_center')->default('');
-            $table->integer('account_id', false, true);
-            $table->integer('action_id', false, true);
+            $table->integer('account_id', false, true)->default(0);
             $table->timestamps();
-
-            $table->index('app_id', 'app_id');
-            $table->index('action_id', 'action_id');
         });
     }
 

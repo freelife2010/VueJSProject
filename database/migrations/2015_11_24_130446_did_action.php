@@ -14,9 +14,7 @@ class DidAction extends Migration
     {
         Schema::create('did_action', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->string('action');
-            $table->string('parameter')->default('');
-            $table->string('second_parameter')->default('');
+            $table->string('name');
         });
 
         $this->seedTable();
@@ -35,13 +33,24 @@ class DidAction extends Migration
     private function seedTable()
     {
         $actions = [
-            'Conference' => ''
+            'Conference',
+            'Hang Up',
+            'Forward to user',
+            'Forward to number',
+            'Stream Audio',
+            'Voicemail',
+            'IVR',
+            'Playback File',
+            'Playback TTS',
+            'Playback URL',
+            'Queue',
+            'Dequeue',
+            'HTTP Action Request'
         ];
-        foreach ($actions as $action => $parameter) {
+        foreach ($actions as $action) {
             DB::table('did_action')->insert(
                 [
-                    'action'    => $action,
-                    'parameter' => $parameter
+                    'name'    => $action
                 ]
             );
         }

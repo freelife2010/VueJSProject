@@ -27,15 +27,17 @@ class AppUser extends BaseModel
         'name',
         'password',
         'email',
-        'phone'
+        'phone',
+        'tech_prefix'
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'tech_prefix'];
 
     public static function createUser($params)
     {
-        $params['uuid']     = Uuid::generate();
-        $params['password'] = sha1($params['password']);
+        $params['uuid']        = Uuid::generate();
+        $params['password']    = sha1($params['password']);
+        $params['tech_prefix'] = self::generateTechPrefix();
 
         return AppUser::create($params);
     }
@@ -65,12 +67,30 @@ class AppUser extends BaseModel
 
     public function getDates()
     {
-        return array(static::CREATED_AT, static::UPDATED_AT);
+        return [static::CREATED_AT, static::UPDATED_AT];
     }
 
     public function getUserAlias($clientId, $app)
     {
         return $app->name."-".$clientId."-".$this->email;
+    }
+
+    public static function generateTechPrefix() {
+        $number = mt_rand(0, 99999999);
+
+        // call the same function if the barcode exists already
+        if (self::TechPrefixExists($number)) {
+            return self::generateTechPrefix();
+        }
+
+        // otherwise, it's valid and can be used
+        return $number;
+    }
+
+    public static function TechPrefixExists($number) {
+        // query the database and return a boolean
+        // for instance, it might look like this in Laravel
+        return AppUser::whereTechPrefix($number)->exists();
     }
 
 }
