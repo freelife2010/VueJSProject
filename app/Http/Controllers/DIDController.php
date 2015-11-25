@@ -42,7 +42,8 @@ class DIDController extends AppBaseController
             'did_action.name'
         ];
         $DIDs = DID::select($selectFields)->whereAppId($this->app->id)
-            ->join('did_action', 'action_id', '=' ,'did_action.id');
+            ->join('did_action', 'action_id', '=' ,'did_action.id')
+            ->whereNull('deleted_at');
 
         return Datatables::of($DIDs)
             ->add_column('actions', function($did) {

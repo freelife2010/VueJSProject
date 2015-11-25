@@ -37,6 +37,10 @@ class DID extends BaseModel
                     ->whereDidId($this->id);
     }
 
+    public function scopeAction($query) {
+        return $query->join('did_action', 'action_id', '=', 'did_action.id');
+    }
+
     function __construct()
     {
         $config = [
@@ -125,7 +129,6 @@ class DID extends BaseModel
         foreach ($storedDIDs as $did) {
             if ($did->TN == $number)
                 return $did;
-            $a = 1;
         }
 
         return false;

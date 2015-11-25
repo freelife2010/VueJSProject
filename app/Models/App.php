@@ -34,7 +34,7 @@ class App extends BaseModel
 
     public function did()
     {
-        return $this->hasMany('App\Models\DID', 'app_id');
+        return $this->hasMany('App\Models\DID', 'app_id')->whereNull('deleted_at');
     }
 
     public function createApp($attributes, $user = null)

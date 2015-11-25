@@ -80,6 +80,9 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->post('users', 'App\API\Controllers\UserController@createUsers');
 
     $api->get('users/{username}', 'App\API\Controllers\UserController@getUserInfo');
+
+    //freeSwitch routes
+    $api->get('fs/get_call_handler', 'App\API\Controllers\FreeswitchController@getCallHandler');
 });
 
 //Grants access token
