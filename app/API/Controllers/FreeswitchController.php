@@ -9,7 +9,7 @@ use Dingo\Api\Routing\Helpers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
+use SimpleXMLElement;
 
 class FreeswitchController extends Controller
 {
@@ -24,7 +24,6 @@ class FreeswitchController extends Controller
      */
     public function getCallHandler(Request $request)
     {
-        $all = $request->all();
         $validator = $this->makeValidator($request, [
             'dnis' => 'required'
         ]);
@@ -32,14 +31,49 @@ class FreeswitchController extends Controller
             return $this->validationFailed($validator);
         }
 
-        return $this->getDIDXmlResponse($request->dnis);
+        $did = $this->findDID($request->dnis);
+        $xml = $this->getDIDXmlResponse($did);
+
+        return $this->makeResponse($did, $xml);
+    }
+
+    protected function findDID($dnis)
+    {
+        $selectFields = [
+            'did.id',
+            'app_id',
+            'action_id',
+            'did_action.name'
+        ];
+
+        return DID::select($selectFields)->whereDid($dnis)->action()->first();
     }
 
     protected function getDIDXmlResponse($did)
     {
-        $did = DID::whereDid($did)->action()->first();
 
+        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><action></action>');
+        $xml->addAttribute('type', $did->name);
+        $params = $xml->addChild('parameters');
+
+        $actionParameters = $did->actionParameters()->joinParamTable()->get();
+        foreach ($actionParameters as $param) {
+            $node = $params->addChild('parameter', $param->parameter_value);
+            $node->addAttribute('name', $param->name);
+        }
+
+
+        return $xml->asXML();
     }
 
+    protected function makeResponse($did, $xml)
+    {
+        $response = [
+            'app_id'      => $did->app_id,
+            'handler_xml' => $xml
+        ];
+
+        return $this->response->array($response);
+    }
 
 }
