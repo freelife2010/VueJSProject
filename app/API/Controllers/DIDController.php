@@ -79,7 +79,7 @@ class DIDController extends Controller
         $validator = $this->makeValidator($request, [
             'did'        => 'required',
             'action_id'  => 'required',
-            'account_id' => 'required'
+            'app_id'     => 'required'
         ]);
         if ($validator->fails()) {
             return $this->validationFailed($validator);
@@ -91,16 +91,19 @@ class DIDController extends Controller
     protected function buyDID($request)
     {
         $did    = new DID();
+        if ($request->parameters)
+            $request->parameters = (array)json_decode($request->parameters);
         $response = $did->reserveDID($request->did);
         if (isset($response->reserveId)) {
             $did->reserve_id = $response->reserveId;
             $this->fillDIDParams($did, $request);
             if ($did->save()) {
+                $request->action = $request->action_id;
                 $did->createDIDParameters($request);
             }
         }
 
-        return $response;
+        return $this->response->array((array) $response);
     }
 
     protected function fillDIDParams($did, $request)
