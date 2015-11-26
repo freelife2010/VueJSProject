@@ -18,17 +18,25 @@
                     <div class="col-md-2 manage-btn">
                         <a href="{{{ URL::to('app-keys/index/?app='.$APP->id) }}}"
                            class="btn btn-labeled btn-xl btn-info">
-                            <span class="btn-label">
-                                   <i class="fa fa-key"></i>
-                               </span> APP API keys
+                        <span class="btn-label">
+                               <i class="fa fa-key"></i>
+                           </span> APP API keys
                         </a>
                     </div>
                     <div class="col-md-2 manage-btn">
                         <a href="{{{ URL::to('app-users/index/?app='.$APP->id) }}}"
                            class="btn btn-labeled btn-xl btn-info">
+                        <span class="btn-label">
+                               <i class="fa fa-user"></i>
+                           </span> APP Users
+                        </a>
+                    </div>
+                    <div class="col-md-2 manage-btn">
+                        <a href="{{{ URL::to('did/index/?app='.$APP->id) }}}"
+                           class="btn btn-labeled btn-xl btn-green">
                             <span class="btn-label">
-                                   <i class="fa fa-user"></i>
-                               </span> APP Users
+                                   <i class="fa fa-phone-square"></i>
+                               </span> Manage DID
                         </a>
                     </div>
                 </div>
