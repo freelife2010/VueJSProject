@@ -20,8 +20,7 @@ class HomeController extends Controller {
 	 */
 	public function getIndex()
 	{
-        $title = 'Home';
-		return view('home', compact('title'));
+		return redirect('app/list');
 	}
 
 }
