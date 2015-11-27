@@ -23,6 +23,7 @@ class CreateDidTable extends Migration
             $table->string('nxx')->default('');
             $table->string('rate_center')->default('');
             $table->integer('account_id', false, true)->default(0);
+            $table->integer('owned_by', false, true)->default(0);
             $table->integer('action_id', false, true)->default(0);
             $table->timestamps();
             $table->softDeletes();

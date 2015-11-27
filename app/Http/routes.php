@@ -84,6 +84,8 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
     //freeSwitch routes
     $api->get('fs/get_call_handler', 'App\API\Controllers\FreeswitchController@getCallHandler');
+    $api->get('fs/join_conference', 'App\API\Controllers\FreeswitchController@getJoinConference');
+    $api->get('fs/leave_conference', 'App\API\Controllers\FreeswitchController@getLeaveConference');
 });
 
 //Grants access token

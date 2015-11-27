@@ -15,13 +15,6 @@ class FreeswitchController extends Controller
 {
     use Helpers, APIHelperTrait;
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function getCallHandler(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -32,9 +25,24 @@ class FreeswitchController extends Controller
         }
 
         $did = $this->findDID($request->dnis);
+        if (!$did)
+            return ['error' => 'DID not found'];
         $xml = $this->getDIDXmlResponse($did);
 
         return $this->makeResponse($did, $xml);
+    }
+
+    public function getJoinConference(Request $request)
+    {
+        $validator = $this->makeValidator($request, [
+            'dnis'      => 'required',
+            'ani'       => 'required',
+            'uuid'      => 'required',
+            'conf_name' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
     }
 
     protected function findDID($dnis)
@@ -42,6 +50,7 @@ class FreeswitchController extends Controller
         $selectFields = [
             'did.id',
             'app_id',
+            'owned_by',
             'action_id',
             'did_action.name'
         ];
@@ -70,6 +79,7 @@ class FreeswitchController extends Controller
     {
         $response = [
             'app_id'      => $did->app_id,
+            'tech_prefix' => $did->appUser ? $did->appUser->tech_prefix : '',
             'handler_xml' => $xml
         ];
 

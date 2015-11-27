@@ -47,6 +47,8 @@
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
         <?= Former::hidden('app_id')->value($APP->id);?>
+            <?= Former::select('owned_by')->options($appUsers, $model->owned_by)
+                    ->label('APP User')->disabled();?>
         <?= Former::select('state')->options(["$model->state"])->disabled();?>
         <?= Former::select('rate_center')->options(["$model->rate_center"])->disabled();?>
         <?= Former::select('did')->options(["$model->did"])->disabled();?>

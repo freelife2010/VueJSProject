@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DeleteRequest;
+use App\Models\AppUser;
 use App\Models\DID;
 use DB;
 use Former\Facades\Former;
@@ -33,6 +34,7 @@ class DIDController extends AppBaseController
         $selectFields = [
             'did.id',
             'account_id',
+            'owned_by',
             'action_id',
             'created_at',
             'did',
@@ -49,19 +51,29 @@ class DIDController extends AppBaseController
             ->add_column('actions', function($did) {
                 return $did->getActionButtonsWithAPP('did', $this->app);
             })
+            ->edit_column('owned_by', function($did) {
+                return $did->appUser ? $did->appUser->email : '';
+            })
             ->make(true);
     }
 
     public function getCreate(Request $request)
     {
-        $title   = 'Buy DID';
-        $did     = new DID();
-        $APP     = $this->app;
-        $states  = $did->getStates();
-        $states  = array_combine($states, $states);
-        $actions = DB::table('did_action')->lists('name', 'id');
+        $title    = 'Buy DID';
+        $did      = new DID();
+        $APP      = $this->app;
+        $states   = $did->getStates();
+        $states   = array_combine($states, $states);
+        $actions  = DB::table('did_action')->lists('name', 'id');
+        $appUsers = $APP->users()->lists('email', 'id');
 
-        return view('did.create', compact('title', 'did', 'states', 'APP', 'actions'));
+        return view('did.create', compact(
+            'title',
+            'did',
+            'states',
+            'APP',
+            'appUsers',
+            'actions'));
     }
 
 
@@ -69,6 +81,7 @@ class DIDController extends AppBaseController
     {
         $this->validate($request, [
             'did'        => 'required',
+            'owned_by'   => 'required',
             'action'     => 'required'
         ]);
         $result = $this->getResult(true, 'Could not buy DID');
@@ -88,13 +101,20 @@ class DIDController extends AppBaseController
 
     public function getEdit($id)
     {
-        $title   = 'See DID';
-        $APP     = $this->app;
-        $model   = DID::find($id);
-        $params  = $model->actionParameters()->joinParamTable()->get();
-        $actions = DB::table('did_action')->lists('name', 'id');
+        $title    = 'See DID';
+        $APP      = $this->app;
+        $model    = DID::find($id);
+        $params   = $model->actionParameters()->joinParamTable()->get();
+        $actions  = DB::table('did_action')->lists('name', 'id');
+        $appUsers = $APP->users()->lists('email', 'id');
 
-        return view('did.edit', compact('title', 'model', 'APP', 'actions', 'params'));
+        return view('did.edit', compact(
+            'title',
+            'model',
+            'APP',
+            'appUsers',
+            'actions',
+            'params'));
     }
 
     public function getDelete($id)

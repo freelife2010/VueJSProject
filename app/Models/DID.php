@@ -18,6 +18,7 @@ class DID extends BaseModel
         'app_id',
         'account_id',
         'action_id',
+        'owned_by',
         'rate_center',
         'reserve_id',
         'did_type',
@@ -31,6 +32,11 @@ class DID extends BaseModel
         'accountno' => '',
         'token' => ''
     ];
+
+    protected function appUser()
+    {
+        return $this->belongsTo('App\Models\AppUser', 'owned_by');
+    }
 
     public function actionParameters() {
         return $this->hasMany('App\Models\DIDActionParameters', 'action_id', 'action_id')

@@ -88,6 +88,8 @@
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
         <?= Former::hidden('app_id')->value($APP->id);?>
+        <?= Former::select('owned_by')->options($appUsers)->label('APP User')
+                ->placeholder('Select APP User');?>
         <?= Former::select('state')->options($states)->placeholder('Select state');?>
         <?= Former::select('rate_center')->disabled();?>
         <?= Former::select('did')->disabled();?>
