@@ -79,7 +79,8 @@ class DIDController extends Controller
         $validator = $this->makeValidator($request, [
             'did'        => 'required',
             'action_id'  => 'required',
-            'app_id'     => 'required'
+            'app_id'     => 'required',
+            'owned_by'   => 'required'
         ]);
         if ($validator->fails()) {
             return $this->validationFailed($validator);

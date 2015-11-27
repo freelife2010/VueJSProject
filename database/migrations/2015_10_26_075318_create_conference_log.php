@@ -14,10 +14,11 @@ class CreateConferenceLog extends Migration
     {
         Schema::create('conference_log', function (Blueprint $table) {
             $table->increments('id')->unsigned();
+            $table->string('name');
             $table->integer('app_id', false, true);
             $table->integer('conference_id', false, true);
-            $table->timestamp('enter_time');
-            $table->timestamp('leave_time');
+            $table->timestamp('enter_time')->nullable();
+            $table->timestamp('leave_time')->nullable();
             $table->integer('caller_id', false, true);
             $table->integer('user_id', false, true);
             $table->integer('is_owner', false, true);

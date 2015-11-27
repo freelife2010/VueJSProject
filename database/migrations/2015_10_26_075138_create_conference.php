@@ -16,7 +16,6 @@ class CreateConference extends Migration
             $table->increments('id')->unsigned();
             $table->integer('app_id', false, true);
             $table->integer('conference_id', false, true);
-            $table->timestamp('created_on');
             $table->integer('owner_user_id', false, true);
             $table->string('owner_code');
             $table->string('participant_code');
@@ -25,6 +24,7 @@ class CreateConference extends Migration
             $table->integer('join_media_id', false, true);
             $table->integer('require_ident', false, true);
             $table->integer('recording', false, true);
+            $table->timestamps();
         });
     }
 

@@ -3,6 +3,7 @@
 namespace App\API\Controllers;
 
 use App\API\APIHelperTrait;
+use App\Models\ConferenceLog;
 use App\Models\DID;
 use Dingo\Api\Routing\Helpers;
 
@@ -39,10 +40,32 @@ class FreeswitchController extends Controller
             'ani'       => 'required',
             'uuid'      => 'required',
             'conf_name' => 'required',
+            'conf_id'   => 'required'
         ]);
         if ($validator->fails()) {
             return $this->validationFailed($validator);
         }
+
+        $did = $this->findDID($request->dnis);
+        if (!$did)
+            return ['error' => 'DID not found'];
+
+        return $this->createConferenceLogRecord($request, $did);
+    }
+
+    protected function createConferenceLogRecord($request, $did)
+    {
+        $conferenceLog                = new ConferenceLog();
+        $conferenceLog->app_id        = $did->app_id;
+        $conferenceLog->conference_id = $request->conf_id;
+        $conferenceLog->name          = $request->conf_name;
+        $conferenceLog->enter_time    = date('Y-m-d H:i:s');
+        $conferenceLog->caller_id     = $request->uuid;
+        $conferenceLog->user_id       = $did->owned_by;
+        $conferenceLog->is_owner      = 0;
+
+        return $conferenceLog->save() ? ['result' => 'ok'] : ['error' => ''];
+
     }
 
     protected function findDID($dnis)
