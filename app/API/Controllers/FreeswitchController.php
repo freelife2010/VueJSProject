@@ -53,14 +53,33 @@ class FreeswitchController extends Controller
         return $this->createConferenceLogRecord($request, $did);
     }
 
-    protected function createConferenceLogRecord($request, $did)
+    public function getLeaveConference(Request $request)
+    {
+        $validator = $this->makeValidator($request, [
+            'uuid'      => 'required',
+            'conf_name' => 'required',
+            'conf_id'   => 'required'
+        ]);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
+
+        $enterSession = ConferenceLog::whereUuid($request->uuid)->first();
+        if (!$enterSession)
+            return ['error' => 'Couldn\'t find enter conference session record'];
+        $enterSession['owned_by'] = $enterSession->user_id;
+        return $this->createConferenceLogRecord($request, $enterSession, false);
+    }
+
+    protected function createConferenceLogRecord($request, $did, $enterConference = true)
     {
         $conferenceLog                = new ConferenceLog();
         $conferenceLog->app_id        = $did->app_id;
         $conferenceLog->conference_id = $request->conf_id;
         $conferenceLog->name          = $request->conf_name;
-        $conferenceLog->enter_time    = date('Y-m-d H:i:s');
-        $conferenceLog->caller_id     = $request->ani;
+        $conferenceLog->enter_time    = $enterConference ? date('Y-m-d H:i:s') : null;
+        $conferenceLog->leave_time    = !$enterConference ? date('Y-m-d H:i:s') : null;
+        $conferenceLog->caller_id     = $did->caller_id ?: $request->ani;
         $conferenceLog->uuid          = $request->uuid;
         $conferenceLog->user_id       = $did->owned_by ?: 0;
         $conferenceLog->is_owner      = 0;
