@@ -60,8 +60,9 @@ class FreeswitchController extends Controller
         $conferenceLog->conference_id = $request->conf_id;
         $conferenceLog->name          = $request->conf_name;
         $conferenceLog->enter_time    = date('Y-m-d H:i:s');
-        $conferenceLog->caller_id     = $request->uuid;
-        $conferenceLog->user_id       = $did->owned_by;
+        $conferenceLog->caller_id     = $request->ani;
+        $conferenceLog->uuid          = $request->uuid;
+        $conferenceLog->user_id       = $did->owned_by ?: 0;
         $conferenceLog->is_owner      = 0;
 
         return $conferenceLog->save() ? ['result' => 'ok'] : ['error' => ''];
