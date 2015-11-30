@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth', 'csrf']], function() {
     Route::controller('app-keys', 'AppKeysController');
     Route::controller('cdr', 'CDRController');
     Route::controller('app-cdr', 'AppCDRController');
+    Route::controller('conferences', 'ConferenceController');
 });
 
 Route::get('/resendEmail', 'Auth\AuthController@resendEmail');
@@ -86,6 +87,8 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('fs/get_call_handler', 'App\API\Controllers\FreeswitchController@getCallHandler');
     $api->get('fs/join_conference', 'App\API\Controllers\FreeswitchController@getJoinConference');
     $api->get('fs/leave_conference', 'App\API\Controllers\FreeswitchController@getLeaveConference');
+    $api->get('fs/agent_join_queue', 'App\API\Controllers\FreeswitchController@getAgentQueueJoin');
+    $api->get('fs/agent_leave_queue', 'App\API\Controllers\FreeswitchController@getAgentQueueLeave');
 });
 
 //Grants access token

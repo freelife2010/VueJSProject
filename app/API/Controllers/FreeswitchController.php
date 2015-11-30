@@ -5,6 +5,7 @@ namespace App\API\Controllers;
 use App\API\APIHelperTrait;
 use App\Models\ConferenceLog;
 use App\Models\DID;
+use App\Models\QueueAgentSession;
 use Dingo\Api\Routing\Helpers;
 
 use App\Http\Requests;
@@ -68,7 +69,45 @@ class FreeswitchController extends Controller
         if (!$enterSession)
             return ['error' => 'Couldn\'t find enter conference session record'];
         $enterSession['owned_by'] = $enterSession->user_id;
+
         return $this->createConferenceLogRecord($request, $enterSession, false);
+    }
+
+    public function getAgentQueueJoin(Request $request)
+    {
+        $validator = $this->makeValidator($request, [
+            'dnis'       => 'required',
+            'uuid'       => 'required',
+            'queue_name' => 'required',
+            'queue_id'   => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
+
+        $did = $this->findDID($request->dnis);
+        if (!$did)
+            return ['error' => 'DID not found'];
+
+        return $this->createQueueAgentSessionRecord($request, $did);
+    }
+
+    public function getAgentQueueLeave(Request $request)
+    {
+        $validator = $this->makeValidator($request, [
+            'uuid'       => 'required',
+            'queue_name' => 'required',
+            'queue_id'   => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
+        $enterSession = QueueAgentSession::whereUuid($request->uuid)->first();
+
+        if (!$enterSession)
+            return ['error' => 'Couldn\'t find enter conference session record'];
+
+        return $this->createQueueAgentSessionRecord($request, $enterSession, false);
     }
 
     protected function createConferenceLogRecord($request, $did, $enterConference = true)
@@ -86,6 +125,19 @@ class FreeswitchController extends Controller
 
         return $conferenceLog->save() ? ['result' => 'ok'] : ['error' => ''];
 
+    }
+
+    protected function createQueueAgentSessionRecord($request, $did, $enterSession = true)
+    {
+        $agentSession             = new QueueAgentSession();
+        $agentSession->app_id     = $did->app_id;
+        $agentSession->queue_id   = $request->queue_id;
+        $agentSession->uuid       = $request->uuid;
+        $agentSession->queue_name = $request->queue_name;
+        $agentSession->join_time  = $enterSession ? date('Y-m-d H:i:s') : null;
+        $agentSession->leave_time = !$enterSession ? date('Y-m-d H:i:s') : null;
+
+        return $agentSession->save() ? ['result' => 'ok'] : ['error' => ''];
     }
 
     protected function findDID($dnis)

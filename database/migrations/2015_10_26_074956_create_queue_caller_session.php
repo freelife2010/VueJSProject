@@ -16,6 +16,8 @@ class CreateQueueCallerSession extends Migration
             $table->increments('id')->unsigned();
             $table->integer('app_id', false, true);
             $table->integer('queue_id', false, true);
+            $table->string('queue_name');
+            $table->string('uuid');
             $table->timestamp('join_time');
             $table->timestamp('leave_time');
             $table->timestamp('talk_start_time');

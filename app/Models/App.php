@@ -120,21 +120,23 @@ class App extends BaseModel
                 'labelCount' => 'did'
             ],
             [
+                'name'       => 'PBX',
+                'icon'       => 'fa fa-phone',
+                'url'        => 'app-pbx',
+                'subMenu' => [
+                    [
+                        'name' => 'Conference log',
+                        'icon' => 'fa fa-file-text',
+                        'url'  => 'conferences/log',
+                    ]
+                ]
+            ],
+            [
                 'name'       => 'Users',
                 'icon'       => 'icon-user',
                 'url'        => 'app-users/index',
                 'labelCount' => 'users'
             ],
-//            [
-//                'name' => 'Number',
-//                'icon' => 'icon-screen-smartphone',
-//                'url'  => 'app-numbers/index',
-//            ],
-//            [
-//                'name' => 'Conference',
-//                'icon' => 'icon-earphones-alt',
-//                'url'  => 'app-conference/index',
-//            ],
         ];
     }
 }
