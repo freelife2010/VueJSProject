@@ -128,6 +128,16 @@ class App extends BaseModel
                         'name' => 'Conference log',
                         'icon' => 'fa fa-file-text',
                         'url'  => 'conferences/log',
+                    ],
+                    [
+                        'name' => 'Agent session log',
+                        'icon' => 'fa fa-file-text-o',
+                        'url'  => 'queues/agent-log',
+                    ],
+                    [
+                        'name' => 'Caller session log',
+                        'icon' => 'fa fa-file-text-o',
+                        'url'  => 'queues/caller-log',
                     ]
                 ]
             ],

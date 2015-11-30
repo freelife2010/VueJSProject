@@ -6,6 +6,7 @@ use App\API\APIHelperTrait;
 use App\Models\ConferenceLog;
 use App\Models\DID;
 use App\Models\QueueAgentSession;
+use App\Models\QueueCallerSession;
 use Dingo\Api\Routing\Helpers;
 
 use App\Http\Requests;
@@ -77,6 +78,7 @@ class FreeswitchController extends Controller
     {
         $validator = $this->makeValidator($request, [
             'dnis'       => 'required',
+            'ani'        => 'required',
             'uuid'       => 'required',
             'queue_name' => 'required',
             'queue_id'   => 'required',
@@ -89,7 +91,7 @@ class FreeswitchController extends Controller
         if (!$did)
             return ['error' => 'DID not found'];
 
-        return $this->createQueueAgentSessionRecord($request, $did);
+        return $this->createQueueSessionRecord($request, $did, new QueueAgentSession());
     }
 
     public function getAgentQueueLeave(Request $request)
@@ -105,9 +107,9 @@ class FreeswitchController extends Controller
         $enterSession = QueueAgentSession::whereUuid($request->uuid)->first();
 
         if (!$enterSession)
-            return ['error' => 'Couldn\'t find enter conference session record'];
+            return ['error' => 'Couldn\'t find enter queue session record'];
 
-        return $this->createQueueAgentSessionRecord($request, $enterSession, false);
+        return $this->createQueueSessionRecord($request, $enterSession, new QueueAgentSession(), false);
     }
 
     protected function createConferenceLogRecord($request, $did, $enterConference = true)
@@ -127,17 +129,54 @@ class FreeswitchController extends Controller
 
     }
 
-    protected function createQueueAgentSessionRecord($request, $did, $enterSession = true)
+    protected function createQueueSessionRecord($request, $did, $queueSession, $enterSession = true)
     {
-        $agentSession             = new QueueAgentSession();
-        $agentSession->app_id     = $did->app_id;
-        $agentSession->queue_id   = $request->queue_id;
-        $agentSession->uuid       = $request->uuid;
-        $agentSession->queue_name = $request->queue_name;
-        $agentSession->join_time  = $enterSession ? date('Y-m-d H:i:s') : null;
-        $agentSession->leave_time = !$enterSession ? date('Y-m-d H:i:s') : null;
+        $queueSession->app_id     = $did->app_id;
+        $queueSession->queue_id   = $request->queue_id;
+        $queueSession->uuid       = $request->uuid;
+        $queueSession->queue_name = $request->queue_name;
+        $queueSession->join_time  = $enterSession ? date('Y-m-d H:i:s') : null;
+        $queueSession->leave_time = !$enterSession ? date('Y-m-d H:i:s') : null;
 
-        return $agentSession->save() ? ['result' => 'ok'] : ['error' => ''];
+        return $queueSession->save() ? ['result' => 'ok'] : ['error' => ''];
+    }
+
+    public function getCallerQueueJoin(Request $request)
+    {
+        $validator = $this->makeValidator($request, [
+            'dnis'       => 'required',
+            'ani'        => 'required',
+            'uuid'       => 'required',
+            'queue_name' => 'required',
+            'queue_id'   => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
+
+        $did = $this->findDID($request->dnis);
+        if (!$did)
+            return ['error' => 'DID not found'];
+
+        return $this->createQueueSessionRecord($request, $did, new QueueCallerSession());
+    }
+
+    public function getCallerQueueLeave(Request $request)
+    {
+        $validator = $this->makeValidator($request, [
+            'uuid'       => 'required',
+            'queue_name' => 'required',
+            'queue_id'   => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
+        $enterSession = QueueCallerSession::whereUuid($request->uuid)->first();
+
+        if (!$enterSession)
+            return ['error' => 'Couldn\'t find enter queue session record'];
+
+        return $this->createQueueSessionRecord($request, $enterSession, new QueueCallerSession(), false);
     }
 
     protected function findDID($dnis)
