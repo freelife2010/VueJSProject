@@ -13,6 +13,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use SimpleXMLElement;
+use Symfony\Component\HttpFoundation\Response;
 
 class FreeswitchController extends Controller
 {
@@ -208,6 +209,45 @@ class FreeswitchController extends Controller
 
 
         return $xml->asXML();
+    }
+
+    public function getFreeswitchResponse(Request $request)
+    {
+        $validator = $this->makeValidator($request, [
+            'Caller-ANI'                => 'required',
+            'Caller-Destination-Number' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
+
+        $did = $this->findDID($request->input('Caller-Destination-Number'));
+        if (!$did)
+            return ['error' => 'DID not found'];
+
+        return $this->getFreeswitchXmlResponse($did);
+    }
+
+    protected function getFreeswitchXmlResponse($did)
+    {
+        $actionParameter = $did->actionParameters()->joinParamTable()->first();
+        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');
+        $xml->addAttribute('type', 'freeswitch/xml');
+        $section = $xml->addChild('section');
+        $section->addAttribute('name', 'dialplan');
+        $section->addAttribute('description', 'dialplan');
+        $context = $section->addChild('context');
+        $context->addAttribute('name', 'default');
+        $extension = $context->addChild('extension');
+        $extension->addAttribute('name', 'test9');
+        $condition = $extension->addChild('condition');
+        $condition->addAttribute('field', 'destination_number');
+        $condition->addAttribute('expression', '^(.*)$');
+        $action = $condition->addChild('action');
+        $action->addAttribute('application', $did->name);
+        $action->addAttribute('data', $actionParameter->parameter_value);
+
+        return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
     }
 
     protected function makeResponse($did, $xml)

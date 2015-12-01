@@ -98,3 +98,6 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 Route::post('api/token', function() {
     return Response::json(Authorizer::issueAccessToken());
 });
+
+//Freeswitch XML response method
+Route::post('dialplan', '\App\API\Controllers\FreeswitchController@getFreeswitchResponse');
