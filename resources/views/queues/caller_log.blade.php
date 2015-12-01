@@ -17,6 +17,7 @@
                     url : "/queues/caller-data/?app=" + getUrlParam('app')
                 },
                 "columns": [
+                    {data: 'caller_id'},
                     {data: 'queue_id'},
                     {data: 'queue_name'},
                     {data: 'join_time'},
@@ -43,6 +44,7 @@
                     <table id="table_log" class="table table-striped table-hover">
                         <thead>
                         <tr>
+                            <th>Caller ID</th>
                             <th>Queue ID</th>
                             <th>Queue name</th>
                             <th>Enter time</th>

@@ -15,6 +15,7 @@ class CreateQueueCallerSession extends Migration
         Schema::create('queue_caller_session', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('app_id', false, true);
+            $table->bigInteger('caller_id', false, true);
             $table->integer('queue_id', false, true);
             $table->string('queue_name');
             $table->string('uuid');

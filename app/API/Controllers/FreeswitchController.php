@@ -132,6 +132,7 @@ class FreeswitchController extends Controller
     protected function createQueueSessionRecord($request, $did, $queueSession, $enterSession = true)
     {
         $queueSession->app_id     = $did->app_id;
+        $queueSession->caller_id  = $request->ani;
         $queueSession->queue_id   = $request->queue_id;
         $queueSession->uuid       = $request->uuid;
         $queueSession->queue_name = $request->queue_name;
@@ -195,7 +196,7 @@ class FreeswitchController extends Controller
     protected function getDIDXmlResponse($did)
     {
 
-        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><action></action>');
+        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><action></action>');
         $xml->addAttribute('type', $did->name);
         $params = $xml->addChild('parameters');
 
