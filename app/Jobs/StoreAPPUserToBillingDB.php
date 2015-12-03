@@ -48,7 +48,10 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
                           values (?,?,'t','f','t',2)  RETURNING resource_id ",
                           [$clientAlias, $clientId], 'resource_id');
-
+        $this->insertToBillingDB("
+                          insert into resource_ip (username,direction,resource_id)
+                          values (?,0,?)",
+            [ $this->user->user_id, $resourceId]);
         $routeStrategyId = $this->getRouteStrategyId();
         $rateTableId     = $this->getRateTableId();
 

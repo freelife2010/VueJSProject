@@ -28,7 +28,8 @@ class AppUser extends BaseModel
         'password',
         'email',
         'phone',
-        'tech_prefix'
+        'tech_prefix',
+        'user_id'
     ];
 
     protected $hidden = ['password', 'tech_prefix'];
@@ -37,7 +38,8 @@ class AppUser extends BaseModel
     {
         $params['uuid']        = Uuid::generate();
         $params['password']    = sha1($params['password']);
-        $params['tech_prefix'] = self::generateTechPrefix();
+        $params['tech_prefix'] = self::generateUniqueId();
+        $params['user_id']     = self::generateUniqueId(9999999999, 'user_id');
 
         return AppUser::create($params);
     }
@@ -75,22 +77,22 @@ class AppUser extends BaseModel
         return $app->name."-".$clientId."-".$this->email;
     }
 
-    public static function generateTechPrefix() {
-        $number = mt_rand(0, 99999999);
+    public static function generateUniqueId($digits = 99999999, $field = 'tech_prefix') {
+        $number = mt_rand(0, $digits);
 
         // call the same function if the barcode exists already
-        if (self::TechPrefixExists($number)) {
-            return self::generateTechPrefix();
+        if (self::IdExists($number, $field)) {
+            return self::generateUniqueId();
         }
 
         // otherwise, it's valid and can be used
         return $number;
     }
 
-    public static function TechPrefixExists($number) {
+    public static function IdExists($number, $field) {
         // query the database and return a boolean
         // for instance, it might look like this in Laravel
-        return AppUser::whereTechPrefix($number)->exists();
+        return AppUser::where($field, '=', $number)->exists();
     }
 
 }

@@ -16,6 +16,7 @@ class CreateUsersTable extends Migration
             $table->increments('id')->unsigned();
             $table->string('uuid')->default('');
             $table->integer('tech_prefix', false, true)->unique()->default(0);
+            $table->integer('user_id', false, true)->unique()->default(0);
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->default('');
