@@ -9,13 +9,11 @@
 namespace App\API;
 
 
-use App\Models\App;
 use Config;
 use DateTime;
 use DateTimeZone;
 use DB;
 use Dingo\Api\Http\Request;
-use Illuminate\Support\Collection;
 use Moment\CustomFormats\MomentJs;
 use Moment\Moment;
 use Validator;

@@ -222,15 +222,12 @@ class FreeswitchController extends Controller
         }
 
         $did = $this->findDID($request->input('Caller-Destination-Number'));
-        if (!$did)
-            return ['error' => 'DID not found'];
 
         return $this->getFreeswitchXmlResponse($did);
     }
 
     protected function getFreeswitchXmlResponse($did)
     {
-        $actionParameter = $did->actionParameters()->joinParamTable()->first();
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');
         $xml->addAttribute('type', 'freeswitch/xml');
         $section = $xml->addChild('section');
@@ -244,8 +241,14 @@ class FreeswitchController extends Controller
         $condition->addAttribute('field', 'destination_number');
         $condition->addAttribute('expression', '^(.*)$');
         $action = $condition->addChild('action');
-        $action->addAttribute('application', $did->name);
-        $action->addAttribute('data', $actionParameter->parameter_value);
+        if ($did) {
+            $actionParameter = $did->actionParameters()->joinParamTable()->first();
+            $action->addAttribute('application', $did->name);
+            $action->addAttribute('data', $actionParameter->parameter_value);
+        } else {
+            $action->addAttribute('application', 'playback');
+            $action->addAttribute('data', 'intro_prompt');
+        }
 
         return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
     }
