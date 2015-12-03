@@ -11,6 +11,7 @@ use Dingo\Api\Routing\Helpers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use SimpleXMLElement;
 use Symfony\Component\HttpFoundation\Response;
@@ -240,6 +241,8 @@ class FreeswitchController extends Controller
         $condition = $extension->addChild('condition');
         $condition->addAttribute('field', 'destination_number');
         $condition->addAttribute('expression', '^(.*)$');
+        if ($did->name == 'HTTP Action Request')
+            return $this->makeXMLForHTTPRequestAction($did, $condition, $xml);
         $action = $condition->addChild('action');
         if ($did) {
             $this->makeXMLActionNode($did, $action);
@@ -264,6 +267,40 @@ class FreeswitchController extends Controller
         }
         $action->addAttribute('application', $did->name);
         $action->addAttribute('data', $actionParameter);
+    }
+
+    protected function makeXMLForHTTPRequestAction($did, $condition, $xml)
+    {
+        $request          = Request::capture();
+        $actionParameter  = $did->actionParameters()->joinParamTable()->first();
+        $actionParameter  = $actionParameter ? $actionParameter->parameter_value : '';
+        $actionParameter .= '?callerid='.$request->input('Caller-ANI');
+        $actionParameter .= '&call-to='.$request->input('Caller-Destination-Number');
+        $client           = new Client();
+        $request          = $client->request('GET', $actionParameter);
+        $stringXML        = (string) $request->getBody();
+        $this->parseResponseXML($stringXML, $condition);
+
+        return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
+    }
+
+    protected function parseResponseXML($stringXML, $condition)
+    {
+        $actions   = explode('<Action type=\'', $stringXML);
+        array_shift($actions);
+        foreach ($actions as $action) {
+            $endPos     = strpos($action, '\'>');
+            $endPos     = $endPos !== false ? $endPos : strpos($action, '\' />');
+            $actionName = substr($action, 0, $endPos);
+            $startPos   = $endPos + strlen('\'>');
+            $endPos     = strpos($action, '</');
+            $paramValue = substr($action, $startPos, $endPos-$startPos);
+            $paramValue = preg_replace('/[^a-zA-Z0-9]/s', '', $paramValue);
+            $action     = $condition->addChild('action');
+            $action->addAttribute('application', $actionName);
+            if ($paramValue)
+                $action->addAttribute('data', $paramValue);
+        }
     }
 
     protected function makeResponse($did, $xml)
