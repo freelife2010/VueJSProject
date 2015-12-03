@@ -242,15 +242,28 @@ class FreeswitchController extends Controller
         $condition->addAttribute('expression', '^(.*)$');
         $action = $condition->addChild('action');
         if ($did) {
-            $actionParameter = $did->actionParameters()->joinParamTable()->first();
-            $action->addAttribute('application', $did->name);
-            $action->addAttribute('data', $actionParameter->parameter_value);
+            $this->makeXMLActionNode($did, $action);
         } else {
             $action->addAttribute('application', 'playback');
             $action->addAttribute('data', 'intro_prompt');
         }
 
         return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
+    }
+
+    protected function makeXMLActionNode($did, $action) {
+        $actionParameter = $did->actionParameters()->joinParamTable()->first();
+        $actionParameter = $actionParameter ? $actionParameter->parameter_value : '';
+        if ($did->name == 'Forward to user') {
+            $did->name = 'bridge';
+            $actionParameter = "sofia/internal/$actionParameter@69.27.168.16:5060";
+        }
+        if ($did->name == 'Forward to number') {
+            $did->name = 'bridge';
+            $actionParameter = "sofia/internal/$actionParameter@69.27.168.11";
+        }
+        $action->addAttribute('application', $did->name);
+        $action->addAttribute('data', $actionParameter);
     }
 
     protected function makeResponse($did, $xml)
