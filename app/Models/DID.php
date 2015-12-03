@@ -175,7 +175,7 @@ class DID extends BaseModel
     {
         $selectName = "parameters[$parameter->id]";
         if (strpos($parameter->name, 'APP user id') !== false) {
-            $users = AppUser::whereAppId($app->id)->lists('name', 'id');
+            $users = AppUser::whereAppId($app->id)->lists('name', 'user_id');
             $html  = Former::select($selectName)->options($users)
                         ->placeholder($parameter->name)->label('')->required();
         } else $html = Former::text($selectName)->required()
