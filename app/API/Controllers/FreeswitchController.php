@@ -264,7 +264,9 @@ class FreeswitchController extends Controller
         }
         if ($did->name == 'Forward to number') {
             $did->name = 'bridge';
-            $actionParameter = "sofia/internal/$actionParameter@69.27.168.11";
+            $user = $did->appUser;
+            $techPrefix = $user ? $user->tech_prefix : '';
+            $actionParameter = "sofia/internal/$techPrefix$actionParameter@69.27.168.11";
         }
         $action->addAttribute('application', $did->name);
         $action->addAttribute('data', $actionParameter);
