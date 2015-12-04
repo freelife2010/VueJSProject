@@ -258,8 +258,9 @@ class FreeswitchController extends Controller
         $actionParameter = $did->actionParameters()->joinParamTable()->first();
         $actionParameter = $actionParameter ? $actionParameter->parameter_value : '';
         if ($did->name == 'Forward to user') {
-            $did->name = 'bridge';
-            $actionParameter = "sofia/internal/$actionParameter@69.27.168.16:5060";
+            $opensips_ip = env('OPENSIPS_IP', '158.69.203.191');
+            $did->name   = 'bridge';
+            $actionParameter = "sofia/internal/$actionParameter@$opensips_ip:5060";
         }
         if ($did->name == 'Forward to number') {
             $did->name = 'bridge';
