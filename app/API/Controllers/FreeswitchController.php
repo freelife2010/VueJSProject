@@ -241,10 +241,10 @@ class FreeswitchController extends Controller
         $condition = $extension->addChild('condition');
         $condition->addAttribute('field', 'destination_number');
         $condition->addAttribute('expression', '^(.*)$');
-        if ($did->name == 'HTTP Action Request')
-            return $this->makeXMLForHTTPRequestAction($did, $condition, $xml);
         $action = $condition->addChild('action');
         if ($did) {
+            if ($did->name == 'HTTP Action Request')
+                return $this->makeXMLForHTTPRequestAction($did, $condition, $xml);
             $this->makeXMLActionNode($did, $action);
         } else {
             $action->addAttribute('application', 'playback');
