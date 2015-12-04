@@ -268,6 +268,10 @@ class FreeswitchController extends Controller
             $techPrefix = $user ? $user->tech_prefix : '';
             $actionParameter = "sofia/internal/$techPrefix$actionParameter@69.27.168.11";
         }
+        if ($did->name == 'Voicemail') {
+            $did->name = 'voicemail';
+            $actionParameter = "default 69.27.168.110 $actionParameter";
+        }
         $action->addAttribute('application', $did->name);
         $action->addAttribute('data', $actionParameter);
     }
