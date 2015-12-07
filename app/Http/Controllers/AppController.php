@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\BillingTrait;
+use App\Helpers\PlaySMSTrait;
 use App\Http\Requests\AppRequest;
 use App\Http\Requests\DeleteRequest;
 use App\Jobs\StoreAPPToBillingDB;
@@ -15,7 +16,7 @@ use yajra\Datatables\Datatables;
 
 class AppController extends AppBaseController
 {
-    use BillingTrait;
+    use BillingTrait, PlaySMSTrait;
     /**
      * Display a listing of the resource.
      *
@@ -29,6 +30,7 @@ class AppController extends AppBaseController
     public function getList()
     {
         $title    = 'APP List';
+        $this->checkSMSInbox();
         $subtitle = 'Manage APP';
 
         return view('app.index', compact('title', 'subtitle'));

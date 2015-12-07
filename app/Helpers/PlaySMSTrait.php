@@ -32,6 +32,15 @@ trait PlaySMSTrait
 
     }
 
+    protected function checkSMSInbox()
+    {
+        $params['op'] = 'ix';
+
+        $response = json_decode($this->makeSMSRequest($params), true);
+
+        return $response;
+    }
+
     private function makeSMSRequest($params)
     {
         $params   = $this->getParamString($params);

@@ -36,6 +36,12 @@
                         <span>View CDR</span>
                     </a>
                 </li>
+                <li class=" {{ $helper->isActive('sms') }}">
+                    <a href="{{ url('sms/history') }}" title="SMS">
+                        <em class="icon-speech"></em>
+                        <span>View SMS</span>
+                    </a>
+                </li>
                 <li class=" {{ $helper->isActive('payments') }}">
                     <a href="{{ url('payments') }}" title="CDR">
                         <em class="fa fa-credit-card"></em>
