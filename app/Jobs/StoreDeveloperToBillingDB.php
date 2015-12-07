@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\BillingTrait;
-use App\Jobs\Job;
+use App\Helpers\PlaySMSTrait;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class StoreDeveloperToBillingDB extends Job implements SelfHandling, ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels, BillingTrait;
+    use InteractsWithQueue, SerializesModels, BillingTrait, PlaySMSTrait;
 
     protected $user;
 
@@ -42,5 +42,7 @@ class StoreDeveloperToBillingDB extends Job implements SelfHandling, ShouldQueue
                     insert into client_balance (client_id,balance,ingress_balance)
                     values (?,?,?)",
             [$cliendId, 0, 0]);
+
+        $this->createSMSAccount($this->user);
     }
 }
