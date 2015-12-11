@@ -29,7 +29,8 @@ class AppUser extends BaseModel
         'email',
         'phone',
         'tech_prefix',
-        'user_id'
+        'user_id',
+        'caller_id'
     ];
 
     protected $hidden = ['password', 'tech_prefix'];
@@ -40,6 +41,9 @@ class AppUser extends BaseModel
         $params['password']    = sha1($params['password']);
         $params['tech_prefix'] = self::generateUniqueId();
         $params['user_id']     = self::generateUniqueId(9999999999, 'user_id');
+        $params['caller_id']   = isset($params['caller_id_custom']) ?
+                                        $params['caller_id_custom'] :
+                                        $params['caller_id'];
 
         return AppUser::create($params);
     }

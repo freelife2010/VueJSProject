@@ -14,6 +14,8 @@ use App\Jobs\StoreAPPUserToBillingDB;
 use App\Jobs\StoreAPPUserToChatServer;
 use App\Models\App;
 use App\Models\AppUser;
+use App\Models\DID;
+use Former\Facades\Former;
 use Illuminate\Support\Collection;
 use URL;
 use yajra\Datatables\Datatables;
@@ -194,6 +196,18 @@ class AppUsersController extends AppBaseController
                 ->whereIngressClientId($resource->resource_id)->groupBy('report_time', 'duration');
 
         return Datatables::of($dailyUsage)->make(true);
+    }
+
+    public function getCallerIdInputs()
+    {
+        $dids = DID::all()->lists('did', 'did');
+
+        $html = Former::select('caller_id')->addOption('Outside number', 0)
+            ->options($dids)->placeholder('Select DID')->label('Number');
+        $html.= '<br/>';
+        $html.= Former::text('caller_id_custom')->label('Outside number');
+
+        return $html;
     }
 
 }

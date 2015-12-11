@@ -25,6 +25,8 @@ class CreateUsersTable extends Migration
             $table->integer('last_status', false, true)->default(1);
             $table->integer('activated', false, true)->default(1);
             $table->string('last_ip')->default('');
+            $table->boolean('allow_outgoing_call')->default(0);
+            $table->integer('caller_id', false, true)->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

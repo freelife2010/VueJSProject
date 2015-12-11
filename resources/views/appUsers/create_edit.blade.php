@@ -5,11 +5,37 @@
     <script type="text/javascript">
         $(document).ready(function() {
             setModalWidth(350);
+            var $callerInputBlock = $('#caller_id_block');
             $('#phone').inputmask('+9 (999) 999-99-99')
             $('#set_password').click(function() {
                var $password = $('#password');
                 $password.prop('disabled', !$password.prop('disabled'));
             });
+            $('#allow_outgoing_call').click(function() {
+                if ($(this).prop('checked')) {
+                    $.ajax({
+                        url: '{{ url('app-users/caller-id-inputs?app='.$APP->id) }}',
+                        success: function(data) {
+                            $callerInputBlock.html(data);
+                            $callerInputBlock.removeClass('hide');
+                            bindCallerIdEvent();
+                        }
+                    });
+                } else $callerInputBlock.addClass('hide');
+                var $callerId = $('#caller_id');
+                $callerId.prop('disabled', !$callerId.prop('disabled'));
+            });
+
+            function bindCallerIdEvent()
+            {
+                var $customId = $('#caller_id_custom');
+                $('#caller_id').change(function() {
+                   if ($(this).val() != 0)
+                       $customId.prop('disabled', true);
+                   else $customId.prop('disabled', false);
+                });
+            }
+
         });
     </script>
 @stop
@@ -39,6 +65,12 @@
         @endif
         <?= Former::text('email')->label('E-mail');?>
         <?= Former::text('phone')->label('Phone');?>
+        <?= Former::checkbox('allow_outgoing_call')->raw();?>
+        <?= Former::label('Allow outgoing call')->for('allow_outgoing_call');?>
+        <br/>
+        <did id="caller_id_block" class="hide">
+
+        </did>
     </div>
     <div style="clear: both"></div>
     <br/>
