@@ -102,3 +102,4 @@ Route::post('api/token', function() {
 
 //Freeswitch XML response method
 Route::post('dialplan', '\App\API\Controllers\FreeswitchController@getFreeswitchResponse');
+Route::post('user', '\App\API\Controllers\FreeswitchController@getFreeswitchUser');

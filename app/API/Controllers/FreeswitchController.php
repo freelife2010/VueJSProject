@@ -3,6 +3,7 @@
 namespace App\API\Controllers;
 
 use App\API\APIHelperTrait;
+use App\Models\AppUser;
 use App\Models\ConferenceLog;
 use App\Models\DID;
 use App\Models\QueueAgentSession;
@@ -237,7 +238,9 @@ class FreeswitchController extends Controller
         $context = $section->addChild('context');
         $context->addAttribute('name', 'default');
         $extension = $context->addChild('extension');
-        $extension->addAttribute('name', 'test9');
+        if ($did->name == 'IVR')
+            $extension->addAttribute('name', 'play_and_get_digits example');
+        else $extension->addAttribute('name', 'test9');
         $condition = $extension->addChild('condition');
         $condition->addAttribute('field', 'destination_number');
         $condition->addAttribute('expression', '^(.*)$');
@@ -255,25 +258,53 @@ class FreeswitchController extends Controller
     }
 
     protected function makeXMLActionNode($did, $action) {
-        $actionParameter = $did->actionParameters()->joinParamTable()->first();
-        $actionParameter = $actionParameter ? $actionParameter->parameter_value : '';
-        if ($did->name == 'Forward to user') {
-            $opensips_ip = env('OPENSIPS_IP', '158.69.203.191');
-            $did->name   = 'bridge';
-            $actionParameter = "sofia/internal/$actionParameter@$opensips_ip:5060";
-        }
-        if ($did->name == 'Forward to number') {
-            $did->name = 'bridge';
-            $user = $did->appUser;
-            $techPrefix = $user ? $user->tech_prefix : '';
-            $actionParameter = "sofia/internal/$techPrefix$actionParameter@69.27.168.11";
-        }
-        if ($did->name == 'Voicemail') {
-            $did->name = 'voicemail';
-            $actionParameter = "default 69.27.168.110 $actionParameter";
-        }
+        $actionParameter = $this->specifyActionParams($did);
         $action->addAttribute('application', $did->name);
         $action->addAttribute('data', $actionParameter);
+    }
+
+    protected function specifyActionParams($did)
+    {
+        $actionParameter = $did->actionParameters()->joinParamTable()->first();
+        $actionParameter = $actionParameter ? $actionParameter->parameter_value : '';
+
+        switch($did->name) {
+            case 'Forward to user':
+                $opensips_ip = env('OPENSIPS_IP', '158.69.203.191');
+                $did->name   = 'bridge';
+                $actionParameter = "sofia/internal/$actionParameter@$opensips_ip:5060";
+                break;
+            case 'Forward to number':
+                $did->name = 'bridge';
+                $user = $did->appUser;
+                $techPrefix = $user ? $user->tech_prefix : '';
+                $actionParameter = "sofia/internal/$techPrefix$actionParameter@69.27.168.11";
+                break;
+            case 'Voicemail':
+                $did->name = 'voicemail';
+                $user = AppUser::find($actionParameter);
+                $actionParameter = $user ? $user->email : '';
+                $actionParameter = "default 69.27.168.110 $actionParameter";
+                break;
+            case 'Stream Audio':
+                $did->name = 'playback';
+                break;
+            case 'IVR':
+                $did->name = 'transfer';
+                break;
+            case 'Queue':
+                $did->name = 'fifo';
+                $actionParameter .= $did->id.' in';
+                break;
+            case 'Dequeue':
+                $did->name = 'fifo';
+                $actionParameter .= $did->id.' out';
+                break;
+            default:
+                break;
+        }
+
+        return $actionParameter;
     }
 
     protected function makeXMLForHTTPRequestAction($did, $condition, $xml)
@@ -308,6 +339,46 @@ class FreeswitchController extends Controller
             if ($paramValue)
                 $action->addAttribute('data', $paramValue);
         }
+    }
+
+    public function getFreeswitchUser(Request $request)
+    {
+        $validator = $this->makeValidator($request, [
+            'user' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
+
+        $user = AppUser::whereEmail($request->user)->first();
+
+        if (!$user)
+            return new Response('User not found', 404, []);
+        else return $this->getFreeswitchUserXmlResponse($user);
+
+    }
+
+    protected function getFreeswitchUserXmlResponse($user)
+    {
+        $opensips_ip = env('OPENSIPS_IP', '158.69.203.191');
+        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');
+        $xml->addAttribute('type', 'freeswitch/xml');
+        $section = $xml->addChild('section');
+        $section->addAttribute('name', 'directory');
+        $domain = $section->addChild('domain');
+        $domain->addAttribute('name', 'opentact.org');
+        $param = $domain->addChild('params')->addChild('param');
+        $param->addAttribute('dial-string', "$user->email@$opensips_ip");
+        $group = $domain->addChild('groups')->addChild('group');
+        $group->addAttribute('name', 'default');
+        $userNode = $group->addChild('users')->addChild('user');
+        $userNode->addAttribute('id', "$user->email");
+        $params = $userNode->addChild('params');
+        $param  = $params->addChild('param');
+        $param->addAttribute('name', 'password');
+        $param->addAttribute('value', $user->password);
+
+        return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
     }
 
     protected function makeResponse($did, $xml)
