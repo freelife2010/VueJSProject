@@ -110,7 +110,7 @@ function showErrorMessage(data, form) {
 function showValidationErrors(errors, form) {
     var errors_html = '';
     $.each(errors, function(key, val) {
-        form.find('label[for='+key+']').addClass('label-danger');
+        form.find('label[for="'+key+'"]').addClass('label-danger');
         errors_html += '<br/> - '+val;
     });
     var options = {

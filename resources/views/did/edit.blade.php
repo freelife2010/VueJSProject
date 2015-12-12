@@ -58,9 +58,12 @@
             <?php
                 if (!empty($params)) {
                     echo Former::label('Action parameter(s)');
+                    $method = 'text';
                     foreach ($params as $param) {
                         $selectName = "parameters[$param->id]";
-                        echo Former::text($selectName)->value($param->parameter_value)
+                        if ($param->name == 'Key-Action')
+                            $method = 'textarea';
+                        echo Former::$method($selectName)->value($param->parameter_value)
                                 ->help($param->name)->label('')->disabled();
                     }
                 }

@@ -162,25 +162,13 @@ class DID extends BaseModel
 
         if ($parameters)
             foreach ($parameters as $paramId => $value) {
-                $didParameter = new DIDActionParameters();
-                $didParameter->did_id    = $this->id;
-                $didParameter->action_id = $request->action;
-                $didParameter->parameter_id = $paramId;
+                $didParameter                  = new DIDActionParameters();
+                $didParameter->did_id          = $this->id;
+                $didParameter->action_id       = $request->action;
+                $didParameter->parameter_id    = $paramId;
                 $didParameter->parameter_value = $value;
                 $didParameter->save();
             }
     }
 
-    public static function getActionParameterHtml($parameter, $app)
-    {
-        $selectName = "parameters[$parameter->id]";
-        if (strpos($parameter->name, 'APP user id') !== false) {
-            $users = AppUser::whereAppId($app->id)->lists('name', 'user_id');
-            $html  = Former::select($selectName)->options($users)
-                        ->placeholder($parameter->name)->label('')->required();
-        } else $html = Former::text($selectName)->required()
-            ->placeholder($parameter->name)->raw().'<br/>';
-
-        return $html;
-    }
 }

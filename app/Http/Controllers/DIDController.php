@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DeleteRequest;
-use App\Models\AppUser;
+use App\Http\Requests\DIDRequest;
 use App\Models\DID;
+use App\Models\DIDActionParameters;
 use DB;
 use Former\Facades\Former;
 use Illuminate\Http\Request;
@@ -77,13 +78,8 @@ class DIDController extends AppBaseController
     }
 
 
-    public function postCreate(Request $request)
+    public function postCreate(DIDRequest $request)
     {
-        $this->validate($request, [
-            'did'        => 'required',
-            'owned_by'   => 'required',
-            'action'     => 'required'
-        ]);
         $result = $this->getResult(true, 'Could not buy DID');
         $did    = new DID();
         $response = $did->reserveDID($request->did);
@@ -174,7 +170,7 @@ class DIDController extends AppBaseController
         if ($parameters)
             $html = Former::label('Action parameter(s)');
         foreach ($parameters as $parameter) {
-            $html .= DID::getActionParameterHtml($parameter, $this->app);
+            $html .= DIDActionParameters::getActionParameterHtml($parameter, $this->app);
         }
 
         return $html;

@@ -377,7 +377,7 @@ class FreeswitchController extends Controller
         $params = $userNode->addChild('params');
         $param  = $params->addChild('param');
         $param->addAttribute('name', 'password');
-        $param->addAttribute('value', $user->password);
+        $param->addAttribute('value', 'xxx');
 
         return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
     }
