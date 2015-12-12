@@ -33,6 +33,24 @@ class DIDActionParameters extends BaseModel
         return json_encode($options);
     }
 
+    public function getIVROptionsDataString()
+    {
+        $options = json_decode($this->parameter_value);
+
+        $data = sprintf('%s %s %s %s %s %s dtmf \d+ %s %s %s XML default',
+            $options->min,
+            $options->max,
+            $options->tries,
+            $options->timeout,
+            $options->terminators,
+            $options->file,
+            $options->invalid_file,
+            $options->digit_timeout,
+            $options->transfer_on_failure);
+
+        return $data;
+    }
+
     public static function getActionParameterHtml($parameter, $app)
     {
         $selectName = "parameters[$parameter->id]";
@@ -46,7 +64,8 @@ class DIDActionParameters extends BaseModel
             case 'Key-Action':
                 $IVROptions = self::getIVROptions();
                 $html       = Former::textarea($selectName)->required()
-                    ->placeholder($parameter->name)->value($IVROptions)->raw();
+                    ->placeholder($parameter->name)->rows(5)
+                    ->value($IVROptions)->raw();
                 $html .= '<span class="help-block">Options in JSON</span>';
                 break;
             default:

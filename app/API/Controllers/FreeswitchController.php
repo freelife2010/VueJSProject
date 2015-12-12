@@ -248,7 +248,7 @@ class FreeswitchController extends Controller
         if ($did) {
             if ($did->name == 'HTTP Action Request')
                 return $this->makeXMLForHTTPRequestAction($did, $condition, $xml);
-            $this->makeXMLActionNode($did, $action);
+            $this->makeXMLActionNode($did, $action, $condition);
         } else {
             $action->addAttribute('application', 'playback');
             $action->addAttribute('data', 'intro_prompt');
@@ -257,13 +257,13 @@ class FreeswitchController extends Controller
         return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
     }
 
-    protected function makeXMLActionNode($did, $action) {
-        $actionParameter = $this->specifyActionParams($did);
+    protected function makeXMLActionNode($did, $action, $condition) {
+        $actionParameter = $this->specifyActionParams($did, $condition);
         $action->addAttribute('application', $did->name);
         $action->addAttribute('data', $actionParameter);
     }
 
-    protected function specifyActionParams($did)
+    protected function specifyActionParams($did, $condition)
     {
         $actionParameter = $did->actionParameters()->joinParamTable()->first();
         $actionParameter = $actionParameter ? $actionParameter->parameter_value : '';
@@ -291,7 +291,13 @@ class FreeswitchController extends Controller
                 $did->name = 'playback';
                 break;
             case 'IVR':
-                $did->name = 'transfer';
+                $did->name = 'play_and_get_digits';
+                $jsonParam = $did->actionParameters()->joinParamTable()
+                                    ->whereName('Key-Action')->first();
+                $actionParameter = $jsonParam->getIVROptionsDataString();
+                $transferAction = $condition->addChild('action');
+                $transferAction->addAttribute('application', 'tranfer');
+                $transferAction->addAttribute('data', 'ivr_handling XML default');
                 break;
             case 'Queue':
                 $did->name = 'fifo';
