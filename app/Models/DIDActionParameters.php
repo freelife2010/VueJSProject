@@ -37,7 +37,7 @@ class DIDActionParameters extends BaseModel
     {
         $options = json_decode($this->parameter_value);
 
-        $data = sprintf('%s %s %s %s %s %s dtmf \d+ %s %s %s XML default',
+        $data = sprintf('%s %s %s %s %s %s %s dtmf \d+ %s %s XML default',
             $options->min,
             $options->max,
             $options->tries,
