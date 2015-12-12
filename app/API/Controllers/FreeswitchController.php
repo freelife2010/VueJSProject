@@ -278,7 +278,8 @@ class FreeswitchController extends Controller
                 $did->name = 'bridge';
                 $user = $did->appUser;
                 $techPrefix = $user ? $user->tech_prefix : '';
-                $actionParameter = "sofia/internal/$techPrefix$actionParameter@69.27.168.11";
+                $callerId = "[effective_caller_id_number=$user->caller_id]";
+                $actionParameter = "{$callerId}sofia/internal/$techPrefix$actionParameter@69.27.168.11";
                 break;
             case 'Voicemail':
                 $did->name = 'voicemail';
