@@ -113,6 +113,22 @@ class DIDController extends AppBaseController
             'params'));
     }
 
+    public function postEdit(DIDRequest $request, $id)
+    {
+        $result = $this->getResult(true, 'Could not edit DID');
+        $did    = DID::find($id);
+
+        $did->owned_by  = $request->owned_by;
+        $did->action_id = $request->action;
+        if ($did->save()) {
+            $did->deleteDIDParameters();
+            $did->createDIDParameters($request);
+            $result = $this->getResult(false, 'DID successfully edited');
+        }
+
+        return $result;
+    }
+
     public function getDelete($id)
     {
         $title = 'Delete DID ?';
@@ -127,6 +143,7 @@ class DIDController extends AppBaseController
         $result = $this->getResult(true, 'Could not delete DID');
         $model  = DID::find($id);
         if ($model->delete()) {
+            $model->deleteDIDParameters();
             $result = $this->getResult(false, 'DID deleted');
         }
 

@@ -171,4 +171,11 @@ class DID extends BaseModel
             }
     }
 
+    public function deleteDIDParameters()
+    {
+        foreach ($this->actionParameters as $parameter) {
+            $parameter->delete();
+        }
+    }
+
 }

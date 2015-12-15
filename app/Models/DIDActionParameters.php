@@ -54,8 +54,10 @@ class DIDActionParameters extends BaseModel
     public static function getActionParameterHtml($parameter, $app)
     {
         $selectName = "parameters[$parameter->id]";
-
-        switch ($parameter->name) {
+        $paramName  = (strpos($parameter->name, 'APP user id') !== false ) ?
+                                                'APP user id':
+                                                $parameter->name;
+        switch ($paramName) {
             case 'APP user id':
                 $users = AppUser::whereAppId($app->id)->lists('name', 'user_id');
                 $html  = Former::select($selectName)->options($users)

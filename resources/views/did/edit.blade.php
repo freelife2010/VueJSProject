@@ -39,21 +39,20 @@
 @stop
 @section('modal_body')
     <?php
-    $action_url = url("did/edit");
+    use App\Models\AppUser;
+    $action_url = url("did/edit/$model->id");
     Former::populate($model);
-    $submit_label = 'Buy';
+    $submit_label = 'Save';
     $edit = false;
     ?>
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
         <?= Former::hidden('app_id')->value($APP->id);?>
+        <?= Former::hidden('did')->value($model->did);?>
             <?= Former::select('owned_by')->options($appUsers, $model->owned_by)
-                    ->label('APP User')->disabled();?>
-        <?= Former::select('state')->options(["$model->state"])->disabled();?>
-        <?= Former::select('rate_center')->options(["$model->rate_center"])->disabled();?>
+                    ->label('APP User');?>
         <?= Former::select('did')->options(["$model->did"])->disabled();?>
-        <?= Former::select('action')->id('did_action')->options($actions, $model->action_id)
-                        ->disabled();?>
+        <?= Former::select('action')->id('did_action')->options($actions, $model->action_id);?>
         <div id="action_parameters">
             <?php
                 if (!empty($params)) {
@@ -63,8 +62,12 @@
                         $selectName = "parameters[$param->id]";
                         if ($param->name == 'Key-Action')
                             $method = 'textarea';
-                        echo Former::$method($selectName)->value($param->parameter_value)
-                                ->help($param->name)->label('')->disabled();
+                        if (strpos($param->name, 'APP user id') !== false) {
+                            $users = AppUser::whereAppId($APP->id)->lists('name', 'user_id');
+                            echo Former::select($selectName)->options($users, $model->owned_by)
+                                    ->placeholder($param->name)->label('');
+                        } else echo Former::$method($selectName)->value($param->parameter_value)
+                                ->help($param->name)->label('');
                     }
                 }
             ?>
@@ -74,6 +77,9 @@
     <br/>
     <div class="pull-right">
         <?= Former::actions(
+                Former::primary_button($submit_label)
+                        ->type('submit')->setAttribute('data-submit', 'ajax')
+                        ->class('btn btn-lg btn-info'),
                 Former::button('Close')
                         ->setAttribute('data-dismiss', 'modal')->class('btn btn-lg btn-default')
 
