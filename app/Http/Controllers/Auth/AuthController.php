@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\StoreDeveloperToBillingDB;
 use App\Models\Email;
 use Bican\Roles\Models\Role;
+use Cache;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 use Illuminate\Http\Request;
@@ -79,11 +80,11 @@ class AuthController extends Controller {
         $user->name            = $request->input('name');
         $user->email           = $request->input('email');
         $user->password        = $request->input('password');
-        $user['unhashed_pass'] = $request->input('password');
         $user->activation_code = $activation_code;
         $user->resent          = 0;
 
 		if ($user->save()) {
+			Cache::put('playSMSPass', $request->input('password'), 1);
             $this->dispatch(new StoreDeveloperToBillingDB($user));
             $role = Role::whereSlug('developer')->first();
             $user->attachRole($role);

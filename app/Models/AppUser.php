@@ -19,6 +19,11 @@ class AppUser extends BaseModel
         return $this->belongsTo('App\Models\App', 'app_id');
     }
 
+    public function dids()
+    {
+        return $this->hasMany('App\Models\DID', 'owned_by');
+    }
+
     protected $table = 'users';
 
     protected $fillable = [

@@ -9,6 +9,7 @@
 namespace App\Helpers;
 
 
+use Cache;
 use GuzzleHttp\Client;
 
 trait PlaySMSTrait
@@ -19,12 +20,13 @@ trait PlaySMSTrait
 
     protected function createSMSAccount($developer)
     {
+        $pass                    = Cache::pull('playSMSPass', '');
         $params                  = [];
         $params['op']            = 'accountadd';
         $params['data_status']   = '4';
         $params['data_parent']   = 'premium';
         $params['data_username'] = $developer->email;
-        $params['data_password'] = $developer['unhashed_pass'];
+        $params['data_password'] = $pass;
         $params['data_name']     = $developer->name;
         $params['data_email']    = $developer->email;
 

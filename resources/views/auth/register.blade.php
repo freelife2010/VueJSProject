@@ -57,6 +57,6 @@
             <button type="submit" class="btn btn-block btn-primary mt-lg">Create account</button>
         </form>
         <p class="pt-lg text-center">Have an account?</p><a href="{{ url('/auth/login') }}"
-                                                            class="btn btn-block btn-default">Signup</a>
+                                                            class="btn btn-block btn-default">Sign in</a>
     </div>
 @endsection

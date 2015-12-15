@@ -128,6 +128,16 @@ class AppUsersController extends AppBaseController
 
                 return $html;
             })
+            ->add_column('did', function($user) {
+                $dids = $user->dids;
+                $html = '';
+                foreach ($dids as $did) {
+                    $html .= $did->did.'<br/>';
+                }
+
+                return $html;
+
+            })
             ->make(true);
     }
 
