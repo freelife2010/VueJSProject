@@ -23,13 +23,22 @@ class CostController extends Controller
     {
         $title    = 'DID cost';
         $subtitle = 'Modify DID cost';
+        $defaultCost = DIDCost::whereState('default')->first();
+        $defaultButtonOptions = [
+            'type' => 'btn-default',
+            'label' => 'Set default cost'
+        ];
+        $defaultButtonOptions = !$defaultCost ?
+            $defaultButtonOptions :
+            ['type' => 'btn-green', 'label' => 'Edit default cost'];
 
-        return view('costs.did', compact('title', 'subtitle'));
+        return view('costs.did',
+            compact('title', 'subtitle', 'defaultCost', 'defaultButtonOptions'));
     }
 
     public function getDidData()
     {
-        $didCosts = DIDCost::all();
+        $didCosts = DIDCost::where('state', '!=', 'default')->where('rate_center', '!=', 'default')->get();
 
 
         return Datatables::of($didCosts)
@@ -72,7 +81,7 @@ class CostController extends Controller
         $result = $this->getResult(true, 'Could not set new cost');
         $params = $request->all();
         $params['rate_center'] = $params['rate_center'] != 0 ?: 'All';
-        if ($user = DIDCost::create($params)) {
+        if ($didCost = DIDCost::create($params)) {
             $result = $this->getResult(false, 'New cost has been set');
         }
 
@@ -122,6 +131,33 @@ class CostController extends Controller
         if ($model->delete()) {
             $result = $this->getResult(false, 'Cost deleted');
         }
+
+        return $result;
+    }
+
+    public function getDidDefault()
+    {
+        $title       = 'Set default DID cost';
+        $defaultCost = DIDCost::whereState('default')->first();
+
+        return view('costs.did_default_cost', compact('title', 'defaultCost'));
+    }
+
+    public function postDidDefaultCreate(Request $request)
+    {
+        $this->validate($request, [
+            'value'       => 'required|numeric'
+        ]);
+        $result = $this->getResult(true, 'Could not set default cost');
+        $params = $request->all();
+        $params['state'] = 'default';
+        $params['rate_center'] = 'default';
+        $defaultCost = DIDCost::whereState('default')->first();
+        if ($defaultCost)
+            $defaultCost->delete();
+
+        if (DIDCost::create($params))
+            $result = $this->getResult(false, 'New default cost has been set');
 
         return $result;
     }

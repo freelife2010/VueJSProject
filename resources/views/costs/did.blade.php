@@ -42,6 +42,16 @@
                            </span>Set new cost
                     </a>
                 </div>
+                <div class="col-md-1" style="margin-left: 2%">
+                    <a href="/costs/did-default"
+                       data-target="#myModal"
+                       data-toggle="modal"
+                       class="btn btn-labeled {{ $defaultButtonOptions['type'] }}">
+                        <span class="btn-label">
+                               <i class="fa fa-tag"></i>
+                           </span>{{ $defaultButtonOptions['label'] }}
+                    </a>
+                </div>
             </div>
             <br/>
             <div class="panel panel-default">
