@@ -47,6 +47,12 @@
                         <span>Developers</span>
                     </a>
                 </li>
+                <li class=" {{ $helper->isActive('costs/did') }}">
+                    <a href=" {{ url('costs/did') }}" title="DID cost">
+                        <em class="fa fa-money"></em>
+                        <span>DID cost</span>
+                    </a>
+                </li>
             </ul>
             <!-- END sidebar nav-->
         </nav>

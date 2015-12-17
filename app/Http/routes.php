@@ -61,6 +61,7 @@ Route::get('/activate/{code}', 'Auth\AuthController@activateAccount');
 
 Route::group(['middleware' => ['admin', 'csrf']], function() {
     Route::controller('emails', 'EmailController');
+    Route::controller('costs', 'CostController');
     Route::controller('revisions', 'RevisionsController');
     Route::controller('users', 'UserController');
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
