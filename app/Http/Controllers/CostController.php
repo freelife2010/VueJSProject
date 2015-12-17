@@ -46,6 +46,7 @@ class CostController extends Controller
         $title = 'Set new cost';
         $did      = new DID();
         $states   = $did->getStates();
+        $states   = array_combine($states, $states);
 
         return view('costs.create_edit_did', compact('title', 'states'));
     }
@@ -69,8 +70,9 @@ class CostController extends Controller
             'value'       => 'required|numeric'
         ]);
         $result = $this->getResult(true, 'Could not set new cost');
-        $request->rate_center = $request->rate_center != 0 ?: 'All';
-        if ($user = DIDCost::create($request->all())) {
+        $params = $request->all();
+        $params['rate_center'] = $params['rate_center'] != 0 ?: 'All';
+        if ($user = DIDCost::create($params)) {
             $result = $this->getResult(false, 'New cost has been set');
         }
 
