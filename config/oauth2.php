@@ -127,7 +127,7 @@ return [
     |
     */
 
-    'limit_clients_to_scopes' => false,
+    'limit_clients_to_scopes' => true,
 
     /*
     |--------------------------------------------------------------------------

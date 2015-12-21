@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\StoreAPPUserToBillingDB;
 use App\Jobs\StoreAPPUserToChatServer;
 use App\Models\AppUser;
+use Config;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Dingo\Api\Routing\Helpers;
@@ -17,10 +18,14 @@ class UserController extends Controller
 {
     use Helpers, APIHelperTrait;
 
-//    public function __construct()
-//    {
-//        $this->scopes('users.read', ['only' => 'getUserInfo']);
-//    }
+    public function __construct()
+    {
+        $this->request = Request::capture();
+        if ($this->request->has('datetz'))
+            Config::set('app.timezone', $this->request->input('datetz'));
+
+        $this->scopes('users.read', ['only' => 'getUsers']);
+    }
 
     public function getUsers()
     {

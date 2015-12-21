@@ -78,12 +78,12 @@ class UserController extends Controller
 
     public function postEdit(AppUserRequest $request, $id)
     {
-        $result = $this->getResult(true, 'Could not edit developer');
+        $result = $this->getResult(true, 'Could not edit user');
         $model  = User::find($id);
         if ($model->fill($request->input())
             and $model->save()
         )
-            $result = $this->getResult(false, 'Developer saved successfully');
+            $result = $this->getResult(false, 'User saved successfully');
 
         return $result;
     }
@@ -105,5 +105,15 @@ class UserController extends Controller
         }
 
         return $result;
+    }
+
+    public function getEditProfile($id)
+    {
+        $title = 'Edit own profile';
+        $model = User::find($id);
+
+        unset($model->password);
+
+        return view('users.create_edit', compact('title', 'model'));
     }
 }

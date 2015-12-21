@@ -42,6 +42,8 @@ Route::controllers([
 
 Route::group(['middleware' => ['auth', 'csrf']], function() {
     Route::get('/', 'HomeController@getIndex');
+    Route::get('/edit-profile/{id}', 'UserController@getEditProfile');
+    Route::post('/users/edit/{id}', 'UserController@postEdit');
     Route::controller('home', 'HomeController');
     Route::controller('app', 'AppController');
     Route::controller('did', 'DIDController');
@@ -59,6 +61,7 @@ Route::get('/resendEmail', 'Auth\AuthController@resendEmail');
 
 Route::get('/activate/{code}', 'Auth\AuthController@activateAccount');
 
+//Admin routes
 Route::group(['middleware' => ['admin', 'csrf']], function() {
     Route::controller('emails', 'EmailController');
     Route::controller('costs', 'CostController');

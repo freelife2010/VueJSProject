@@ -3,10 +3,14 @@
         <div class="item user-block">
             <!-- User picture-->
             <div class="user-block-picture">
-                <div class="user-block-status">
-                    <img src="{{ asset('img/user/userpic.png') }}" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">
-                    <div class="circle circle-success circle-lg"></div>
-                </div>
+                <a href="{{url('/edit-profile/'.Auth::user()->id)}}"
+                    data-target="#myModal"
+                    data-toggle="modal">
+                    <div class="user-block-status">
+                            <img src="{{ asset('img/user/userpic.png') }}" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">
+                            <div class="circle circle-success circle-lg"></div>
+                    </div>
+                </a>
             </div>
             <!-- Name and Job-->
             <div class="user-block-info">

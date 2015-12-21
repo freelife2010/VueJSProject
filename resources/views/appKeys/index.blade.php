@@ -12,7 +12,7 @@
             oTable = $table.DataTable({
                 "bPaginate": true,
                 "processing": false,
-                "order": [[ 2, "desc" ]],
+                "order": [[ 3, "asc" ]],
                 "ajax": {
                     url : '{{ url("/app-keys/data?app=".$APP->id) }}'
                 },
