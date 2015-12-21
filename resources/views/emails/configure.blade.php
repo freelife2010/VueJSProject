@@ -25,9 +25,20 @@
     <?= Former::vertical_open()->action($actionUrl) ?>
         <fieldset>
             <div class="form-group">
+                <div class="col-sm-2 pull-left">
+                    <?= Former::text('smtp_host')->label('SMTP Host')->required() ?>
+                    <?= Former::text('smtp_port')->label('SMTP Port')->required() ?>
+                </div>
+                <div class="col-sm-2 pull-left">
+                    <?= Former::text('smtp_user')->label('SMTP User') ?>
+                    <?= Former::text('smtp_password')->label('SMTP Password') ?>
+                </div>
+                <div class="clearfix"></div>
+                <br/>
                 <div class="col-sm-10">
+                    <?= Former::text('from_name')->label('From (name)')->required() ?>
+                    <?= Former::text('from_address')->label('From (address)')->required() ?>
                     <?= Former::text('subject')->label('Subject')->required() ?>
-                    <br/>
                     <label for="content">Content*</label>
                     <div data-role="editor-toolbar" data-target="#editor" class="btn-toolbar btn-editor">
                         <div class="btn-group dropdown">

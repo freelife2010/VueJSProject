@@ -85,7 +85,7 @@ class AuthController extends Controller {
 
 		if ($user->save()) {
 			Cache::put('playSMSPass', $request->input('password'), 1);
-            $this->dispatch(new StoreDeveloperToBillingDB($user));
+//            $this->dispatch(new StoreDeveloperToBillingDB($user));
             $role = Role::whereSlug('developer')->first();
             $user->attachRole($role);
 			$this->sendEmail($user, 'authorization');
@@ -107,14 +107,15 @@ class AuthController extends Controller {
 	{
 
 		$email = Email::whereType($type)->first();
+		$email->setSMTPSettings();
         $email->replaceMarkers($user);
         $data = [
             'content' => $email->content
         ];
 
 		Mail::queue('emails.base', $data, function($message) use ($user, $email) {
-            $address = env('MAIL_FROM', 'admin@adm.dev');
-            $name    = env('MAIL_FROM_NAME', 'AdminUI');
+            $address = $email->from_address ?: env('MAIL_FROM', 'admin@adm.dev');
+            $name    = $email->from_name ?: env('MAIL_FROM_NAME', 'AdminUI');
             $message->from($address, $name);
 			$message->subject($email->subject);
 			$message->to($user->email);

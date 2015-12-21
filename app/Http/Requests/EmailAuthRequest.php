@@ -24,8 +24,12 @@ class EmailAuthRequest extends Request
     public function rules()
     {
         return [
-            'content'  => 'required',
-            'subject'  => 'required|max:255'
+            'smtp_host'    => 'required',
+            'smtp_port'    => 'required|numeric',
+            'from_name'    => 'required',
+            'from_address' => 'required',
+            'content'      => 'required',
+            'subject'      => 'required|max:255'
         ];
     }
 }
