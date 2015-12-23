@@ -14,7 +14,7 @@
                 "processing": false,
                 "order": [[ 2, "desc" ]],
                 "ajax": {
-                    url : "/conferences/data/?app=" + getUrlParam('app')
+                    url : "/conferences/log-data/?app=" + getUrlParam('app')
                 },
                 "columns": [
                     {data: 'conference_id'},
