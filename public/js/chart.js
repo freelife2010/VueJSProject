@@ -1,36 +1,50 @@
 // Start Bootstrap JS
 // ----------------------------------- 
 
+var charts = [];
+initCharts();
 
-function getCDRData() {
-    if (typeof(lineChart) != "undefined")
-        lineChart.destroy();
+function initCharts() {
+    initAPPCDRChart('chartjs-app-cdr');
+    initOverallCDRChart('chartjs-overall-cdr');
+}
 
-    var $loader = $('.loader-demo');
-    var $chart  = $('.chartjs-linechart');
+function initOverallCDRChart(selector) {
+    destroyChart(selector);
+
+    getChartData(selector, '/cdr/chart-data', '.loader-overall-cdr');
+
+}
+
+function initAPPCDRChart(selector) {
+    destroyChart(selector);
+    var appId = getUrlParam('app');
+    getChartData(selector, '/app-cdr/chart-data?app='+appId, '.loader-app-cdr');
+
+}
+
+function getChartData(chart_selector, url, loader) {
+    var $loader = $(loader);
     $.ajax({
         data: {
             from_date: $('#from_date').find('input').val(),
             to_date: $('#to_date').find('input').val()
         },
-        url: '/cdr/chart-data',
+        url: url,
         beforeSend: function () {
             $loader.removeClass('hide');
-            $chart.addClass('hide');
         },
         success: function (data) {
-            renderLineChart(data);
+            renderChart(data, chart_selector);
         },
         complete: function () {
             $loader.addClass('hide');
-            $chart.removeClass('hide');
         }
     });
 }
 
-getCDRData();
 
-function renderLineChart(data) {
+function renderChart(data, chart_selector) {
     var lineData = {
         labels: data.labels,
         datasets: [
@@ -63,8 +77,13 @@ function renderLineChart(data) {
         responsive: true
     };
 
-    var linectx = document.getElementById("chartjs-linechart").getContext("2d");
-    lineChart = new Chart(linectx).Line(lineData, lineOptions);
+    var linectx = document.getElementById(chart_selector).getContext("2d");
+    charts[chart_selector] = new Chart(linectx).Line(lineData, lineOptions);
+}
+
+function destroyChart(selector) {
+    if (selector in charts && typeof(charts[selector]) != "undefined")
+        charts[selector].destroy();
 }
 
 function renderBarChart() {
@@ -104,3 +123,9 @@ function renderBarChart() {
     var barChart = new Chart(barctx).Bar(barData, barOptions);
 }
 
+function getUrlParam(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}

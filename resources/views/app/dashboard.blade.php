@@ -16,14 +16,14 @@
                 keepOpen: true,
                 defaultDate:  $from_date.val()
             }).on('dp.change', function(e) {
-                getCDRData();
+                initCharts();
             });
             $to_date.datetimepicker({
                 format: 'DD.MM.YYYY',
                 keepOpen: true,
                 defaultDate:  $to_date.val()
             }).on('dp.change', function(e) {
-                getCDRData();
+                initCharts();
             });
 
         });
@@ -95,27 +95,53 @@
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">
-                <div class="panel-heading"><h4>CDR Summary</h4></div>
+                <div class="panel-heading"><h4>APP CDR Summary</h4></div>
                 <div class="panel-body">
                     <div class="col-sm-12">
-                        <div class="loader-demo">
+                        <div class="loader-demo loader-app-cdr">
                             <div class="ball-scale-multiple block-center">
                                 <div></div>
                                 <div></div>
                                 <div></div>
                             </div>
                         </div>
-                        <canvas id="chartjs-linechart"></canvas>
+                        <canvas id="chartjs-app-cdr" class="chartjs"></canvas>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="panel panel-default">
-                <div class="panel-heading"><h4>Daily usage</h4></div>
+                <div class="panel-heading"><h4>APP Daily usage</h4></div>
                 <div class="panel-body">
                     <div class="col-sm-12">
-                        <canvas id="chartjs-barchart"></canvas>
+                        <div class="loader-demo loader-app-daily">
+                            <div class="ball-scale-multiple block-center">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                        <canvas id="chartjs-barchart" class="chartjs"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h4>Overall CDR</h4></div>
+                <div class="panel-body">
+                    <div class="col-sm-12">
+                        <div class="loader-demo loader-overall-cdr">
+                            <div class="ball-scale-multiple block-center">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                        <canvas id="chartjs-overall-cdr" class="chartjs"></canvas>
                     </div>
                 </div>
             </div>

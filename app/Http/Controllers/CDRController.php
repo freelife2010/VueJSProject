@@ -74,18 +74,5 @@ class CDRController extends Controller
         return $cdr;
     }
 
-    protected function formatCDRData($cdr)
-    {
-        $data = [];
-
-        foreach ($cdr as $key => $entry) {
-            $date = date('d.m', strtotime($entry->time));
-            if (isset($data[$date])) {
-                $data[$date] += 1;
-            } else $data[$date] = 1;
-        }
-
-        return ['labels' => array_keys($data), 'data' => array_values($data)];
-    }
 
 }
