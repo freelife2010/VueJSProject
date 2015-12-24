@@ -41,7 +41,7 @@
                        data-toggle="modal"
                        class="btn btn-labeled btn-info">
                         <span class="btn-label">
-                               <i class="fa fa-key"></i>
+                               <i class="fa fa-plus"></i>
                            </span>Create conference
                     </a>
                 </div>

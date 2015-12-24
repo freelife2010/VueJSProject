@@ -90,6 +90,7 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('users/{username}', 'App\API\Controllers\UserController@getUserInfo');
 
     $api->controller('did', 'App\API\Controllers\DIDController');
+    $api->controller('sms', 'App\API\Controllers\SMSAPIController');
 
     //freeSwitch routes
     $api->get('fs/get_call_handler', 'App\API\Controllers\FreeswitchController@getCallHandler');

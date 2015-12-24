@@ -37,6 +37,8 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
+	protected $clientBalance = 0;
+
     public function apps() {
         return $this->hasMany('App\Models\App', 'account_id');
     }
@@ -61,6 +63,37 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
     {
         return $this->first_name. ' ' . $this->last_name;
     }
+
+	public function hasSum($sum)
+	{
+		$clientBalance = $this->getClientBalance();
+
+		return $clientBalance >= $sum;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getClientBalance()
+	{
+		if (!$this->clientBalance) {
+			$clientId            = $this->getCurrentUserIdFromBillingDB($this);
+			$this->clientBalance = $this->getClientBalanceFromBillingDB($clientId);
+		}
+
+		return $this->clientBalance;
+	}
+
+	public function deductSMSCost($totalSent)
+	{
+		$totalDeduct = 0;
+		foreach ($totalSent as $data) {
+			$totalDeduct += $data['cost'];
+		}
+		$this->deductClientBalanceInBillingDB($totalDeduct);
+	}
+
+
 
 
 }

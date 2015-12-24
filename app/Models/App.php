@@ -118,18 +118,6 @@ class App extends BaseModel
                 ]
             ],
             [
-                'name'       => 'API keys',
-                'icon'       => 'icon-key',
-                'url'        => 'app-keys/index',
-                'labelCount' => 'keys'
-            ],
-            [
-                'name'       => 'Manage DID',
-                'icon'       => 'fa fa-phone-square',
-                'url'        => 'did/index',
-                'labelCount' => 'did'
-            ],
-            [
                 'name'       => 'PBX',
                 'icon'       => 'fa fa-phone',
                 'url'        => 'app-pbx',
@@ -150,6 +138,23 @@ class App extends BaseModel
                         'url'  => 'queues/caller-log',
                     ]
                 ]
+            ],
+            [
+                'name'       => 'SMS',
+                'icon'       => 'icon-speech',
+                'url'        => 'sms/history'
+            ],
+            [
+                'name'       => 'API keys',
+                'icon'       => 'icon-key',
+                'url'        => 'app-keys/index',
+                'labelCount' => 'keys'
+            ],
+            [
+                'name'       => 'Manage DID',
+                'icon'       => 'fa fa-phone-square',
+                'url'        => 'did/index',
+                'labelCount' => 'did'
             ],
             [
                 'name'       => 'Conferences',

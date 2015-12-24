@@ -148,6 +148,27 @@ trait BillingTrait {
         return $this->fetchField($result, 'client_id');
     }
 
+    protected function getClientBalanceFromBillingDB($clientId)
+    {
+        $result = $this->selectFromBillingDB('select balance from client_balance where client_id = ?',
+            [$clientId]);
+
+        return $this->fetchField($result, 'balance');
+    }
+
+    protected function deductClientBalanceInBillingDB($deductSum)
+    {
+        $clientId       = $this->getCurrentUserIdFromBillingDB();
+        $currentBalance = $this->getClientBalanceFromBillingDB($clientId) * 100;
+        $newSum         = $currentBalance - $deductSum;
+        $newSum         = $newSum ? $newSum / 100 : 0;
+        $newSum         = money_format('%i', $newSum);
+        $db             = $this->getFluentBilling('client_balance');
+
+        return $db->whereClientId($clientId)->update(['balance' => $newSum]);
+
+    }
+
     protected function fetchField($result, $field)
     {
         $fieldValue = false;

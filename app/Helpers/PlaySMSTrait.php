@@ -12,6 +12,10 @@ namespace App\Helpers;
 use Cache;
 use GuzzleHttp\Client;
 
+/**
+ * Class PlaySMSTrait to work with SMS API
+ * @package App\Helpers
+ */
 trait PlaySMSTrait
 {
     protected $smsToken = '3722dffa6cdb07b06d8e7916cf25b07a';
@@ -30,8 +34,30 @@ trait PlaySMSTrait
         $params['data_name']     = $developer->name;
         $params['data_email']    = $developer->email;
 
-        $response = $this->makeSMSRequest($params);
+        return $this->makeSMSRequest($params);
 
+    }
+
+    protected function addCredit($username, $amount)
+    {
+        $params                  = [];
+        $params['op']            = 'creditadd';
+        $params['data_username'] = $username;
+        $params['data_amount']   = $amount;
+
+        return $this->makeSMSRequest($params);
+    }
+
+    protected function sendSMS($number, $message)
+    {
+        $params        = [];
+        $params['op']  = 'pv';
+        $params['to']  = $number;
+        $params['msg'] = $message;
+
+        $request = json_decode($this->makeSMSRequest($params));
+
+        return @$request->error_string;
     }
 
     protected function checkSMSInbox()
@@ -51,7 +77,7 @@ trait PlaySMSTrait
         ]);
         $response = $client->request('GET', 'index.php', ['query' => $params]);
 
-        return (string)$response->getBody();
+        return (string) $response->getBody();
 
     }
 

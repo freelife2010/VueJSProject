@@ -5,6 +5,7 @@
 @include('styles.datatables')
 @section('scripts')
     @include('scripts.datatables')
+    <script src="{{ asset('vendor/chosen_v1.2.0/chosen.jquery.min.js') }}"></script>
     <script>
         var oTable;
         var $table = $('#table');
@@ -14,14 +15,14 @@
                 "processing": false,
                 "order": [[ 2, "desc" ]],
                 "ajax": {
-                    url : "/sms/data/"
+                    url : "{{url('sms/data?app='.$APP->id)}}"
                 },
                 "columns": [
                     {data: 'id'},
                     {data: 'src'},
                     {data: 'dst'},
                     {data: 'msg'},
-                    {data: 'dt'},
+                    {data: 'dt'}
                 ],
                 "fnDrawCallback": function() {
                     $('.col-filter').css('width', '16%');
@@ -36,6 +37,16 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="row">
+                <div class="col-md-1 manage-btn">
+                    <a href="{{{ URL::to('sms/send?app='.$APP->id) }}}"
+                       data-target="#myModal"
+                       data-toggle="modal"
+                       class="btn btn-labeled btn-info">
+                        <span class="btn-label">
+                               <i class="fa fa-paper-plane"></i>
+                           </span>Send sms
+                    </a>
+                </div>
             </div>
             <br/>
             <div class="panel panel-default">
