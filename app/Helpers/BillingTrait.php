@@ -158,12 +158,12 @@ trait BillingTrait {
         return $fieldValue;
     }
 
-    protected function formatCDRData($cdr)
+    protected function formatCDRData($cdr, $groupField = 'time')
     {
         $data = [];
 
         foreach ($cdr as $key => $entry) {
-            $date = date('d.m', strtotime($entry->time));
+            $date = date('d.m', strtotime($entry->$groupField));
             if (isset($data[$date])) {
                 $data[$date] += 1;
             } else $data[$date] = 1;

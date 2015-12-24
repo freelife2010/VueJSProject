@@ -105,7 +105,7 @@
                                 <div></div>
                             </div>
                         </div>
-                        <canvas id="chartjs-app-cdr" class="chartjs"></canvas>
+                        <canvas id="chartjs-app-cdr"></canvas>
                     </div>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                                 <div></div>
                             </div>
                         </div>
-                        <canvas id="chartjs-barchart" class="chartjs"></canvas>
+                        <canvas id="chartjs-app-daily"></canvas>
                     </div>
                 </div>
             </div>
@@ -141,7 +141,7 @@
                                 <div></div>
                             </div>
                         </div>
-                        <canvas id="chartjs-overall-cdr" class="chartjs"></canvas>
+                        <canvas id="chartjs-overall-cdr"></canvas>
                     </div>
                 </div>
             </div>

@@ -5,6 +5,7 @@ var charts = [];
 initCharts();
 
 function initCharts() {
+    initAPPDailyUsageChart('chartjs-app-daily');
     initAPPCDRChart('chartjs-app-cdr');
     initOverallCDRChart('chartjs-overall-cdr');
 }
@@ -20,6 +21,13 @@ function initAPPCDRChart(selector) {
     destroyChart(selector);
     var appId = getUrlParam('app');
     getChartData(selector, '/app-cdr/chart-data?app='+appId, '.loader-app-cdr');
+
+}
+
+function initAPPDailyUsageChart(selector) {
+    destroyChart(selector);
+    var appId = getUrlParam('app');
+    getChartData(selector, '/app-cdr/chart-daily-usage-data?app='+appId, '.loader-app-daily');
 
 }
 

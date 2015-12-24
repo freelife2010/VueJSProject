@@ -87,4 +87,28 @@ class AppCDRController extends AppBaseController
         return $cdr;
     }
 
+    public function getChartDailyUsageData(Request $request)
+    {
+        $fields     =
+            'report_time,
+             duration,
+             sum(ingress_bill_time)/60 as min,
+             sum(ingress_call_cost+lnp_cost) as cost';
+
+        $fromDate   = date('Y-m-d H:i:s', strtotime($request->from_date));
+        $toDate     = date('Y-m-d H:i:s', strtotime($request->to_date));
+
+        $resource   = $this->getResourceByAliasFromBillingDB($this->app->alias);
+        $dailyUsage = new Collection();
+        if ($resource)
+            $dailyUsage = $this->getFluentBilling('cdr_report')->selectRaw($fields)
+                ->whereEgressClientId($resource->resource_id)
+                ->whereBetween('report_time', [$fromDate, $toDate])
+                ->groupBy('report_time', 'duration')->get();
+
+        $dailyUsage = $this->formatCDRData($dailyUsage, 'report_time');
+
+        return $dailyUsage;
+    }
+
 }
