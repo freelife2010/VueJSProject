@@ -32,6 +32,11 @@ class App extends BaseModel
         return $this->hasMany('App\Models\Conference', 'app_id');
     }
 
+    public function queues()
+    {
+        return $this->hasMany('App\Models\Queue', 'app_id');
+    }
+
     public function keys()
     {
         return $this->hasMany('App\Models\AppKey', 'app_id');
@@ -151,6 +156,12 @@ class App extends BaseModel
                 'icon'       => 'fa fa-list',
                 'url'        => 'conferences/index',
                 'labelCount' => 'conferences'
+            ],
+            [
+                'name'       => 'Queues',
+                'icon'       => 'fa fa-list',
+                'url'        => 'queues/index',
+                'labelCount' => 'queues'
             ],
             [
                 'name'       => 'Users',
