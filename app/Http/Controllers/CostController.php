@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Requests\DeleteRequest;
+use App\Models\Country;
 use App\Models\DID;
 use App\Models\DIDCost;
+use App\Models\SMS;
+use App\Models\SMSCost;
 use Former;
 use Illuminate\Http\Request;
 use URL;
@@ -121,7 +124,7 @@ class CostController extends Controller
         $model = DIDCost::find($id);
         $url   = Url::to('costs/did-delete/' . $model->id);
 
-        return view('costs.delete_did', compact('title', 'model', 'url'));
+        return view('costs.delete', compact('title', 'model', 'url'));
     }
 
     public function postDidDelete(DeleteRequest $request, $id)
@@ -158,6 +161,108 @@ class CostController extends Controller
 
         if (DIDCost::create($params))
             $result = $this->getResult(false, 'New default cost has been set');
+
+        return $result;
+    }
+
+    public function getSms()
+    {
+        $title    = 'SMS cost';
+        $subtitle = 'Modify SMS cost';
+
+        return view('costs.sms', compact('title', 'subtitle'));
+    }
+
+    public function getSmsData()
+    {
+        $smsCosts = SMSCost::all();
+
+
+        return Datatables::of($smsCosts)
+            ->add_column('name', function ($cost) {
+                return $cost->country ? $cost->country->name : '';
+            })
+            ->add_column('code', function ($cost) {
+                return $cost->country ? $cost->country->code : '';
+            })
+            ->add_column('actions', function ($cost) {
+                $urls['edit'] = url('costs/sms-edit/'.$cost->id);
+                $urls['delete'] = url('costs/sms-delete/'.$cost->id);
+                return $cost->getDefaultActionButtons('', $urls);
+            })
+            ->make(true);
+    }
+
+    public function getSmsCreate()
+    {
+        $title     = 'Set new cost';
+        $countries = Country::all()->lists('name', 'id');
+        $countries = $countries->sort();
+
+        return view('costs.create_edit_sms', compact('title', 'countries'));
+    }
+
+
+    public function postSmsCreate(Request $request)
+    {
+        $this->validate($request, [
+            'countries'   => 'required',
+            'cents_value' => 'required|numeric'
+        ]);
+        $result = $this->getResult(true, 'Could not set new cost');
+        $params = $request->all();
+        if (SMSCost::createCost($params)) {
+            $result = $this->getResult(false, 'New cost has been set');
+        }
+
+        return $result;
+    }
+
+    public function getSmsEdit($id)
+    {
+        $title     = 'Edit SMS cost';
+        $model     = SMSCost::find($id);
+        $countries = Country::all()->lists('name', 'id');
+        $countries = $countries->sort();
+
+        return view('costs.create_edit_sms', compact('title', 'model', 'countries'));
+    }
+
+    public function postSmsEdit(Request $request, $id)
+    {
+        $this->validate($request, [
+            'country_id'  => 'required',
+            'cents_value' => 'required|numeric',
+        ]);
+        $result = $this->getResult(true, 'Could not edit cost');
+        $model  = SMSCost::find($id);
+        if (SMSCost::whereCountryId($request->country_id)->first())
+            $result = $this->getResult(true, 'There is already defined cost for this country. <br/>
+                                                Please, choose another country');
+        elseif ($model->fill($request->input())
+            and $model->save()
+        )
+            $result = $this->getResult(false, 'Cost saved successfully');
+
+        return $result;
+    }
+
+    public function getSmsDelete($id)
+    {
+        $title = 'Delete cost ?';
+        $model = SMSCost::find($id);
+        $url   = Url::to('costs/sms-delete/' . $model->id);
+
+        return view('costs.delete', compact('title', 'model', 'url'));
+    }
+
+    public function postSmsDelete(DeleteRequest $request, $id)
+    {
+        $result = $this->getResult(true, 'Could not delete cost');
+        $model  = SMSCost::find($id);
+        if ($model->delete()) {
+            $result = $this->getResult(false, 'Cost deleted');
+        }
 
         return $result;
     }

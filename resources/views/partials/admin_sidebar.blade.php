@@ -53,6 +53,12 @@
                         <span>DID cost</span>
                     </a>
                 </li>
+                <li class=" {{ $helper->isActive('costs/sms') }}">
+                    <a href=" {{ url('costs/sms') }}" title="SMS cost">
+                        <em class="fa fa-paper-plane-o"></em>
+                        <span>SMS cost</span>
+                    </a>
+                </li>
             </ul>
             <!-- END sidebar nav-->
         </nav>
