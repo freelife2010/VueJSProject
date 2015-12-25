@@ -20,13 +20,13 @@ class SMSController extends AppBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function getHistory()
+    public function getInbox()
     {
-        $title    = 'SMS history';
+        $title    = 'SMS inbox';
         $APP      = $this->app;
-        $subtitle = 'View SMS history';
+        $subtitle = 'View SMS Inbox';
 
-        return view('sms.history', compact('title', 'subtitle', 'APP'));
+        return view('sms.inbox', compact('title', 'subtitle', 'APP'));
     }
 
     public function getData()

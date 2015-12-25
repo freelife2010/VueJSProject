@@ -142,7 +142,7 @@ class App extends BaseModel
             [
                 'name'       => 'SMS',
                 'icon'       => 'icon-speech',
-                'url'        => 'sms/history'
+                'url'        => 'sms/inbox'
             ],
             [
                 'name'       => 'API keys',
