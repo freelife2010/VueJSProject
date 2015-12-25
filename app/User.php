@@ -37,7 +37,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
-	protected $clientId = 0;
+	public $clientId = 0;
 	protected $clientBalance = 0;
 
     public function apps() {
