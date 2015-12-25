@@ -375,7 +375,7 @@ class FreeswitchController extends Controller
         $domain = $section->addChild('domain');
         $domain->addAttribute('name', 'opentact.org');
         $param = $domain->addChild('params')->addChild('param');
-        $param->addAttribute('dial-string', "$user->email@$opensips_ip");
+        $param->addAttribute('dial-string', "$user->email@$user->app_id");
         $group = $domain->addChild('groups')->addChild('group');
         $group->addAttribute('name', 'default');
         $userNode = $group->addChild('users')->addChild('user');
