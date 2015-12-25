@@ -76,10 +76,12 @@ class SMSController extends AppBaseController
     {
         $sentString = '';
         foreach ($totalSent as $data) {
-            $sentString .= $data['user'] . " - sent<br/>";
+            $sentString .= sprintf('%s - %s<br/>', $data['user'], $data['error'] ?: 'sent');
         }
 
-        return $this->getResult(false, 'Operation completed. Total sent: <br/>'.$sentString);
+        $totalCost = isset ($data['totalCost']) ? sprintf("Total cost: %s", $data['totalCost']) : '';
+
+        return $this->getResult(false, 'Operation completed. Total sent: <br/>'.$sentString.$totalCost);
     }
 
     private function validateInput($request)

@@ -77,14 +77,15 @@ class SMS extends BaseModel
         $result = [];
         if ($this->totalCost) {
             foreach ($this->users as $user) {
-                $number = preg_replace( '/[^0-9]/', '', $user->phone );
-                $number = "+$number";
+                $number       = preg_replace('/[^0-9]/', '', $user->phone);
+                $number       = "+$number";
                 $errorMessage = $this->sendSMS($number, $message);
-                if (!$errorMessage)
-                    $result[] = [
-                        'user' => $user->email,
-                        'cost' => isset($this->costByUser[$user->email]) ? $this->costByUser[$user->email] : null
-                    ];
+                $result[]     = [
+                    'user'      => $user->email,
+                    'cost'      => isset($this->costByUser[$user->email]) ? $this->costByUser[$user->email] : null,
+                    'error'     => $errorMessage,
+                    'totalCost' => $this->totalCost
+                ];
             }
         }
 
