@@ -37,6 +37,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
+	protected $clientId = 0;
 	protected $clientBalance = 0;
 
     public function apps() {
@@ -77,8 +78,8 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	public function getClientBalance()
 	{
 		if (!$this->clientBalance) {
-			$clientId            = $this->getCurrentUserIdFromBillingDB($this);
-			$this->clientBalance = $this->getClientBalanceFromBillingDB($clientId);
+			$this->clientId      = $this->getCurrentUserIdFromBillingDB($this);
+			$this->clientBalance = $this->getClientBalanceFromBillingDB($this->clientId);
 		}
 
 		return $this->clientBalance;

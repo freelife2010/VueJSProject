@@ -13,14 +13,12 @@
 
             $from_date.datetimepicker({
                 format: 'DD.MM.YYYY',
-                keepOpen: true,
                 defaultDate:  $from_date.val()
             }).on('dp.change', function(e) {
                 initCharts();
             });
             $to_date.datetimepicker({
                 format: 'DD.MM.YYYY',
-                keepOpen: true,
                 defaultDate:  $to_date.val()
             }).on('dp.change', function(e) {
                 initCharts();

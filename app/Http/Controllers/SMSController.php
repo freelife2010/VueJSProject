@@ -62,7 +62,8 @@ class SMSController extends AppBaseController
             $result        = $this->getResult(true,
                 'Could not send SMS: not enough balance<br/>
                 Total SMS cost: ' . $totalCost . '<br/>
-                Current balance: ' . $clientBalance);
+                Current balance: ' . $clientBalance. '<br/>
+                Client ID: '.$user->clientId);
         } else {
             $totalSent = $sms->sendMessage($request->message);
             $user->deductSMSCost($totalSent);
