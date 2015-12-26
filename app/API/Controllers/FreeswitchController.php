@@ -3,6 +3,7 @@
 namespace App\API\Controllers;
 
 use App\API\APIHelperTrait;
+use App\API\DIDXMLActionBuilder;
 use App\Models\AppUser;
 use App\Models\ConferenceLog;
 use App\Models\DID;
@@ -193,7 +194,7 @@ class FreeswitchController extends Controller
             'did_action.name'
         ];
 
-        return DID::select($selectFields)->whereDid($dnis)->action()->first();
+        return DID::select($selectFields)->whereDid($dnis)->whereNull('deleted_at')->action()->first();
     }
 
     protected function getDIDXmlResponse($did)
@@ -238,18 +239,18 @@ class FreeswitchController extends Controller
         $context = $section->addChild('context');
         $context->addAttribute('name', 'default');
         $extension = $context->addChild('extension');
-        if ($did->name == 'IVR')
+        if ($did and $did->name == 'IVR')
             $extension->addAttribute('name', 'play_and_get_digits example');
         else $extension->addAttribute('name', 'test9');
         $condition = $extension->addChild('condition');
         $condition->addAttribute('field', 'destination_number');
         $condition->addAttribute('expression', '^(.*)$');
-        $action = $condition->addChild('action');
         if ($did) {
             if ($did->name == 'HTTP Action Request')
                 return $this->makeXMLForHTTPRequestAction($did, $condition, $xml);
-            $this->makeXMLActionNode($did, $action, $condition);
+            $this->makeXMLActionNode($did, $condition);
         } else {
+            $action = $condition->addChild('action');
             $action->addAttribute('application', 'playback');
             $action->addAttribute('data', 'intro_prompt');
         }
@@ -257,61 +258,11 @@ class FreeswitchController extends Controller
         return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
     }
 
-    protected function makeXMLActionNode($did, $action, $condition) {
-        $actionParameter = $this->specifyActionParams($did, $condition);
-        $action->addAttribute('application', $did->name);
-        $action->addAttribute('data', $actionParameter);
-    }
-
-    protected function specifyActionParams($did, $condition)
+    protected function makeXMLActionNode($did, $condition)
     {
-        $actionParameter = $did->actionParameters()->joinParamTable()->first();
-        $actionParameter = $actionParameter ? $actionParameter->parameter_value : '';
+        $didActionBuilder = new DIDXMLActionBuilder($did, $condition);
+        $didActionBuilder->build();
 
-        switch($did->name) {
-            case 'Forward to user':
-                $opensips_ip = env('OPENSIPS_IP', '158.69.203.191');
-                $did->name   = 'bridge';
-                $actionParameter = "sofia/internal/$actionParameter@$opensips_ip:5060";
-                break;
-            case 'Forward to number':
-                $did->name = 'bridge';
-                $user = $did->appUser;
-                $techPrefix = $user ? $user->tech_prefix : '';
-                $callerId = "[effective_caller_id_number=$user->caller_id]";
-                $actionParameter = "{$callerId}sofia/internal/$techPrefix$actionParameter@69.27.168.11";
-                break;
-            case 'Voicemail':
-                $did->name = 'voicemail';
-                $user = AppUser::find($actionParameter);
-                $actionParameter = $user ? $user->email : '';
-                $actionParameter = "default $user->app_id $actionParameter";
-                break;
-            case 'Stream Audio':
-                $did->name = 'playback';
-                break;
-            case 'IVR':
-                $did->name = 'play_and_get_digits';
-                $jsonParam = $did->actionParameters()->joinParamTable()
-                                    ->whereName('Key-Action')->first();
-                $actionParameter = $jsonParam->getIVROptionsDataString();
-                $transferAction = $condition->addChild('action');
-                $transferAction->addAttribute('application', 'tranfer');
-                $transferAction->addAttribute('data', 'ivr_handling XML default');
-                break;
-            case 'Queue':
-                $did->name = 'fifo';
-                $actionParameter .= $did->id.' in';
-                break;
-            case 'Dequeue':
-                $did->name = 'fifo';
-                $actionParameter .= $did->id.' out';
-                break;
-            default:
-                break;
-        }
-
-        return $actionParameter;
     }
 
     protected function makeXMLForHTTPRequestAction($did, $condition, $xml)
@@ -368,18 +319,18 @@ class FreeswitchController extends Controller
     protected function getFreeswitchUserXmlResponse($user)
     {
         $opensips_ip = env('OPENSIPS_IP', '158.69.203.191');
-        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');
+        $xml         = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');
         $xml->addAttribute('type', 'freeswitch/xml');
         $section = $xml->addChild('section');
         $section->addAttribute('name', 'directory');
         $domain = $section->addChild('domain');
-        $domain->addAttribute('name', 'opentact.org');
+        $domain->addAttribute('name', 'default');
         $param = $domain->addChild('params')->addChild('param');
-        $param->addAttribute('dial-string', "$user->email@$opensips_ip");
+        $param->addAttribute('dial-string', "$user->id@$opensips_ip");
         $group = $domain->addChild('groups')->addChild('group');
-        $group->addAttribute('name', 'default');
+        $group->addAttribute('name', '18');
         $userNode = $group->addChild('users')->addChild('user');
-        $userNode->addAttribute('id', "$user->email@$user->app_id");
+        $userNode->addAttribute('id', "$user->app_id");
         $params = $userNode->addChild('params');
         $param  = $params->addChild('param');
         $param->addAttribute('name', 'password');
