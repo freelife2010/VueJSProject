@@ -87,8 +87,8 @@ return [
 	*/
 
 	'custom' => [
-		'attribute-name' => [
-			'rule-name' => 'custom-message',
+		'scopes' => [
+			'required' => 'There is should be selected at least one API',
 		],
 	],
 

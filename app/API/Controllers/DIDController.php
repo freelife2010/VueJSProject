@@ -7,6 +7,7 @@ use App\API\APIHelperTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Models\DID;
+use Config;
 use DB;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
@@ -14,6 +15,12 @@ use Illuminate\Http\Request;
 class DIDController extends Controller
 {
     use Helpers, APIHelperTrait;
+
+    public function __construct()
+    {
+        $this->initAPI();
+        $this->scopes('pbx');
+    }
 
     public function getActionsParameters()
     {

@@ -22,6 +22,15 @@ class FreeswitchController extends Controller
 {
     use Helpers, APIHelperTrait;
 
+
+    /**
+     * FreeswitchController constructor.
+     */
+    public function __construct()
+    {
+        $this->initAPI();
+    }
+
     public function getCallHandler(Request $request)
     {
         $validator = $this->makeValidator($request, [

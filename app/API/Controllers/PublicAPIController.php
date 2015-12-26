@@ -19,11 +19,14 @@ use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Helpers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
-use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 
 class PublicAPIController extends Controller{
     use Helpers, APIHelperTrait;
 
+    public function __construct()
+    {
+        $this->initAPI();
+    }
 
     public function createAPP(Request $request)
     {

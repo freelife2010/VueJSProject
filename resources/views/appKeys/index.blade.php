@@ -5,6 +5,7 @@
 @include('styles.datatables')
 @section('scripts')
     @include('scripts.datatables')
+    <script src="{{ asset('vendor/chosen_v1.2.0/chosen.jquery.min.js') }}"></script>
     <script>
         var oTable;
         var $table = $('#table');
@@ -12,7 +13,7 @@
             oTable = $table.DataTable({
                 "bPaginate": true,
                 "processing": false,
-                "order": [[ 3, "asc" ]],
+                "order": [[ 3, "desc" ]],
                 "ajax": {
                     url : '{{ url("/app-keys/data?app=".$APP->id) }}'
                 },
@@ -20,6 +21,8 @@
                     {data: 'app_id'},
                     {data: 'id'},
                     {data: 'secret'},
+                    {data: 'scopes'},
+                    {data: 'created_at'},
                     {data: 'status'},
                     {data: 'actions'}
                 ],
@@ -56,6 +59,8 @@
                             <th>APP Name</th>
                             <th>APP UUID</th>
                             <th>Secret</th>
+                            <th>Permitted APIs</th>
+                            <th>Created at</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>

@@ -20,11 +20,8 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->request = Request::capture();
-        if ($this->request->has('datetz'))
-            Config::set('app.timezone', $this->request->input('datetz'));
-
-        $this->scopes('users.read', ['only' => 'getUsers']);
+        $this->initAPI();
+        $this->scopes('users');
     }
 
     public function getUsers()

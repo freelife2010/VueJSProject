@@ -4,9 +4,11 @@
     <script type="text/javascript">
         $(document).ready(function() {
             setModalWidth(350);
+            $('#scopes').chosen();
         });
     </script>
 @stop
+<link rel="stylesheet" href="{{ asset('vendor/chosen_v1.2.0/chosen.min.css') }}">
 @section('modal_body')
     <?php
     $action_url = url("app-keys/create");
@@ -18,6 +20,10 @@
         <?= Former::hidden('app_id')->value($model->id);?>
         <?= Former::text('id')->disabled();?>
         <?= Former::text('secret')->disabled();?>
+        <?= Former::select('scopes[]')->options($scopes)
+                ->multiple()->setAttribute('data-placeholder', 'Select permitted APIs')
+                ->id('scopes')
+                ->label('API');?>
         <?= Former::text('expire_days')->label('Expires in (days)')->value(5);?>
     </div>
     <div style="clear: both"></div>

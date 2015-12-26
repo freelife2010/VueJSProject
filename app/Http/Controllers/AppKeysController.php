@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DeleteRequest;
 use App\Models\App;
 use App\Models\AppKey;
+use DB;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -33,7 +34,8 @@ class AppKeysController extends AppBaseController
             'id',
             'app_id',
             'expire_time',
-            'secret'])->whereAppId($this->app->id);
+            'secret',
+            'created_at'])->whereAppId($this->app->id);
 
         return Datatables::of($apps)
             ->edit_column('app_id', function($key) {
@@ -41,6 +43,12 @@ class AppKeysController extends AppBaseController
             })
             ->add_column('status', function($app) {
                 return $app->isExpired() ? 'Expired' : 'Active';
+            })
+            ->add_column('scopes', function($app) {
+                return $app->getScopes();
+            })
+            ->edit_column('created_at', function($app) {
+                return $app->created_at->format('d.m.Y H:i:s');
             })
             ->add_column('actions', function($app) {
                 return $app->getActionButtonsWithAPP('app-keys', $this->app, ['edit']);
@@ -52,20 +60,22 @@ class AppKeysController extends AppBaseController
     {
         $model  = $this->app;
         $title  = 'Generate APP API keys';
+        $scopes = DB::table('oauth_scopes')->lists('description', 'id');
 
-        return view('appKeys.create', compact('model', 'title'));
+        return view('appKeys.create', compact('model', 'title', 'scopes'));
     }
 
     public function postCreate(Request $request)
     {
         $this->validate($request, [
+            'scopes'      => 'required',
             'expire_days' => 'required|numeric'
         ]);
         $result     = $this->getResult(true, 'Could not generate APP key');
         $appKey     = new AppKey();
         $app        = App::find($request->input('app_id'));
         $expireDays = $request->input('expire_days');
-        if ($appKey->generateKeys($app, $expireDays))
+        if ($appKey->generateKeys($app, $expireDays, $request->scopes))
             $result = $this->getResult(false, 'App key has been generated');
 
         return $result;

@@ -21,7 +21,7 @@ use Validator;
 trait APIHelperTrait {
     protected $request;
 
-    function __construct()
+    function initAPI()
     {
         $this->request = Request::capture();
         if ($this->request->has('datetz'))

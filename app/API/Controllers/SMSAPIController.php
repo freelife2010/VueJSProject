@@ -13,6 +13,12 @@ class SMSAPIController extends Controller
 {
     use Helpers, APIHelperTrait;
 
+    public function __construct()
+    {
+        $this->initAPI();
+        $this->scopes('sms');
+    }
+
     public function postAddCredit(Request $request)
     {
         $this->validate($request, [
