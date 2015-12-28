@@ -35,6 +35,7 @@ class AppUser extends BaseModel
         'phone',
         'tech_prefix',
         'user_id',
+        'allow_outgoing_call',
         'caller_id'
     ];
 
@@ -46,11 +47,9 @@ class AppUser extends BaseModel
         $params['password']    = sha1($params['password']);
         $params['tech_prefix'] = self::generateUniqueId();
         $params['user_id']     = self::generateUniqueId(9999999999, 'user_id');
-        if (isset($params['allow_outgoing_call'])) {
-            $params['caller_id']   = !empty($params['caller_id_custom']) ?
-                $params['caller_id_custom'] :
-                $params['caller_id'];
-        } else $params['caller_id'] = 0;
+        if (!isset($params['allow_outgoing_call'])) {
+            $params['caller_id'] = 0;
+        }
 
 
         return AppUser::create($params);

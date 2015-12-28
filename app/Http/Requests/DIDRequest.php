@@ -25,9 +25,10 @@ class DIDRequest extends Request
     public function rules()
     {
         $rules = [
-            'did'        => 'required',
-            'owned_by'   => 'required',
-            'action'     => 'required'
+            'did'            => 'required_without:outside_number',
+            'outside_number' => 'required_without:did',
+            'owned_by'       => 'required',
+            'action'         => 'required'
         ];
 
         if ($this->parameters) {

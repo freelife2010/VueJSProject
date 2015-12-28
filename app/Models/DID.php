@@ -142,15 +142,17 @@ class DID extends BaseModel
 
     public function fillParams($request, $reserveId)
     {
-        $params = $request->all();
-        $user   = Auth::user();
+        $params               = $request->all();
+        $user                 = Auth::user();
         $params['reserve_id'] = $reserveId;
         $params['account_id'] = $user->id;
-        $params['action_id'] = $params['action'];
-        $storedDIDs = $request->session()->get('dids');
-        $storedDID = $this->findReservedDID($request->did, $storedDIDs);
+        $params['action_id']  = $params['action'];
+        if (!empty($params['outside_number']))
+            $params['did'] = $params['outside_number'];
+        $storedDIDs           = $request->session()->get('dids');
+        $storedDID            = $this->findReservedDID($request->did, $storedDIDs);
         if ($storedDID) {
-            $params['did_type'] = $storedDID->category;
+            $params['did_type']    = $storedDID->category;
             $params['rate_center'] = $storedDID->RateCenter;
         }
         $this->fill($params);

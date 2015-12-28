@@ -25,6 +25,7 @@
             });
             bindRateCenterEvent();
             bindActionSelectEvent($did_action);
+            bindOutsideNumberClick($state, $did_action);
         });
 
         function bindRateCenterEvent() {
@@ -38,6 +39,21 @@
             $did_action.change(function() {
                 getParameters($did_action);
             });
+        }
+
+        function bindOutsideNumberClick($state, $did_action) {
+            var $rate_center = $('#rate_center');
+            var $did = $('#did');
+            var $outsideNumCheckbox = $('#outside_number_checkbox');
+            var $outsideNumber = $('#outside_number');
+            $outsideNumCheckbox.click(function(e) {
+                $state.prop('disabled', $outsideNumCheckbox.prop('checked'));
+                $rate_center.prop('disabled', ($outsideNumCheckbox.prop('checked')));
+                $did.prop('disabled', ($outsideNumCheckbox.prop('checked')));
+                $outsideNumber.prop('disabled', !$outsideNumCheckbox.prop('checked'));
+                $did_action.prop('disabled', !$outsideNumCheckbox.prop('checked'));
+            });
+
         }
 
         function getNumbers() {
@@ -93,6 +109,9 @@
         <?= Former::select('state')->options($states)->placeholder('Select state');?>
         <?= Former::select('rate_center')->disabled();?>
         <?= Former::select('did')->disabled();?>
+        <?= Former::checkbox('outside_number_checkbox')->raw();?>
+        <?= Former::label('Outside number')->for('outside_number_checkbox');?>
+        <?= Former::text('outside_number')->disabled()->raw() ?><br/>
         <?= Former::select('action')->id('did_action')->options($actions)
                     ->placeholder('Select action')
                     ->disabled();?>
