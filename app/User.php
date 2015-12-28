@@ -1,7 +1,9 @@
 <?php namespace App;
 
 use App\Helpers\BillingTrait;
+use App\Helpers\PaypalSDK;
 use App\Models\BaseModel;
+use Cache;
 use Hash;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -92,6 +94,21 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 			$totalDeduct += $data['cost'];
 		}
 		$this->deductClientBalanceInBillingDB($totalDeduct);
+	}
+
+	public function getBalance()
+	{
+		$balance = Cache::get('balance_'.$this->id, null);
+		if (is_null($balance)) {
+			$balance  = null;
+			$paypal   = new PaypalSDK();
+			$balanceData  = $paypal->call('GetBalance');
+			if ($balanceData)
+				$balance = reset($balanceData);
+			Cache::put('balance_'.$this->id, $balance, 2);
+		}
+
+		return $balance. ' USD';
 	}
 
 

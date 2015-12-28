@@ -43,7 +43,19 @@
                 </li>
                 <!-- END lock screen-->
             </ul>
-            <!-- END Right Navbar-->
+            @if(Auth::user()->isDeveloper())
+                <ul class="nav navbar-nav navbar-right">
+                    <!-- Search icon-->
+                    <li>
+                        <a href="javascript:void(0)">
+                            Balance: {{ Auth::user()->getBalance() }}
+                        </a>
+                    </li>
+                    <!-- Fullscreen (only desktops)-->
+                    <!-- END Offsidebar menu-->
+                </ul>
+                <!-- END Right Navbar-->
+            @endif
         </div>
     </nav>
     <!-- END Top Navbar-->

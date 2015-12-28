@@ -57,12 +57,12 @@ class AppKey extends BaseModel
     public function getScopes()
     {
         $html   = '';
-        $scopes = DB::table('oauth_client_scopes')->select(['oauth_scopes.description'])
+        $scopes = DB::table('oauth_client_scopes')->select(['oauth_scopes.description', 'oauth_scopes.id'])
                     ->join('oauth_scopes', 'oauth_scopes.id', '=', 'oauth_client_scopes.scope_id')
                     ->whereClientId($this->id)->get();
 
         foreach ($scopes as $scope) {
-            $html .= $scope->description.'<br/>';
+            $html .= "$scope->description ($scope->id)<br/>";
         }
 
         return $html;

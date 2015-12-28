@@ -214,8 +214,6 @@ class AppUsersController extends AppBaseController
 
         $html = Former::select('caller_id')->addOption('Outside number', 0)
             ->options($dids)->placeholder('Select DID')->label('Number');
-        $html.= '<br/>';
-        $html.= Former::text('caller_id_custom')->label('Outside number');
 
         return $html;
     }
