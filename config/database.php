@@ -77,7 +77,7 @@ return [
         'billing' => [
             'driver'   => 'pgsql',
             'host'     => env('BILLING_HOST', '108.165.2.110'),
-            'database' => env('BILLING_DATABASE', 'class4'),
+            'database' => env('BILLING_DATABASE', 'class4_v5'),
             'username' => env('BILLING_USERNAME', 'postgres'),
             'password' => env('BILLING_PASSWORD', ''),
             'charset'  => 'utf8',

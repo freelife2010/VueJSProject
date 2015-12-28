@@ -159,7 +159,8 @@ return [
         App\Providers\OAuthServiceProvider::class,
         Barryvdh\Queue\AsyncServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-		Anouar\Paypalpayment\PaypalpaymentServiceProvider::class
+		Anouar\Paypalpayment\PaypalpaymentServiceProvider::class,
+		Collective\Remote\RemoteServiceProvider::class
 
 
 	],
@@ -208,6 +209,7 @@ return [
 		'Response'      => 'Illuminate\Support\Facades\Response',
 		'Route'         => 'Illuminate\Support\Facades\Route',
 		'Schema'        => 'Illuminate\Support\Facades\Schema',
+		'SSH' 			=> 'Collective\Remote\RemoteFacade',
 		'Session'       => 'Illuminate\Support\Facades\Session',
 		'Storage'       => 'Illuminate\Support\Facades\Storage',
 		'URL'           => 'Illuminate\Support\Facades\URL',
