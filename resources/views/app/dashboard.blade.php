@@ -69,7 +69,7 @@
         <div class="col-md-2">
             <div class='input-group date' id='from_date'>
                 <input type='text'
-                       value="<?= date('d.m.Y', strtotime('-1 month')) ?>"
+                       value="<?= date('01.m.Y', strtotime('-1 month')) ?>"
                        class="form-control"
                        style="height: 36px"/>
                     <span class="input-group-addon">
