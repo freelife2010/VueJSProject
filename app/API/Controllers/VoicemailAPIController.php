@@ -36,7 +36,7 @@ class VoicemailAPIController extends Controller
         return $process->getOutput();
     }
 
-    public function postFile(Request $request)
+    public function postFile(Request $request, $id)
     {
         $validator = $this->makeValidator($request, [
             'file' => 'required',
@@ -45,7 +45,8 @@ class VoicemailAPIController extends Controller
             return $this->validationFailed($validator);
         }
 
-        $path = $this->baseDir.$request->file;
+        $id   = preg_replace('/[^0-9]/', '', $id);
+        $path = $this->baseDir.$id."/$request->file";
 
         return \Illuminate\Support\Facades\Response::download($path, basename($request->file));
     }
