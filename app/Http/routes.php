@@ -110,3 +110,36 @@ Route::post('api/token', function() {
 //Freeswitch XML response method
 Route::post('dialplan', '\App\API\Controllers\FreeswitchController@getFreeswitchResponse');
 Route::post('user', '\App\API\Controllers\FreeswitchController@getFreeswitchUser');
+
+Route::post('testxml', function() {
+    $request = \Illuminate\Http\Request::capture();
+    $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');
+    $xml->addAttribute('type', 'freeswitch/xml');
+    $section = $xml->addChild('section');
+    $section->addAttribute('name', 'dialplan');
+    $section->addAttribute('description', 'dialplan');
+    $context = $section->addChild('context');
+    $context->addAttribute('name', 'default');
+    $extension = $context->addChild('extension');
+    $extension->addAttribute('name', 'test9');
+    $condition = $extension->addChild('condition');
+    $condition->addAttribute('field', 'destination_number');
+    $condition->addAttribute('expression', '^(.*)$');
+    $actions   = explode('<Action type=\'', $request->xml);
+    array_shift($actions);
+    foreach ($actions as $action) {
+        $endPos     = strpos($action, '\'>');
+        $endPos     = $endPos !== false ? $endPos : strpos($action, '\' />');
+        $actionName = substr($action, 0, $endPos);
+        $startPos   = $endPos + strlen('\'>');
+        $endPos     = strpos($action, '</');
+        $paramValue = substr($action, $startPos, $endPos-$startPos);
+        $paramValue = preg_replace('/[^a-zA-Z0-9]/s', '', $paramValue);
+        $action     = $condition->addChild('action');
+        $action->addAttribute('application', $actionName);
+        if ($paramValue)
+            $action->addAttribute('data', $paramValue);
+    }
+
+    return new \Dingo\Api\Http\Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
+});
