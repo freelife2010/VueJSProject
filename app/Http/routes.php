@@ -91,7 +91,8 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
     $api->controller('did', 'App\API\Controllers\DIDController');
     $api->controller('sms', 'App\API\Controllers\SMSAPIController');
-    $api->controller('voicemail', 'App\API\Controllers\VoicemailAPIController');
+    $api->controller('voicemail', 'App\API\Controllers\FileAPIController');
+    $api->controller('conference', 'App\API\Controllers\FileAPIController');
 
     //freeSwitch routes
     $api->get('fs/get_call_handler', 'App\API\Controllers\FreeswitchController@getCallHandler');
