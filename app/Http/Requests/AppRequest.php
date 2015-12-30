@@ -25,14 +25,9 @@ class AppRequest extends Request
     {
         $id    = $this->request->get("id");
         $rules = [
-            'name'  => 'required|unique:app',
-            'alias' => 'required|unique:app'
+            'name'  => 'required',
+            'alias' => 'required'
         ];
-
-        if ($id) {
-            $rules['name'] = 'sometimes|required|unique:app,name,' . $id;
-            $rules['alias'] = 'sometimes|required|unique:app,alias,' . $id;
-        }
 
         return $rules;
     }
