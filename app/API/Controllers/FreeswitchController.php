@@ -4,6 +4,7 @@ namespace App\API\Controllers;
 
 use App\API\APIHelperTrait;
 use App\API\DIDXMLActionBuilder;
+use App\Helpers\APILogger;
 use App\Models\AppUser;
 use App\Models\ConferenceLog;
 use App\Models\DID;
@@ -233,6 +234,8 @@ class FreeswitchController extends Controller
             return $this->validationFailed($validator);
         }
 
+        APILogger::log($request->all(), 'Freeswitch API request');
+
         $did = $this->findDID($request->input('Caller-Destination-Number'));
 
         return $this->getFreeswitchXmlResponse($did);
@@ -264,6 +267,8 @@ class FreeswitchController extends Controller
             $action->addAttribute('data', 'intro_prompt');
         }
 
+        APILogger::log($xml->asXML(), 'XML API Response');
+
         return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
     }
 
@@ -285,6 +290,8 @@ class FreeswitchController extends Controller
         $request          = $client->request('GET', $actionParameter);
         $stringXML        = (string) $request->getBody();
         $this->parseResponseXML($stringXML, $condition);
+
+        APILogger::log($xml->asXML(), 'XML API Response');
 
         return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
     }
@@ -355,6 +362,8 @@ class FreeswitchController extends Controller
             'tech_prefix' => $did->appUser ? $did->appUser->tech_prefix : '',
             'handler_xml' => $xml
         ];
+
+        APILogger::log($response, 'API Response');
 
         return $this->response->array($response);
     }
