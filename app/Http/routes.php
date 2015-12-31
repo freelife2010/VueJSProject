@@ -127,21 +127,37 @@ Route::post('testxml', function() {
     $condition = $extension->addChild('condition');
     $condition->addAttribute('field', 'destination_number');
     $condition->addAttribute('expression', '^(.*)$');
-    $actions   = explode('<Action type=\'', $request->xml);
-    array_shift($actions);
-    foreach ($actions as $action) {
-        $endPos     = strpos($action, '\'>');
-        $endPos     = $endPos !== false ? $endPos : strpos($action, '\' />');
-        $actionName = substr($action, 0, $endPos);
-        $startPos   = $endPos + strlen('\'>');
-        $endPos     = strpos($action, '</');
-        $paramValue = substr($action, $startPos, $endPos-$startPos);
-        $paramValue = preg_replace('/[^a-zA-Z0-9]/s', '', $paramValue);
-        $action     = $condition->addChild('action');
-        $action->addAttribute('application', $actionName);
-        if ($paramValue)
-            $action->addAttribute('data', $paramValue);
-    }
+    parseXml($request->xml, $condition);
 
     return new \Dingo\Api\Http\Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
 });
+
+function parseXml($simpleXml, $condition)
+{
+    $simpleXml = new SimpleXMLElement($simpleXml);
+    $action    = $condition->addChild('action');
+    appendAttributes($simpleXml->attributes(), $action);
+    appendChildren($simpleXml, $action);
+}
+
+function appendChildren($element, $parent)
+{
+    $children = $element->children();
+
+    foreach ($children as $child) {
+        $appendedChild = $parent->addChild($child->getName(), (string) $child);
+        if ($child->children())
+            appendChildren($child, $appendedChild);
+        if ($child->attributes())
+            appendAttributes($child->attributes(), $child);
+    }
+}
+
+function appendAttributes($attributes, $parent)
+{
+    $attr = $parent->attributes();
+    foreach ($attributes as $attribute) {
+        if (!isset($attr[$attribute->getName()]))
+        $parent->addAttribute($attribute->getName(), (string) $attribute);
+    }
+}
