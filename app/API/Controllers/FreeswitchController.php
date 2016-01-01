@@ -298,20 +298,31 @@ class FreeswitchController extends Controller
 
     protected function parseResponseXML($stringXML, $condition)
     {
-        $actions   = explode('<Action type=\'', $stringXML);
-        array_shift($actions);
-        foreach ($actions as $action) {
-            $endPos     = strpos($action, '\'>');
-            $endPos     = $endPos !== false ? $endPos : strpos($action, '\' />');
-            $actionName = substr($action, 0, $endPos);
-            $startPos   = $endPos + strlen('\'>');
-            $endPos     = strpos($action, '</');
-            $paramValue = substr($action, $startPos, $endPos-$startPos);
-            $paramValue = preg_replace('/[^a-zA-Z0-9]/s', '', $paramValue);
-            $action     = $condition->addChild('action');
-            $action->addAttribute('application', $actionName);
-            if ($paramValue)
-                $action->addAttribute('data', $paramValue);
+        $simpleXml = new SimpleXMLElement($stringXML);
+        $action    = $condition->addChild('action');
+        $this->appendAttributes($simpleXml->attributes(), $action);
+        $this->appendChildren($simpleXml, $action);
+    }
+
+    protected function appendChildren($element, $parent)
+    {
+        $children = $element->children();
+
+        foreach ($children as $child) {
+            $appendedChild = $parent->addChild($child->getName(), (string) $child);
+            if ($child->attributes())
+                appendAttributes($child->attributes(), $appendedChild);
+            if ($child->children())
+                appendChildren($child, $appendedChild);
+        }
+    }
+
+    protected function appendAttributes($attributes, $parent)
+    {
+        $attr = $parent->attributes();
+        foreach ($attributes as $attribute) {
+            if (!isset($attr[$attribute->getName()]))
+                $parent->addAttribute($attribute->getName(), (string) $attribute);
         }
     }
 

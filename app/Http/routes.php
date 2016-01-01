@@ -146,10 +146,10 @@ function appendChildren($element, $parent)
 
     foreach ($children as $child) {
         $appendedChild = $parent->addChild($child->getName(), (string) $child);
+        if ($child->attributes())
+            appendAttributes($child->attributes(), $appendedChild);
         if ($child->children())
             appendChildren($child, $appendedChild);
-        if ($child->attributes())
-            appendAttributes($child->attributes(), $child);
     }
 }
 
