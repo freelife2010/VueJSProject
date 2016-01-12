@@ -102,6 +102,9 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('fs/agent_leave_queue', 'App\API\Controllers\FreeswitchController@getAgentQueueLeave');
     $api->get('fs/caller_join_queue', 'App\API\Controllers\FreeswitchController@getCallerQueueJoin');
     $api->get('fs/caller_leave_queue', 'App\API\Controllers\FreeswitchController@getCallerQueueLeave');
+
+    //payment controller
+    $api->get('balance', 'App\API\Controllers\PaymentAPIController@getBalance');
 });
 
 //Grants access token
@@ -113,6 +116,8 @@ Route::post('api/token', function() {
 Route::post('dialplan', '\App\API\Controllers\FreeswitchController@getFreeswitchResponse');
 Route::post('user', '\App\API\Controllers\FreeswitchController@getFreeswitchUser');
 
+
+//test xml conversion method
 Route::post('testxml', function() {
     $request = \Illuminate\Http\Request::capture();
     $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');

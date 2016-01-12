@@ -40,7 +40,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                               values (?,?,'t',2,'t') RETURNING client_id",
                               [$clientName, $currencyId], 'client_id');
         $this->insertToBillingDB("
-                  insert into client_balance (client_id,balance,ingress_balance)
+                  insert into c4_client_balance (client_id,balance,ingress_balance)
                   values (?,0,0) ", [$clientId]);
 
         $clientAlias = $this->user->getUserAlias($clientId, $this->app);

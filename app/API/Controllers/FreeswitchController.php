@@ -300,11 +300,11 @@ class FreeswitchController extends Controller
     {
         $simpleXml = new SimpleXMLElement($stringXML);
         $action    = $condition->addChild('action');
-        $this->appendAttributes($simpleXml->attributes(), $action);
-        $this->appendChildren($simpleXml, $action);
+        $this->appendXMLAttributes($simpleXml->attributes(), $action);
+        $this->appendXMLChildren($simpleXml, $action);
     }
 
-    protected function appendChildren($element, $parent)
+    protected function appendXMLChildren($element, $parent)
     {
         $children = $element->children();
 
@@ -317,7 +317,7 @@ class FreeswitchController extends Controller
         }
     }
 
-    protected function appendAttributes($attributes, $parent)
+    protected function appendXMLAttributes($attributes, $parent)
     {
         $attr = $parent->attributes();
         foreach ($attributes as $attribute) {

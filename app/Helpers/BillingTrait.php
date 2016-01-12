@@ -150,7 +150,7 @@ trait BillingTrait {
 
     protected function getClientBalanceFromBillingDB($clientId)
     {
-        $result = $this->selectFromBillingDB('select balance from client_balance where client_id = ?',
+        $result = $this->selectFromBillingDB('select balance from с4_client_balance where client_id = ?',
             [$clientId]);
 
         return $this->fetchField($result, 'balance');
@@ -163,7 +163,7 @@ trait BillingTrait {
         $newSum         = $currentBalance - $deductSum;
         $newSum         = $newSum ? $newSum / 100 : 0;
         $newSum         = money_format('%i', $newSum);
-        $db             = $this->getFluentBilling('client_balance');
+        $db             = $this->getFluentBilling('с4_client_balance');
 
         return $db->whereClientId($clientId)->update(['balance' => $newSum]);
 

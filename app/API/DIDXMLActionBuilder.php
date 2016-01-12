@@ -65,6 +65,7 @@ class DIDXMLActionBuilder
                 break;
             case 'Stream Audio':
                 $this->did->name = 'playback';
+                $actionParameter = "vlc://$actionParameter";
                 break;
             case 'IVR':
                 $actionName = 'play_and_get_digits';
