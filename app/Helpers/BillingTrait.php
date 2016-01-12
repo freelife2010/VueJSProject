@@ -148,12 +148,34 @@ trait BillingTrait {
         return $this->fetchField($result, 'client_id');
     }
 
-    protected function getClientBalanceFromBillingDB($clientId)
+    protected function getClientBalanceFromBillingDB($clientId, $balanceField = 'balance')
     {
-        $result = $this->selectFromBillingDB('select balance from с4_client_balance where client_id = ?',
+        $result = $this->selectFromBillingDB("select $balanceField from c4_client_balance where client_id = ?",
             [$clientId]);
 
-        return $this->fetchField($result, 'balance');
+        return $this->fetchField($result, $balanceField);
+    }
+
+    protected function storeClientPaymentInBillingDB($clientId, $amount, $description = '', $paymentType = 5)
+    {
+        $params = [
+            'client_id'    => $clientId,
+            'payment_type' => $paymentType,
+            'amount'       => $amount,
+            'payment_time' => date('Y-m-d H:i:s'),
+            'result'       => true,
+            'description'  => $description
+        ];
+
+        return $this->getDB()->transaction(function() use ($params) {
+            $db = $this->getFluentBilling('client_payment');
+            $db->insert($params);
+            $db = $this->getFluentBilling('c4_client_balance');
+            $db->whereClientId($params['client_id'])->update([
+                'balance'         => $this->getDB()->raw('balance::real+(' . $params['amount'] . ')'),
+                'ingress_balance' => $this->getDB()->raw('balance::real+(' . $params['amount'] . ')'),
+            ]);
+        });
     }
 
     protected function deductClientBalanceInBillingDB($deductSum)
@@ -163,7 +185,7 @@ trait BillingTrait {
         $newSum         = $currentBalance - $deductSum;
         $newSum         = $newSum ? $newSum / 100 : 0;
         $newSum         = money_format('%i', $newSum);
-        $db             = $this->getFluentBilling('с4_client_balance');
+        $db             = $this->getFluentBilling('c4_client_balance');
 
         return $db->whereClientId($clientId)->update(['balance' => $newSum]);
 

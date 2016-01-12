@@ -88,6 +88,12 @@ class AppUser extends BaseModel
         return $app->name."-".$clientId."-".$this->email;
     }
 
+    public function setBillingDBAlias()
+    {
+        $app         = $this->app;
+        $this->email = $app->name . "-$this->email";
+    }
+
     public static function generateUniqueId($digits = 99999999, $field = 'tech_prefix') {
         $number = mt_rand(0, $digits);
 
