@@ -17,7 +17,7 @@
                     url : "/app/data"
                 },
                 "columns": [
-                    {data: 'id'},
+                    {data: 'tech_prefix'},
                     {data: 'name'},
                     {data: 'users'},
                     {data: 'daily_active'},

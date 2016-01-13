@@ -40,6 +40,7 @@ class AppController extends AppBaseController
     {
         $apps = App::getApps([
             'id',
+            'tech_prefix',
             'name',
             'presence']);
 

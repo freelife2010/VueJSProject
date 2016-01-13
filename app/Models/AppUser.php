@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Misc;
 use Auth;
 use File;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,11 @@ class AppUser extends BaseModel
     public function app()
     {
         return $this->belongsTo('App\Models\App', 'app_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo('App\Models\Country');
     }
 
     public function dids()
@@ -36,7 +42,8 @@ class AppUser extends BaseModel
         'tech_prefix',
         'user_id',
         'allow_outgoing_call',
-        'caller_id'
+        'caller_id',
+        'country_id'
     ];
 
     protected $hidden = ['password', 'tech_prefix'];
@@ -45,11 +52,15 @@ class AppUser extends BaseModel
     {
         $params['uuid']        = Uuid::generate();
         $params['password']    = sha1($params['password']);
-        $params['tech_prefix'] = self::generateUniqueId();
-        $params['user_id']     = self::generateUniqueId(9999999999, 'user_id');
+        $params['tech_prefix'] = Misc::generateUniqueId();
+
         if (!isset($params['allow_outgoing_call'])) {
             $params['caller_id'] = 0;
         }
+
+        $smsModel             = new SMS();
+        $countryId            = $smsModel->getCountryIdByPhone($params['phone']);
+        $params['country_id'] = $countryId;
 
 
         return AppUser::create($params);
@@ -85,25 +96,11 @@ class AppUser extends BaseModel
 
     public function getUserAlias()
     {
-        return $this->app->id.'_'.$this->id;
+        $country   = $this->country;
+        $countryId = $country ? $country->equivalent : '000';
+
+        return $this->app->tech_prefix . '-' . $countryId.'-'.$this->tech_prefix;
     }
 
-    public static function generateUniqueId($digits = 99999999, $field = 'tech_prefix') {
-        $number = mt_rand(0, $digits);
-
-        // call the same function if the barcode exists already
-        if (self::IdExists($number, $field)) {
-            return self::generateUniqueId();
-        }
-
-        // otherwise, it's valid and can be used
-        return $number;
-    }
-
-    public static function IdExists($number, $field) {
-        // query the database and return a boolean
-        // for instance, it might look like this in Laravel
-        return AppUser::where($field, '=', $number)->exists();
-    }
 
 }

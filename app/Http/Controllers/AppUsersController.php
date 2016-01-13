@@ -106,12 +106,18 @@ class AppUsersController extends AppBaseController
     {
         $users = AppUser::select([
             'id',
+            'app_id',
+            'tech_prefix',
+            'country_id',
             'name',
             'email',
             'phone',
             'last_status'])->whereAppId($this->app->id);
 
         return Datatables::of($users)
+            ->edit_column('id', function($user) {
+                return $user->getUserAlias();
+            })
             ->edit_column('last_status', function($user) {
                 return $user->last_status ? 'Active' : 'Inactive';
             })

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Misc;
 use Auth;
 use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,7 +20,8 @@ class App extends BaseModel
         'alias',
         'email',
         'password',
-        'account_id'
+        'account_id',
+        'tech_prefix'
     ];
 
     public function users()
@@ -56,10 +58,11 @@ class App extends BaseModel
             'id AS account_id'
         ])->find($user->id);
         $this->fill((array)$user);
-        $this->name  = $attributes['name'];
-        $this->alias = $attributes['alias'];
-        $appKey      = new AppKey();
-        $expireDays  = self::APP_KEYS_EXPIRE_DAYS;
+        $this->name        = $attributes['name'];
+        $this->alias       = $attributes['alias'];
+        $this->tech_prefix = Misc::generateUniqueId(99999, 'tech_prefix', 'app');
+        $appKey            = new AppKey();
+        $expireDays        = self::APP_KEYS_EXPIRE_DAYS;
 
         return ($this->save() and $appKey->generateKeys($this, $expireDays));
     }

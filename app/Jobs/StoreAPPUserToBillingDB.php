@@ -50,7 +50,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
         $this->insertToBillingDB("
                           insert into resource_ip (username,direction,resource_id)
                           values (?,0,?)",
-            [ $this->user->user_id, $resourceId]);
+            [ $clientName, $resourceId]);
         $routeStrategyId = $this->getRouteStrategyId();
         $rateTableId     = $this->getRateTableId();
 
