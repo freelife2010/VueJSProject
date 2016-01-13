@@ -53,6 +53,7 @@ class AppUsersController extends AppBaseController
 
         if ($user = AppUser::createUser($params)) {
             $result = $this->getResult(false, 'User created successfully');
+            $user->raw_password = $request->password;
             $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
             $this->dispatch(new StoreAPPUserToChatServer($user));
         }

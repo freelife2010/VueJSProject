@@ -47,10 +47,11 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
                           values (?,?,'t','f','t',2)  RETURNING resource_id ",
                           [$clientName, $clientId], 'resource_id');
+        $clientName = preg_replace( '/[^0-9]/', '', $clientName );
         $this->insertToBillingDB("
-                          insert into resource_ip (username,direction,resource_id)
-                          values (?,0,?)",
-            [ $clientName, $resourceId]);
+                          insert into resource_ip (username, password, direction,resource_id)
+                          values (?,?,0,?)",
+            [ $clientName, $this->user->raw_password, $resourceId]);
         $routeStrategyId = $this->getRouteStrategyId();
         $rateTableId     = $this->getRateTableId();
 
