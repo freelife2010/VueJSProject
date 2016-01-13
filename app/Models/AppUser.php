@@ -83,15 +83,9 @@ class AppUser extends BaseModel
         return [static::CREATED_AT, static::UPDATED_AT];
     }
 
-    public function getUserAlias($clientId, $app)
+    public function getUserAlias()
     {
-        return $app->name."-".$clientId."-".$this->email;
-    }
-
-    public function setBillingDBAlias()
-    {
-        $app         = $this->app;
-        $this->email = $app->name . "-$this->email";
+        return $this->app->id.'_'.$this->id;
     }
 
     public static function generateUniqueId($digits = 99999999, $field = 'tech_prefix') {

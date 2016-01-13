@@ -33,7 +33,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
     public function handle()
     {
         $currencyId = $this->getCurrencyIdFromBillingDB();
-        $clientName = $this->app->name."-".$this->user->email;
+        $clientName = $this->user->getUserAlias();
         $clientId   = $this->insertGetIdToBillingDB("
                               insert into client
                               (name,currency_id,unlimited_credit,mode,enough_balance)
@@ -43,11 +43,10 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                   insert into c4_client_balance (client_id,balance,ingress_balance)
                   values (?,0,0) ", [$clientId]);
 
-        $clientAlias = $this->user->getUserAlias($clientId, $this->app);
         $resourceId = $this->insertGetIdToBillingDB("
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
                           values (?,?,'t','f','t',2)  RETURNING resource_id ",
-                          [$clientAlias, $clientId], 'resource_id');
+                          [$clientName, $clientId], 'resource_id');
         $this->insertToBillingDB("
                           insert into resource_ip (username,direction,resource_id)
                           values (?,0,?)",

@@ -197,8 +197,7 @@ class AppUsersController extends AppBaseController
              sum(ingress_call_cost+lnp_cost) as cost';
 
         $model       = AppUser::find($id);
-        $clientId    = $this->getAPPUserIdFromBillingDB($model);
-        $clientAlias = $model->getUserAlias($clientId, $this->app);
+        $clientAlias = $model->getUserAlias();
         $dailyUsage  = new Collection();
         $resource    = $this->getResourceByAliasFromBillingDB($clientAlias);
         if ($resource)

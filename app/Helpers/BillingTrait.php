@@ -111,6 +111,14 @@ trait BillingTrait {
         return $this->fetchField($result, 'client_id');
     }
 
+    protected function getClientIdByAliasFromBillingDB($alias)
+    {
+        $result = $this->selectFromBillingDB('select client_id from client where name = ?',
+            [$alias]);
+
+        return $this->fetchField($result, 'client_id');
+    }
+
     protected function getResourceByAliasFromBillingDB($alias, $fields = 'resource_id')
     {
         $resource = $this->selectFromBillingDB('select '.$fields.'
@@ -120,6 +128,26 @@ trait BillingTrait {
             $resource = $resource[0];
 
         return $resource;
+    }
+
+    protected function getResourceByClientIdFromBillingDB($clientId)
+    {
+        $result = $this->selectFromBillingDB('select resource_id
+                                                from resource where client_id = ?',
+            [$clientId]);
+
+        return $this->fetchField($result, 'resource_id');
+    }
+
+    protected function getRateTableIdByClientId($clientId)
+    {
+        $result = $this->getFluentBilling('resource')
+                    ->select(['resource_prefix.rate_table_id AS rate_table_id'])
+                    ->whereClientId($clientId)
+                    ->join('resource_prefix', 'resource.resource_id', '=', 'resource_prefix.resource_id')
+                    ->get();
+
+        return $this->fetchField($result, 'rate_table_id');
     }
 
     /**
@@ -140,7 +168,7 @@ trait BillingTrait {
      */
     protected function getAPPUserIdFromBillingDB($user)
     {
-        $clientName = $user->app->name."-".$user->email;
+        $clientName = $user->get;
 
         $result = $this->selectFromBillingDB('select client_id from client where name = ?',
             [$clientName]);
@@ -154,6 +182,15 @@ trait BillingTrait {
             [$clientId]);
 
         return $this->fetchField($result, $balanceField);
+    }
+
+    protected function getClientPaymentsFromBillingDB($clientId, $paymentType = 5)
+    {
+        $db = $this->getFluentBilling('client_payment');
+
+        return $db->select(['*'])
+                ->whereClientId($clientId)
+                ->wherePaymentType($paymentType)->get();
     }
 
     protected function storeClientPaymentInBillingDB($clientId, $amount, $description = '', $paymentType = 5)

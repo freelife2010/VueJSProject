@@ -106,6 +106,8 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     //payment controller
     $api->get('balance', 'App\API\Controllers\PaymentAPIController@getBalance');
     $api->post('addCredit', 'App\API\Controllers\PaymentAPIController@postAddCredit');
+    $api->get('creditHistory', 'App\API\Controllers\PaymentAPIController@getCreditHistory');
+    $api->get('getAllowedCountry', 'App\API\Controllers\PaymentAPIController@getAllowedCountry');
 });
 
 //Grants access token
