@@ -124,20 +124,67 @@ class PaymentAPIController extends Controller
     public function getRates(Request $request)
     {
         $validator = $this->makeValidator($request, [
+            'userid'  => $this->userIdValidationRule,
             'country' => 'required'
         ]);
         if ($validator->fails()) {
             return $this->validationFailed($validator);
         }
 
+        $user = AppUser::find($request->userid);
+
         $response = [];
+        $clientId = $this->getClientIdByAliasFromBillingDB($user->getUserAlias());
+
         if ($clientId) {
             $rateTableId = $this->getRateTableIdByClientId($clientId);
             if ($rateTableId)
-                $response = $this->queryAllowedCountries($rateTableId);
+                $response = $this->queryRates($rateTableId, $request->country);
         }
 
         return $this->response->array($response);
+    }
+
+    protected function queryRates($rateTableId, $country)
+    {
+        return $this->selectFromBillingDB('
+                    select code_name, rate from rate where rate_table_id = ?
+                    AND ((now() BETWEEN effective_date AND end_date) OR end_date IS NULL )
+                    AND country = ?', [$rateTableId, $country]);
+
+    }
+
+    public function getRate(Request $request)
+    {
+        $validator = $this->makeValidator($request, [
+            'userid'  => $this->userIdValidationRule,
+            'number' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
+
+        $user = AppUser::find($request->userid);
+
+        $response = [];
+        $clientId = $this->getClientIdByAliasFromBillingDB($user->getUserAlias());
+
+        if ($clientId) {
+            $rateTableId = $this->getRateTableIdByClientId($clientId);
+            if ($rateTableId)
+                $response = $this->queryRateByNumber($rateTableId, $request->number);
+        }
+
+        return $this->response->array($response);
+    }
+
+    protected function queryRateByNumber($rateTableId, $number)
+    {
+        return $this->selectFromBillingDB('
+                    select rate from rate where rate_table_id = ?
+                    AND ((now() BETWEEN effective_date AND end_date) OR end_date IS NULL )
+                    AND code @> ? ORDER BY length(code::text) desc LIMIT 1', [$rateTableId, $number]);
+
     }
 
 }

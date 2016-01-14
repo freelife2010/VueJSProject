@@ -108,6 +108,8 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->post('addCredit', 'App\API\Controllers\PaymentAPIController@postAddCredit');
     $api->get('creditHistory', 'App\API\Controllers\PaymentAPIController@getCreditHistory');
     $api->get('getAllowedCountry', 'App\API\Controllers\PaymentAPIController@getAllowedCountry');
+    $api->get('getRates', 'App\API\Controllers\PaymentAPIController@getRates');
+    $api->get('getRate', 'App\API\Controllers\PaymentAPIController@getRate');
 });
 
 //Grants access token
