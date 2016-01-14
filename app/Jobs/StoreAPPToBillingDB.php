@@ -41,7 +41,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
                             insert into rate_table
                             (name,currency_id)
                             values (?,?)  RETURNING rate_table_id',
-            [$this->app->name, $currencyId], 'rate_table_id');
+            [$this->app->tech_prefix, $currencyId], 'rate_table_id');
 
         $this->createRates($rateTableId);
 

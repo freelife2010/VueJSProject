@@ -150,6 +150,16 @@ trait BillingTrait {
         return $this->fetchField($result, 'rate_table_id');
     }
 
+    protected function getRateTableIdByName($name)
+    {
+        $result = $this->getFluentBilling('rate_table')
+            ->select(['rate_table_id'])
+            ->whereName($name)
+            ->get();
+
+        return $this->fetchField($result, 'rate_table_id');
+    }
+
     /**
      * Returns Laravel Fluent Query Builder for Billing DB queries
      * @param string $table table name

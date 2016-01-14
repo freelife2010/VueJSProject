@@ -50,8 +50,9 @@ Route::group(['middleware' => ['auth', 'csrf']], function() {
     Route::controller('payments', 'PaymentController');
     Route::controller('app-users', 'AppUsersController');
     Route::controller('app-keys', 'AppKeysController');
-    Route::controller('cdr', 'CDRController');
+    Route::controller('app-rates', 'AppRateController');
     Route::controller('app-cdr', 'AppCDRController');
+    Route::controller('cdr', 'CDRController');
     Route::controller('conferences', 'ConferenceController');
     Route::controller('queues', 'QueueController');
     Route::controller('queues', 'QueueSessionController');

@@ -121,6 +121,18 @@ class App extends BaseModel
                 ]
             ],
             [
+                'name'       => 'Finance',
+                'icon'       => 'fa fa-money',
+                'url'        => 'app-rates',
+                'subMenu' => [
+                    [
+                        'name' => 'Sell rates',
+                        'icon' => 'fa fa-phone',
+                        'url'  => 'app-rates',
+                    ]
+                ]
+            ],
+            [
                 'name'       => 'PBX',
                 'icon'       => 'fa fa-phone',
                 'url'        => 'app-pbx',
