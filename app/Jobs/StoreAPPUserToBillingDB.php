@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\BillingTrait;
+use App\Helpers\Misc;
 use App\Jobs\Job;
 use Illuminate\Contracts\Bus\SelfHandling;
 
@@ -47,7 +48,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
                           values (?,?,'t','f','t',2)  RETURNING resource_id ",
                           [$clientName, $clientId], 'resource_id');
-        $clientName = preg_replace( '/[^0-9]/', '', $clientName );
+        $clientName = Misc::filterNumbers($clientName);
         $this->insertToBillingDB("
                           insert into resource_ip (username, password, direction,resource_id)
                           values (?,?,0,?)",

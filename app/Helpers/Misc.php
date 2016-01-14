@@ -31,4 +31,9 @@ class Misc
         // for instance, it might look like this in Laravel
         return DB::table($table)->where($field, '=', $number)->exists();
     }
+
+    public static function filterNumbers($string)
+    {
+        return preg_replace( '/[^0-9]/', '', $string );
+    }
 }
