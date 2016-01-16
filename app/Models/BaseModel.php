@@ -80,6 +80,7 @@ class BaseModel extends Model
                 <a href="%1$s"
 
                    title="%5$s"
+                   %6$s
                    class="btn %4$s btn-sm" >
                     <span class="%3$s"> %2$s</span></a>
             ',

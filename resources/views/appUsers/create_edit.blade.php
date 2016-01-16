@@ -6,7 +6,7 @@
         $(document).ready(function() {
             setModalWidth(350);
             var $callerInputBlock = $('#caller_id_block');
-            $('#phone').inputmask('+99 (999) 999-99-99');
+            $('#phone').inputmask('+9{1,3}(999) 999-99-99');
             $('#set_password').click(function() {
                var $password = $('#password');
                 $password.prop('disabled', !$password.prop('disabled'));
