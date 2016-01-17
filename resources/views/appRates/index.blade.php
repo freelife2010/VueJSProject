@@ -11,16 +11,18 @@
         $(document).ready(function() {
             oTable = $table.DataTable({
                 "bPaginate": true,
-                "processing": false,
+                "serverSide": true,
+                "processing": true,
                 "order": [[ 3, "desc" ]],
                 "ajax": {
                     url : '{{ url("/app-rates/data?app=".$APP->id) }}'
                 },
                 "columns": [
-                    {data: 'country'},
-                    {data: 'code_name'},
-                    {data: 'rate'},
-                    {data: 'custom_rate'}
+                    {data: 'country', name: 'country'},
+                    {data: 'destination', name: 'destination'},
+                    {data: 'code', name: 'code'},
+                    {data: 'rate', name: 'rate'},
+                    {data: 'custom_rate', name: 'custom_rate'}
                 ],
                 "fnDrawCallback": function() {
                 }
@@ -40,6 +42,7 @@
                     <table id="table" class="table table-striped table-hover ">
                         <thead>
                         <tr>
+                            <th>Country</th>
                             <th>Destination</th>
                             <th>Code</th>
                             <th>Opentact Sell Rate</th>

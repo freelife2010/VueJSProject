@@ -11,14 +11,18 @@
 <link rel="stylesheet" href="{{ asset('vendor/chosen_v1.2.0/chosen.min.css') }}">
 @section('modal_body')
     <?php
-    $action_url = url("app-rates/add-rate/".$rateId);
+    $action_url = url("app-rates/add-rate/".$rateId.'?app='.$APP->id);
     $submit_label = 'Save';
-    $edit = false;
+    $rateValue = '';
+    if (isset($model)) {
+        $action_url= url("app-rates/edit-rate/".$rateId.'?app='.$APP->id);
+        $rateValue = round($model->rate->rate, 2);
+    }
     ?>
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
         <?= Former::hidden('rate_id')->value($rateId);?>
-        <?= Former::text('rate')->label('Rate');?>
+        <?= Former::text('rate')->label('Rate')->value($rateValue);?>
     </div>
     <div style="clear: both"></div>
     <br/>

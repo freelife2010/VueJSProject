@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\BillingTrait;
 
 use App\Http\Requests;
+use App\Models\App;
+use App\Models\AppRate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use yajra\Datatables\Datatables;
@@ -12,6 +14,7 @@ use yajra\Datatables\Datatables;
 class AppRateController extends AppBaseController
 {
     use BillingTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -28,26 +31,32 @@ class AppRateController extends AppBaseController
 
     public function getData()
     {
-        $rateTableId  = $this->getRateTableIdByName($this->app->name);
-        $destinations = $this->selectFromBillingDB('
-                                SELECT max(rate) as rate, code_name, country, rate_id
-                                FROM  rate WHERE rate_table_id = ?
-                                AND ((now() BETWEEN effective_date AND end_date)
-                                    OR end_date IS NULL)
-                                GROUP BY code_name, country, rate_id', [$rateTableId]);
+        $appRate      = new AppRate($this->app);
+        $rates = new Collection($appRate->getGlobalRates());
 
-        $destinations = new Collection($destinations);
-
-        return Datatables::of($destinations)
-            ->add_column('custom_rate', function ($dest) {
+        return Datatables::of($rates)
+            ->edit_column('rate', function ($rate) {
+                return round($rate->rate, 2);
+            })
+            ->add_column('custom_rate', function ($rate) use ($appRate) {
                 $params = [
-                    'url'   => 'app-rates/add-rate/' . $dest->rate_id . '?app=' . $this->app->id,
+                    'url'   => 'app-rates/add-rate/' . $rate->rate_id . '?app=' . $this->app->id,
                     'name'  => '',
                     'icon'  => 'fa fa-plus',
                     'class' => 'btn-primary',
-                    'title' => 'Define custom rate',
+                    'title' => 'Define app rate',
                     'modal' => true
                 ];
+
+                $customRate = $appRate->findAppRateByCode($rate->code);
+                if ($customRate) {
+                    $params['url']   = 'app-rates/edit-rate/' . $customRate->rate_id .
+                        '?app=' . $this->app->id;
+                    $params['icon']  = '';
+                    $params['class'] = 'btn-default';
+                    $params['name']  = round($customRate->rate, 2);
+                    $params['title'] = 'Edit app rate';
+                }
 
                 return $this->app->generateButton($params);
             })
@@ -57,8 +66,35 @@ class AppRateController extends AppBaseController
     public function getAddRate($rateId)
     {
         $title = 'Add rate';
+        $APP   = $this->app;
 
-        return view('appRates.add_rate', compact('title','rateId'));
+        return view('appRates.add_edit_rate', compact('title', 'rateId', 'APP'));
+    }
+
+    public function getEditRate($rateId)
+    {
+        $title = 'Edit rate';
+        $model = new AppRate($this->app);
+        $model->setRateById($rateId);
+        $APP   = $this->app;
+
+        return view('appRates.add_edit_rate', compact('title', 'model', 'rateId', 'APP'));
+    }
+
+    public function postEditRate($rateId, Request $request)
+    {
+        $this->validate($request, [
+            'rate' => 'required|numeric'
+        ]);
+        $result = $this->getResult(true, 'Could not edit rate');
+
+        $appRate = new AppRate(App::find($request->app));
+
+        if ($appRate->saveRate($rateId, $request->rate))
+            $result = $this->getResult(false, 'Rate saved');
+
+
+        return $result;
     }
 
     public function postAddRate($rateId, Request $request)
@@ -66,19 +102,12 @@ class AppRateController extends AppBaseController
         $this->validate($request, [
             'rate' => 'required|numeric'
         ]);
-        $result  = $this->getResult(true, 'Could not save rate');
+        $result = $this->getResult(true, 'Could not save rate');
 
-        $rateData = $this->selectFromBillingDB('
-                                SELECT *
-                                FROM  rate WHERE rate_id = ?', [$rateId]);
-        if ($rateData) {
-            $rate               = (array)$rateData[0];
-            $rate['rate']       = $request->rate;
-            unset($rate['rate_id']);
-            $db = $this->getFluentBilling('rate');
-            if ($db->insert($rate))
-                $result = $this->getResult(false, 'Rate created');
-        }
+        $appRate = new AppRate(App::find($request->app));
+
+        if ($appRate->createRate($rateId, $request->rate))
+            $result = $this->getResult(false, 'Rate created');
 
 
         return $result;
