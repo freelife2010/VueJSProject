@@ -40,6 +40,7 @@ class AppRate extends BaseModel
                                 FROM  rate WHERE rate_table_id = ?
                                 AND ((now() BETWEEN effective_date AND end_date)
                                     OR end_date IS NULL)
+                                AND country IS NOT NULL
                                 GROUP BY code_name, country, rate_id', [$this->opentactRateTableId]);
     }
 
