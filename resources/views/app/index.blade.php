@@ -37,7 +37,7 @@
             $.each($tr, function (key, val) {
                 var $this = $(val);
                 var td = $this.find('td:not(:last)');
-                var id = $this.find('td:first').text();
+                var id = $this.prop('id');
                 td.click(function(e) {
                     openAppDashboard(id);
                 });

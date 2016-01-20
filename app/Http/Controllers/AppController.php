@@ -65,6 +65,7 @@ class AppController extends AppBaseController
                 $icon = $app->presence ? 'fa fa-check' : 'fa fa-remove';
                 return '<em class="'.$icon.'"></em>';
             })
+            ->setRowId('id')
             ->make(true);
     }
 
