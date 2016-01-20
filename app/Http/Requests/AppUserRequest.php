@@ -26,6 +26,7 @@ class AppUserRequest extends Request
         $id    = $this->request->get("id");
         $rules = [
             'name'     => 'required',
+            'phone'    => 'required',
             'password' => 'sometimes|required|min:6',
             'email'    => 'required|email|unique:users'
         ];

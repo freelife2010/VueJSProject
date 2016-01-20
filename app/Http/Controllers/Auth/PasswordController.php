@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Auth;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -33,6 +34,15 @@ class PasswordController extends Controller {
 		$this->passwords = $passwords;
 
 		$this->middleware('guest');
+	}
+
+	protected function resetPassword($user, $password)
+	{
+		$user->password = $password;
+
+		$user->save();
+
+		Auth::login($user);
 	}
 
 }

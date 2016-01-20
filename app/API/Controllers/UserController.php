@@ -3,6 +3,7 @@
 namespace App\API\Controllers;
 
 use App\API\APIHelperTrait;
+use App\Helpers\Misc;
 use App\Http\Controllers\Controller;
 use App\Jobs\StoreAPPUserToBillingDB;
 use App\Jobs\StoreAPPUserToChatServer;
@@ -34,14 +35,13 @@ class UserController extends Controller
 
     public function createUsers()
     {
-        $request    = Request::capture();
-        $rules     = $this->getUserCreationInputRules($request);
-        $validator = $this->makeValidator($request, $rules);
+        $rules     = $this->getUserCreationInputRules($this->request);
+        $validator = $this->makeValidator($this->request, $rules);
         if ($validator->fails()) {
             return $this->validationFailed($validator);
         }
         $appId    = $this->getAPPIdByAuthHeader();
-        $response = $this->createUsersAndGetResponse($request, $appId);
+        $response = $this->createUsersAndGetResponse($this->request, $appId);
 
         return $response;
     }
@@ -56,6 +56,7 @@ class UserController extends Controller
                 if (!is_array($userParams)) continue;
                 $params['username'] = $userParams['username'];
                 $params['email']    = $userParams['username'];
+                $params['phone']    = $userParams['phone'];
                 $params['password'] = $userParams['password'];
                 $params['app_id']   = $appId;
 
@@ -79,13 +80,9 @@ class UserController extends Controller
 
     private function createSingleUser($params)
     {
-        if ($user = AppUser::create([
-            'name'     => $params['username'],
-            'email'    => $params['username'],
-            'password' => sha1($params['password']),
-            'app_id'   => $params['app_id'],
-            'uuid'     => Uuid::generate()
-        ])) {
+        $params['name']   = $params['username'];
+        $params['email']  = $params['username'];
+        if ($user = AppUser::createUser($params)) {
             $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
             $this->dispatch(new StoreAPPUserToChatServer($user));
             $user = $this->getUserData()->whereId($user->id)->first();
@@ -111,6 +108,7 @@ class UserController extends Controller
         $rules      = [
             'username'   => 'required|email|unique:users,email',
             'password'   => 'required',
+            'phone'      => 'required'
         ];
         $input      = $request->input();
         if ($this->isMultiDimensionalArray($input)) {
@@ -120,6 +118,7 @@ class UserController extends Controller
                 if (!is_array($val)) continue;
                 $rules[$key.'.username'] = 'required|email|unique:users,email';
                 $rules[$key.'.password'] = 'required';
+                $rules[$key.'.phone'] = 'required';
             }
         }
 
