@@ -11,6 +11,7 @@ use Config;
 use DB;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 
 class DIDController extends Controller
 {
@@ -86,12 +87,17 @@ class DIDController extends Controller
         $validator = $this->makeValidator($request, [
             'did'        => 'required',
             'action_id'  => 'required',
-            'app_id'     => 'required',
             'owned_by'   => 'required'
         ]);
         if ($validator->fails()) {
             return $this->validationFailed($validator);
         }
+
+        $oauthClient     = DB::table('oauth_clients')
+            ->whereId(Authorizer::getResourceOwnerId())
+            ->first();
+        $appId           = $oauthClient->app_id;
+        $request->app_id = $appId;
 
         return $this->buyDID($request);
     }
