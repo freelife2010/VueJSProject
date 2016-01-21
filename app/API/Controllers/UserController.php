@@ -68,6 +68,7 @@ class UserController extends Controller
             $params['username'] = $input['username'];
             $params['email']    = $input['username'];
             $params['password'] = $input['password'];
+            $params['phone']    = $input['phone'];
             $params['app_id']   = $appId;
 
             $user     = $this->createSingleUser($params);
@@ -128,7 +129,6 @@ class UserController extends Controller
 
     public function getUserInfo($username)
     {
-        Authorizer::getResourceOwnerId();
         $user = $this->getUserData()->whereEmail($username)->first();
         $response = $this->makeErrorResponse('Cannot find user');
         if ($user)

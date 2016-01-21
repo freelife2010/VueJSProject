@@ -14,6 +14,7 @@ use DateTime;
 use DateTimeZone;
 use DB;
 use Dingo\Api\Http\Request;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Moment\CustomFormats\MomentJs;
 use Moment\Moment;
 use Validator;
@@ -85,15 +86,12 @@ trait APIHelperTrait {
 
     protected function getAPPIdByAuthHeader()
     {
-        $accessToken = $this->getAccessTokenFromHeader();
-        $session     = DB::table('oauth_access_tokens')->select(['session_id as id'])
-                            ->whereId($accessToken)->first();
-        $client      = DB::table('oauth_sessions')->select(['client_id as id'])
-                            ->whereId($session->id)->first();
-        $app         = DB::table('oauth_clients')->select(['app_id as id'])
-                            ->whereId($client->id)->first();
+        $oauthClient = DB::table('oauth_clients')
+            ->whereId(Authorizer::getResourceOwnerId())
+            ->first();
+        $appId       = $oauthClient->app_id;
 
-        return $app->id;
+        return $appId;
     }
 
     protected function makeErrorResponse($message)

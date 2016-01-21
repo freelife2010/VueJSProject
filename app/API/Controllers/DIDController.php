@@ -93,11 +93,7 @@ class DIDController extends Controller
             return $this->validationFailed($validator);
         }
 
-        $oauthClient     = DB::table('oauth_clients')
-            ->whereId(Authorizer::getResourceOwnerId())
-            ->first();
-        $appId           = $oauthClient->app_id;
-        $request->app_id = $appId;
+        $request->app_id = $this->getAPPIdByAuthHeader();
 
         return $this->buyDID($request);
     }
