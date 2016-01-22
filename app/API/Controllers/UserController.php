@@ -49,6 +49,8 @@ class UserController extends Controller
     private function createUsersAndGetResponse($request, $appId)
     {
         $input    = $request->input();
+        if (!isset($input['phone']))
+            $input['phone'] = '';
         $response = $this->makeErrorResponse('Failed to create user');
         if ($this->isMultiDimensionalArray($input)) {
             $entities = [];
@@ -108,8 +110,7 @@ class UserController extends Controller
     {
         $rules      = [
             'username'   => 'required|email|unique:users,email',
-            'password'   => 'required',
-            'phone'      => 'required'
+            'password'   => 'required'
         ];
         $input      = $request->input();
         if ($this->isMultiDimensionalArray($input)) {
@@ -119,7 +120,6 @@ class UserController extends Controller
                 if (!is_array($val)) continue;
                 $rules[$key.'.username'] = 'required|email|unique:users,email';
                 $rules[$key.'.password'] = 'required';
-                $rules[$key.'.phone'] = 'required';
             }
         }
 

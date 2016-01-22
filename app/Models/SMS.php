@@ -61,12 +61,12 @@ class SMS extends BaseModel
         $phone     = '';
         if (preg_match('(\d{1,3})', $userPhone, $phone))
             $phone = reset($phone);
-        if ($phone) {
-            $country = DB::table('countries')->whereCode($phone)->first();
-            if ($country) {
-                $this->countries[] = $country;
-                $countryId = $country->id;
-            }
+        if (!$phone) $phone = '999';
+
+        $country = DB::table('countries')->whereCode($phone)->first();
+        if ($country) {
+            $this->countries[] = $country;
+            $countryId = $country->id;
         }
 
         return $countryId;
