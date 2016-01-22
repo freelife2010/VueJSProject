@@ -3,6 +3,7 @@
 namespace App\API\Controllers;
 
 use App\API\APIHelperTrait;
+use App\Helpers\BillingTrait;
 use App\Helpers\Misc;
 use App\Http\Controllers\Controller;
 use App\Jobs\StoreAPPUserToBillingDB;
@@ -17,7 +18,7 @@ use Webpatser\Uuid\Uuid;
 
 class UserController extends Controller
 {
-    use Helpers, APIHelperTrait;
+    use Helpers, APIHelperTrait, BillingTrait;
 
     public function __construct()
     {
@@ -31,6 +32,21 @@ class UserController extends Controller
             'entities' => $this->getUserData()->get()
         ];
         return $this->defaultResponse($response);
+    }
+
+    public function getSipPassword()
+    {
+        $validator = $this->makeValidator($this->request, ['billing_alias' => 'required']);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
+
+        $username   = Misc::filterNumbers($this->request->billing_alias);
+        $resourceIp = $this->getFluentBilling('resource_ip')->whereUsername($username)->first();
+        if ($resourceIp)
+            return $resourceIp->password;
+        else return $this->response->error('Could not find user', 400);
+
     }
 
     public function createUsers()
@@ -86,9 +102,15 @@ class UserController extends Controller
         $params['name']   = $params['username'];
         $params['email']  = $params['username'];
         if ($user = AppUser::createUser($params)) {
+            $user->raw_password = $params['password'];
             $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
             $this->dispatch(new StoreAPPUserToChatServer($user));
             $user = $this->getUserData()->whereId($user->id)->first();
+            $user->billing_alias = $user->getUserAlias();
+            unset($user->app);
+            unset($user->country_id);
+            unset($user->country);
+            unset($user->tech_prefix);
 
         }
 
@@ -99,6 +121,9 @@ class UserController extends Controller
     {
         return $this->getEntities('AppUser', [
             'uuid as user_uuid',
+            'app_id',
+            'country_id',
+            'tech_prefix',
             'email as username',
             'activated',
             'created_at as created',

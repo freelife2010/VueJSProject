@@ -89,6 +89,7 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('users', 'App\API\Controllers\UserController@getUsers');
     $api->post('users', 'App\API\Controllers\UserController@createUsers');
     $api->get('users/{username}', 'App\API\Controllers\UserController@getUserInfo');
+    $api->get('sip-password', 'App\API\Controllers\UserController@getSipPassword');
 
     $api->controller('did', 'App\API\Controllers\DIDController');
     $api->controller('sms', 'App\API\Controllers\SMSAPIController');
