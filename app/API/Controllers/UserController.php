@@ -120,7 +120,7 @@ class UserController extends Controller
     private function getUserData()
     {
         return $this->getEntities('AppUser', [
-            'uuid as user_uuid',
+            'id as user_id',
             'app_id',
             'country_id',
             'tech_prefix',
