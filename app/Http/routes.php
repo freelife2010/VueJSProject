@@ -93,7 +93,12 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
     $api->controller('did', 'App\API\Controllers\DIDController');
     $api->controller('sms', 'App\API\Controllers\SMSAPIController');
-    $api->controller('voicemail', 'App\API\Controllers\FileAPIController');
+
+    //File api routes
+    $api->get('voicemail/list/{user_id}', 'App\API\Controllers\FileAPIController@getVoicemailList');
+    $api->get('voicemail/file/{user_id}', 'App\API\Controllers\FileAPIController@getVoicemailFile');
+    $api->get('conference/list/{user_id}', 'App\API\Controllers\FileAPIController@getConferenceList');
+    $api->get('conference/file/{user_id}', 'App\API\Controllers\FileAPIController@getConferenceFile');
     $api->controller('conference', 'App\API\Controllers\FileAPIController');
 
     //freeSwitch routes

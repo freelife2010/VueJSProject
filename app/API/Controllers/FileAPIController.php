@@ -8,6 +8,7 @@ use Dingo\Api\Routing\Helpers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
 use Symfony\Component\Process\Process;
 
 class FileAPIController extends Controller
@@ -27,11 +28,33 @@ class FileAPIController extends Controller
      * @param $id
      * @return string
      */
-    public function getList($id)
+    public function getVoicemailList($user_id)
     {
-        $id      = preg_replace('/[^0-9]/', '', $id);
+        $id = preg_replace('/[^0-9]/', '', $user_id);
         $this->baseDir .= '108.165.2.110/';
-        $process = new Process('ls -al ' . $this->baseDir.$id);
+        $process = new Process('ls -al ' . $this->baseDir . $id);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            return $process->getErrorOutput();
+        }
+
+        return $process->getOutput();
+    }
+
+    public function getConferenceList(Request $request, $user_id)
+    {
+        $validator = $this->makeValidator($request, [
+            'conf_name' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->validationFailed($validator);
+        }
+        $id = preg_replace('/[^0-9]/', '', $user_id);
+        $this->baseDir .= 'conference/';
+        $request->conf_name = str_replace('|', '', $request->conf_name);
+        $path               = $this->baseDir . $request->conf_name;
+        $process            = new Process('ls -al ' . $path);
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -47,20 +70,20 @@ class FileAPIController extends Controller
      * @param $id
      * @return mixed
      */
-    public function postFile(Request $request, $id)
+    public function getVoicemailFile(Request $request, $user_id)
     {
         $validator = $this->makeValidator($request, [
-            'file' => 'required',
+            'name' => 'required',
         ]);
         if ($validator->fails()) {
             return $this->validationFailed($validator);
         }
 
-        $id   = preg_replace('/[^0-9]/', '', $id);
+        $id = preg_replace('/[^0-9]/', '', $user_id);
         $this->baseDir .= '108.165.2.110/';
-        $path = $this->baseDir.$id."/$request->file";
+        $path = $this->baseDir . $id . "/$request->name";
 
-        return \Illuminate\Support\Facades\Response::download($path, basename($request->file));
+        return Response::download($path, basename($request->name));
     }
 
 
@@ -69,10 +92,11 @@ class FileAPIController extends Controller
      * @param Request $request
      * @return string
      */
-    public function getRecord(Request $request)
+    public function getConferenceFile(Request $request, $user_id)
     {
         $validator = $this->makeValidator($request, [
             'conf_name' => 'required',
+            'name'      => 'required'
         ]);
         if ($validator->fails()) {
             return $this->validationFailed($validator);
@@ -80,19 +104,9 @@ class FileAPIController extends Controller
 
         $this->baseDir .= 'conference/';
         $request->conf_name = str_replace('|', '', $request->conf_name);
-        $path               = $this->baseDir . $request->conf_name;
-        if ($request->has('name')) {
-            $path = $path."/$request->file";
-            return \Illuminate\Support\Facades\Response::download($path, basename($request->file));
-        }
-        $process            = new Process('ls -al ' . $path);
-        $process->run();
+        $path               = $this->baseDir . $request->conf_name . "/$request->name";
 
-        if (!$process->isSuccessful()) {
-            return $process->getErrorOutput();
-        }
-
-        return $process->getOutput();
+        return Response::download($path, basename($request->file));
 
     }
 
