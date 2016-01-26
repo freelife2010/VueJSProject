@@ -118,7 +118,8 @@ class DIDController extends Controller
 
     protected function fillDIDParams($did, $request)
     {
-        $params     = $request->all();
+        $params           = $request->input();
+        $params['app_id'] = $request->app_id;
         $storedDIDs = $request->session()->get('dids') ?: [];
         $storedDID  = $did->findReservedDID($request->did, $storedDIDs);
         if ($storedDID) {
