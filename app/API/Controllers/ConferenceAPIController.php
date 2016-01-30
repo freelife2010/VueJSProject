@@ -2,8 +2,8 @@
 
 namespace App\API\Controllers;
 
+use App\Models\App;
 use App\Models\Conference;
-use Dingo\Api\Contract\Http\Request;
 
 use App\Http\Requests;
 use Symfony\Component\Process\Process;

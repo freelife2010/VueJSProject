@@ -94,6 +94,7 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->controller('did', 'App\API\Controllers\DIDController');
     $api->controller('sms', 'App\API\Controllers\SMSAPIController');
     $api->controller('conference', 'App\API\Controllers\ConferenceAPIController');
+    $api->controller('queue', 'App\API\Controllers\QueueAPIController');
 
     //File api routes
     $api->get('voicemail/list/{user_id}', 'App\API\Controllers\FileAPIController@getVoicemailList');
