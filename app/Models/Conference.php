@@ -12,9 +12,7 @@ class Conference extends BaseModel
         'guest_pin',
         'name',
         'greeting_prompt',
-        'created_on',
         'owner_user_id'
     ];
 
-    public $timestamps = false;
 }

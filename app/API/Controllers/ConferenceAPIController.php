@@ -2,6 +2,7 @@
 
 namespace App\API\Controllers;
 
+use App\Models\Conference;
 use Dingo\Api\Contract\Http\Request;
 
 use App\Http\Requests;
@@ -62,5 +63,16 @@ class ConferenceAPIController extends FileAPIController
             'guest_pin'      => 'required',
             'greeting_prompt' => 'required'
         ]);
+
+        $appId = $this->getAPPIdByAuthHeader();
+        $params = $this->request->all();
+        $params['app_id'] = $appId;
+
+        $response = $this->makeErrorResponse('Failed to create conference');
+
+        if (Conference::create($params))
+            $response = $this->defaultResponse(['result' => 'Conference has been created']);
+
+        return $response;
     }
 }

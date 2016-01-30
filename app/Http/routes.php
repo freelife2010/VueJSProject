@@ -92,8 +92,8 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('sip-password', 'App\API\Controllers\UserController@getSipPassword');
 
     $api->controller('did', 'App\API\Controllers\DIDController');
-    $api->controller('conference', 'App\API\Controllers\ConferenceAPIController');
     $api->controller('sms', 'App\API\Controllers\SMSAPIController');
+    $api->controller('conference', 'App\API\Controllers\ConferenceAPIController');
 
     //File api routes
     $api->get('voicemail/list/{user_id}', 'App\API\Controllers\FileAPIController@getVoicemailList');
