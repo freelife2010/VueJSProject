@@ -6,6 +6,7 @@ namespace App\API\Controllers;
 use App\API\APIHelperTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use App\Models\App;
 use App\Models\DID;
 use Config;
 use DB;
@@ -84,14 +85,11 @@ class DIDController extends Controller
 
     public function postReserve(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'did'        => 'required',
             'action_id'  => 'required',
             'owned_by'   => 'required'
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
 
         $request->app_id = $this->getAPPIdByAuthHeader();
 
@@ -113,17 +111,19 @@ class DIDController extends Controller
             }
         }
 
-        return $this->response->array((array) $response);
+        return $this->makeResponse((array) $response);
     }
 
     protected function fillDIDParams($did, $request)
     {
-        $params           = $request->input();
-        $params['app_id'] = $request->app_id;
-        $storedDIDs = $request->session()->get('dids') ?: [];
-        $storedDID  = $did->findReservedDID($request->did, $storedDIDs);
+        $params               = $request->input();
+        $params['app_id']     = $request->app_id;
+        $app                  = App::find($request->app_id);
+        $params['account_id'] = $app->account_id;
+        $storedDIDs           = $request->session()->get('dids') ?: [];
+        $storedDID            = $did->findReservedDID($request->did, $storedDIDs);
         if ($storedDID) {
-            $params['did_type'] = $storedDID->category;
+            $params['did_type']    = $storedDID->category;
             $params['rate_center'] = $storedDID->RateCenter;
         }
         $did->fill($params);

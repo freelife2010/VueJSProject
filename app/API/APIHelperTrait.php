@@ -9,6 +9,7 @@
 namespace App\API;
 
 
+use App\Helpers\APILogger;
 use Config;
 use DateTime;
 use DateTimeZone;
@@ -29,6 +30,7 @@ trait APIHelperTrait
         $this->request = Request::capture();
         if ($this->request->has('datetz'))
             Config::set('app.timezone', $this->request->input('datetz'));
+        APILogger::log($this->request->all(), 'API Request');
     }
 
     protected function makeValidator($request, $rules)
@@ -82,7 +84,10 @@ trait APIHelperTrait
             'timestamp' => time()
         ];
 
-        return $this->response->array(array_merge($defaultParams, $params));
+        $response = $this->response->array(array_merge($defaultParams, $params));
+        APILogger::log($response, 'API Response');
+
+        return $response;
     }
 
     protected function getSign($request)
@@ -104,9 +109,20 @@ trait APIHelperTrait
         return $appId;
     }
 
+    protected function makeResponse($params)
+    {
+        $response = $this->response->array($params);
+        APILogger::log($response, 'API Response');
+
+        return $response;
+    }
+
     protected function makeErrorResponse($message)
     {
-        return $this->response->array(['error' => $message]);
+        $response = $this->response->array(['error' => $message]);
+        APILogger::log($response, 'API Response');
+
+        return $response;
     }
 
     /**
