@@ -63,7 +63,7 @@
                         if ($param->name == 'Key-Action')
                             $method = 'textarea';
                         if (strpos($param->name, 'APP user id') !== false) {
-                            $users = AppUser::whereAppId($APP->id)->lists('name', 'user_id');
+                            $users = AppUser::whereAppId($APP->id)->lists('name', 'id');
                             echo Former::select($selectName)->options($users, $model->owned_by)
                                     ->placeholder($param->name)->label('');
                         } else echo Former::$method($selectName)->value($param->parameter_value)
