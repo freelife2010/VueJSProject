@@ -19,7 +19,9 @@ use Moment\CustomFormats\MomentJs;
 use Moment\Moment;
 use Validator;
 
-trait APIHelperTrait {
+trait APIHelperTrait
+{
+
     protected $request;
 
     function initAPI()
@@ -32,12 +34,19 @@ trait APIHelperTrait {
     protected function makeValidator($request, $rules)
     {
         return Validator::make($request->all(), $rules);
+    }
 
+    protected function setValidator($rules)
+    {
+        $validator = $this->makeValidator($this->request, $rules);
+        if ($validator->fails()) {
+            throw new \Exception(implode(' ', $validator->errors()->all()));
+        }
     }
 
     protected function validationFailed($validator)
     {
-        return $this->response->errorBadRequest(implode(' ',$validator->errors()->all()));
+        return $this->response->errorBadRequest(implode(' ', $validator->errors()->all()));
     }
 
     /**
@@ -48,7 +57,7 @@ trait APIHelperTrait {
      */
     protected function getEntities($className, $fields)
     {
-        $className = '\\App\Models\\'.$className;
+        $className = '\\App\Models\\' . $className;
         $entities  = $className::select($fields);
         if ($this->request->has('skip'))
             $entities = $entities->skip($this->request->input('skip'));
@@ -60,9 +69,10 @@ trait APIHelperTrait {
 
     protected function defaultResponse($params)
     {
-        $path          = $this->request->getPathInfo();
+        $path = $this->request->getPathInfo();
         if (isset($params['entities'])
-        and $this->request->has('datetz'))
+            and $this->request->has('datetz')
+        )
             $this->setTimezones($params['entities'], $this->request->input('datetz'));
         $defaultParams = [
             'action'    => $this->request->getMethod(),
@@ -77,9 +87,9 @@ trait APIHelperTrait {
 
     protected function getSign($request)
     {
-        $accountId  = $request->input('account_id');
-        $name       = $request->input('name');
-        $sign       = sha1("$accountId&$name&$name&$accountId");
+        $accountId = $request->input('account_id');
+        $name      = $request->input('name');
+        $sign      = sha1("$accountId&$name&$name&$accountId");
 
         return $sign;
     }
@@ -148,7 +158,7 @@ trait APIHelperTrait {
     {
         $format = 'Y-m-d H:i:s';
         if ($this->request->has('dateformat')) {
-            $date = new Moment($date->format($format));
+            $date   = new Moment($date->format($format));
             $format = $this->request->input('dateformat');
             $date   = $date->format($format, new MomentJs());
         } else $date = $date->format($format);
@@ -172,6 +182,6 @@ trait APIHelperTrait {
 
     private function isMultiDimensionalArray($input)
     {
-        return  (isset($input[0]) and is_array($input[0]));
+        return (isset($input[0]) and is_array($input[0]));
     }
 }

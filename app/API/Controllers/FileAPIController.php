@@ -42,27 +42,6 @@ class FileAPIController extends Controller
         return $process->getOutput();
     }
 
-    public function getConferenceList(Request $request, $user_id)
-    {
-        $validator = $this->makeValidator($request, [
-            'conf_name' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
-        $id = preg_replace('/[^0-9]/', '', $user_id);
-        $this->baseDir .= 'conference/';
-        $request->conf_name = str_replace('|', '', $request->conf_name);
-        $path               = $this->baseDir . $request->conf_name;
-        $process            = new Process('ls -al ' . $path);
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            return $process->getErrorOutput();
-        }
-
-        return $process->getOutput();
-    }
 
     /**
      * Returns voicemail file
@@ -87,27 +66,5 @@ class FileAPIController extends Controller
     }
 
 
-    /**
-     * Returns conference record file
-     * @param Request $request
-     * @return string
-     */
-    public function getConferenceFile(Request $request, $user_id)
-    {
-        $validator = $this->makeValidator($request, [
-            'conf_name' => 'required',
-            'name'      => 'required'
-        ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
-
-        $this->baseDir .= 'conference/';
-        $request->conf_name = str_replace('|', '', $request->conf_name);
-        $path               = $this->baseDir . $request->conf_name . "/$request->name";
-
-        return Response::download($path, basename($request->file));
-
-    }
 
 }
