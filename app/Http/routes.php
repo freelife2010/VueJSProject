@@ -115,7 +115,6 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('getAllowedCountry', 'App\API\Controllers\PaymentAPIController@getAllowedCountry');
     $api->get('getRates', 'App\API\Controllers\PaymentAPIController@getRates');
     $api->get('getRate', 'App\API\Controllers\PaymentAPIController@getRate');
-    $api->get('getSip', 'App\API\Controllers\PaymentAPIController@getSip');
 });
 
 //Grants access token

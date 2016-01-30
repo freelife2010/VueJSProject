@@ -122,15 +122,13 @@ class PaymentAPIController extends Controller
         return $result;
     }
 
-    public function getRates(Request $request)
+    public function getRates()
     {
-        $validator = $this->makeValidator($request, [
+        $request = $this->request;
+        $this->setValidator([
             'userid'  => $this->userIdValidationRule,
             'country' => 'required'
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
 
         $user = AppUser::find($request->userid);
 
@@ -155,15 +153,13 @@ class PaymentAPIController extends Controller
 
     }
 
-    public function getRate(Request $request)
+    public function getRate()
     {
-        $validator = $this->makeValidator($request, [
-            'userid'  => $this->userIdValidationRule,
+        $request = $this->request;
+        $this->setValidator([
+            'userid' => $this->userIdValidationRule,
             'number' => 'required'
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
 
         $user = AppUser::find($request->userid);
 
@@ -186,29 +182,6 @@ class PaymentAPIController extends Controller
                     AND ((now() BETWEEN effective_date AND end_date) OR end_date IS NULL )
                     AND code @> ? ORDER BY length(code::text) desc LIMIT 1', [$rateTableId, $number]);
 
-    }
-
-    public function getSip(Request $request)
-    {
-        $validator = $this->makeValidator($request, [
-            'userid'  => $this->userIdValidationRule
-        ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
-
-        $user = AppUser::find($request->userid);
-
-        $response = [];
-        $username = Misc::filterNumbers($user->getUserAlias());
-
-        if ($username) {
-            $response = $this->selectFromBillingDB('
-                                SELECT password FROM resource_ip
-                                WHERE username = ?', [$username]);
-        }
-
-        return $this->response->array($response);
     }
 
 }

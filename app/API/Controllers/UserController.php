@@ -36,13 +36,19 @@ class UserController extends Controller
 
     public function getSipPassword()
     {
-        $validator = $this->makeValidator($this->request, ['billing_alias' => 'required']);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
+        $this->setValidator([
+            'billing_alias' => 'required_without:userid',
+            'userid'        => 'required_without:billing_alias|exists:users,id,deleted_at,NULL'
+        ]);
 
-        $username   = Misc::filterNumbers($this->request->billing_alias);
+        if ($this->request->has('userid')) {
+            $user = AppUser::find($this->request->userid);
+            $billingAlias = $user->getUserAlias();
+        } else $billingAlias = $this->request->billing_alias;
+
+        $username   = Misc::filterNumbers($billingAlias);
         $resourceIp = $this->getFluentBilling('resource_ip')->whereUsername($username)->first();
+
         if ($resourceIp)
             return $resourceIp->password;
         else return $this->response->error('Could not find user', 400);
