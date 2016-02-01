@@ -238,7 +238,23 @@ trait BillingTrait {
 
     }
 
-    protected function fetchField($result, $field)
+    protected function getDailyUsageFromBillingDB($resource_id, $rawFields = '', $egress = true)
+    {
+        $rawFields = $rawFields ?:
+            'report_time,
+             duration,
+             sum(ingress_bill_time)/60 as min,
+             sum(ingress_call_cost+lnp_cost) as cost';
+
+        $queryBuilder = $this->getFluentBilling('cdr_report')->selectRaw($rawFields);
+        $queryBuilder = $egress ? $queryBuilder->whereEgressClientId($resource_id)
+                                    : $queryBuilder->whereIngressClientId($resource_id);
+        $queryBuilder = $queryBuilder->groupBy('report_time', 'duration');
+
+        return $queryBuilder;
+    }
+
+    private function fetchField($result, $field)
     {
         $fieldValue = false;
         if (isset($result[0])
@@ -248,7 +264,7 @@ trait BillingTrait {
         return $fieldValue;
     }
 
-    protected function formatCDRData($cdr, $groupField = 'time')
+    private function formatCDRData($cdr, $groupField = 'time')
     {
         $data = [];
 

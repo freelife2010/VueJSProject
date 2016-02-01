@@ -10,7 +10,6 @@ use App\Jobs\StoreAPPToBillingDB;
 use App\Jobs\StoreAPPToChatServer;
 use App\Models\App;
 use App\Http\Requests;
-use Illuminate\Support\Collection;
 use URL;
 use yajra\Datatables\Datatables;
 
@@ -157,17 +156,7 @@ class AppController extends AppBaseController
 
     public function getDailyUsageData()
     {
-        $fields =
-            'report_time,
-             duration,
-             sum(ingress_bill_time)/60 as min,
-             sum(ingress_call_cost+lnp_cost) as cost';
-
-        $resource   = $this->getResourceByAliasFromBillingDB($this->app->alias);
-        $dailyUsage = new Collection();
-        if ($resource)
-            $dailyUsage = $this->getFluentBilling('cdr_report')->selectRaw($fields)
-                ->whereEgressClientId($resource->resource_id)->groupBy('report_time', 'duration');
+        $dailyUsage = $this->app->getDailyUsage();
 
         return Datatables::of($dailyUsage)->make(true);
     }

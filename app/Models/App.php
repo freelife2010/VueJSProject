@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Helpers\BillingTrait;
 use App\Helpers\Misc;
 use Auth;
 use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class App extends BaseModel
 {
     const APP_KEYS_EXPIRE_DAYS = 5;
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait, SoftDeletes, BillingTrait;
 
     protected $table = 'app';
 
@@ -93,6 +95,18 @@ class App extends BaseModel
         }
 
         return $html;
+
+    }
+
+    public function getDailyUsage()
+    {
+
+        $resource   = $this->getResourceByAliasFromBillingDB($this->alias);
+        $dailyUsage = new Collection();
+        if ($resource)
+            $dailyUsage = $this->getDailyUsageFromBillingDB($resource->resource_id);
+
+        return $dailyUsage;
 
     }
 
