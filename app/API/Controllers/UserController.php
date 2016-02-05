@@ -34,27 +34,6 @@ class UserController extends Controller
         return $this->defaultResponse($response);
     }
 
-    public function getSipPassword()
-    {
-        $this->setValidator([
-            'billing_alias' => 'required_without:userid',
-            'userid'        => 'required_without:billing_alias|exists:users,id,deleted_at,NULL'
-        ]);
-
-        if ($this->request->has('userid')) {
-            $user = AppUser::find($this->request->userid);
-            $billingAlias = $user->getUserAlias();
-        } else $billingAlias = $this->request->billing_alias;
-
-        $username   = Misc::filterNumbers($billingAlias);
-        $resourceIp = $this->getFluentBilling('resource_ip')->whereUsername($username)->first();
-
-        if ($resourceIp)
-            return $resourceIp->password;
-        else return $this->response->error('Could not find user', 400);
-
-    }
-
     public function createUsers()
     {
         $rules     = $this->getUserCreationInputRules($this->request);
@@ -166,6 +145,88 @@ class UserController extends Controller
             $response = $this->defaultResponse($user->toArray());
 
         return $response;
+    }
+
+    public function getSipPassword()
+    {
+        $this->setValidator([
+            'billing_alias' => 'required_without:userid',
+            'userid'        => 'required_without:billing_alias|exists:users,id,deleted_at,NULL'
+        ]);
+
+        if ($this->request->has('userid')) {
+            $user = AppUser::find($this->request->userid);
+            $billingAlias = $user->getUserAlias();
+        } else $billingAlias = $this->request->billing_alias;
+
+        $username   = Misc::filterNumbers($billingAlias);
+        $resourceIp = $this->getFluentBilling('resource_ip')->whereUsername($username)->first();
+
+        if ($resourceIp)
+            return $resourceIp->password;
+        else return $this->response->error('Could not find user', 400);
+
+    }
+
+    public function getSipUserList()
+    {
+        $this->setValidator([
+            'userid'   => 'required|exists:users,id,deleted_at,NULL'
+        ]);
+
+        $user     = AppUser::find($this->request->userid);
+        $resource = $this->getResourceByAliasFromBillingDB($user->getUserAlias());
+        $entities = [];
+        if ($resource) {
+            $entities = $this->getFluentBilling('resource_ip')
+                        ->whereResourceId($resource->resource_id)->get();
+        }
+
+        return $this->defaultResponse(['entities' => $entities]);
+    }
+
+    public function postSipUserAdd()
+    {
+        $this->setValidator([
+            'userid'   => 'required|exists:users,id,deleted_at,NULL',
+            'password' => 'required'
+        ]);
+
+        $user     = AppUser::find($this->request->userid);
+        $alias    = $user->getUserAlias();
+        $resource = $this->getResourceByAliasFromBillingDB($alias);
+        $username = rand(100,999).Misc::filterNumbers($alias);
+        $inserted = false;
+        if ($resource) {
+            $inserted = $this->getFluentBilling('resource_ip')
+                ->insert([
+                    'resource_id' => $resource->resource_id,
+                    'username'    => $username,
+                    'password'    => $this->request->password
+                ]);
+        }
+
+        return $this->defaultResponse(['result' => $inserted]);
+
+    }
+
+    public function postSipUserDelete()
+    {
+        $this->setValidator([
+            'userid'   => 'required|exists:users,id,deleted_at,NULL',
+            'sip_user' => 'required'
+        ]);
+
+        $user     = AppUser::find($this->request->userid);
+        $resource = $this->getResourceByAliasFromBillingDB($user->getUserAlias());
+        $result   = false;
+        if ($resource) {
+            $result = $this->getFluentBilling('resource_ip')
+                ->whereUsername($this->request->sip_user)->delete();
+        }
+
+        return $this->defaultResponse(['result' => ['deleted' => $result]]);
+
     }
 
 
