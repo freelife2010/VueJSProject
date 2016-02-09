@@ -59,7 +59,7 @@ class DIDActionParameters extends BaseModel
                                                 $parameter->name;
         switch ($paramName) {
             case 'APP user id':
-                $users = AppUser::whereAppId($app->id)->lists('name', 'user_id');
+                $users = AppUser::whereAppId($app->id)->lists('name', 'id');
                 $html  = Former::select($selectName)->options($users)
                     ->placeholder($parameter->name)->label('')->required();
                 break;

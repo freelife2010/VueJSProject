@@ -88,7 +88,7 @@ class DIDController extends Controller
         $this->setValidator([
             'did'        => 'required',
             'action_id'  => 'required',
-            'owned_by'   => 'required'
+            'owned_by'   => 'required|exists:users,id,deleted_at,NULL'
         ]);
 
         $request->app_id = $this->getAPPIdByAuthHeader();
@@ -101,10 +101,11 @@ class DIDController extends Controller
         $did    = new DID();
         if ($request->parameters)
             $request->parameters = (array)json_decode($request->parameters);
-        $response = $did->reserveDID($request->did);
-        if (isset($response->reserveId)) {
-            $did->reserve_id = $response->reserveId;
+        $response = (array) $did->buyDID($request->did);
+        if (!empty($response['Order NO'])) {
+            $did->reserve_id = $response['Order NO'];
             $this->fillDIDParams($did, $request);
+            $did->createBillingDBData();
             if ($did->save()) {
                 $request->action = $request->action_id;
                 $did->createDIDParameters($request);
@@ -127,5 +128,14 @@ class DIDController extends Controller
             $params['rate_center'] = $storedDID->RateCenter;
         }
         $did->fill($params);
+    }
+
+    public function postSetAction()
+    {
+        $this->setValidator([
+            'did'        => 'required',
+            'action_id'  => 'required',
+            'owned_by'   => 'required'
+        ]);
     }
 }

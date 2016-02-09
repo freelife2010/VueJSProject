@@ -83,10 +83,11 @@ class DIDController extends AppBaseController
         $result = $this->getResult(true, 'Could not buy DID');
         $did    = new DID();
         if (!$request->has('outside_number'))
-            $response = $did->reserveDID($request->did);
-        else $response = (object) ['reserveId' => $request->outside_number];
-        if (isset($response->reserveId)) {
-            $did->fillParams($request, $response->reserveId);
+            $response = (array) $did->buyDID($request->did);
+        else $response = ['Order NO' => $request->outside_number];
+        if (!empty($response['Order NO'])) {
+            $did->fillParams($request, $response['Order NO']);
+            $did->createBillingDBData();
             if ($did->save()) {
                 $result = $this->getResult(false, 'DID has been acquired');
                 $did->createDIDParameters($request);

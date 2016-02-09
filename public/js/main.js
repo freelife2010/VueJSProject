@@ -121,7 +121,7 @@ function showValidationErrors(errors, form) {
 }
 
 function showDefaultErrorMessage(data) {
-    var alert = 'Error occurred: ' + data.responseJSON;
+    var alert = 'Error occurred: ' + data.statusText;
     var options = {
         status: 'danger'
     };

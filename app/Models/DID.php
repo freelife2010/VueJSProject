@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\API\ApiClient\GuzzleClient;
+use App\Helpers\BillingTrait;
 use Auth;
 use Former\Facades\Former;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DID extends BaseModel
 {
-    use GuzzleClient, SoftDeletes;
+    use GuzzleClient, SoftDeletes, BillingTrait;
 
     protected $table = 'did';
 
@@ -51,7 +52,7 @@ class DID extends BaseModel
     {
         $config = [
             'base_uri' => 'https://customer.vitcom.net/api/did/',
-            'timeout'  => 2.5
+            'timeout'  => 15
         ];
         $this->createHttpClient($config);
         $this->setCredentials();
@@ -92,6 +93,20 @@ class DID extends BaseModel
         $category = 'Landline';
         $data     = $this->makeData(['did' => $did, 'category' => $category]);
         $response = $this->sendPost('reserve', $data);
+
+        return $this->makeResponse($response);
+    }
+
+    public function buyDID($did)
+    {
+        $category = 'Landline';
+        $data     = $this->makeData([
+            'number'   => $did,
+            'category' => $category,
+            'trunk_id' => 990259
+        ]);
+
+        $response = $this->sendPost('generate_new_order', $data);
 
         return $this->makeResponse($response);
     }
@@ -178,6 +193,25 @@ class DID extends BaseModel
         foreach ($this->actionParameters as $parameter) {
             $parameter->delete();
         }
+    }
+
+    public function createBillingDBData()
+    {
+        $appUser    = AppUser::find($this->owned_by);
+        $resourceId = $this->getResourceByAliasFromBillingDB($appUser->getUserAlias());
+        $itemId = $this->insertGetIdToBillingDB('
+                        insert into product_items
+                        (product_id, digits, strategy, min_len, max_len, update_at)
+                        values (1,?,1,0,32, ?) RETURNING item_id',
+                    [$this->did, date('Y-m-d H:i:s')], 'item_id');
+        if ($itemId and $resourceId) {
+            $values = [
+                'item_id' => $itemId,
+                'resource_id' => $resourceId
+            ];
+            $this->getFluentBilling('product_items_resource')->insert($values);
+        }
+
     }
 
 }
