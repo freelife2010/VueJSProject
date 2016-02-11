@@ -254,6 +254,22 @@ trait BillingTrait {
         return $queryBuilder;
     }
 
+    protected function getDIDUsageFromBillingDB($resource_id, $rawFields = '', $egress = true)
+    {
+        $rawFields = $rawFields ?:
+            'report_time,
+             duration,
+             sum(ingress_bill_time)/60 as min,
+             sum(ingress_call_cost) as cost';
+
+        $queryBuilder = $this->getFluentBilling('did_report')->selectRaw($rawFields);
+        $queryBuilder = $egress ? $queryBuilder->whereEgressClientId($resource_id)
+            : $queryBuilder->whereIngressClientId($resource_id);
+        $queryBuilder = $queryBuilder->groupBy('report_time', 'duration');
+
+        return $queryBuilder;
+    }
+
     private function fetchField($result, $field)
     {
         $fieldValue = false;

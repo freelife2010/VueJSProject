@@ -15,6 +15,13 @@ class InfoAPIController extends Controller
 {
     use Helpers, APIHelperTrait, BillingTrait;
 
+    protected $usageValidationRules = [
+        'user_id' => 'required_without:app_id|exists:users,id,deleted_at,NULL',
+        'app_id'  => 'required_without:user_id|exists:app,id,deleted_at,NULL',
+        'start'   => 'required|date_format:Y-m-d',
+        'end'     => 'required|date_format:Y-m-d'
+    ];
+
     public function __construct()
     {
         $this->initAPI();
@@ -22,20 +29,9 @@ class InfoAPIController extends Controller
 
     public function getDailyUsage()
     {
-        $this->setValidator([
-            'user_id' => 'required_without:app_id|exists:users,id,deleted_at,NULL',
-            'app_id'  => 'required_without:user_id|exists:app,id,deleted_at,NULL',
-            'start'   => 'required|date_format:Y-m-d',
-            'end'     => 'required|date_format:Y-m-d'
-        ]);
+        $this->setValidator($this->usageValidationRules);
 
-        if ($this->request->has('app_id')) {
-            $app   = App::find($this->request->app_id);
-            $alias = $app->alias;
-        } else {
-            $user  = AppUser::find($this->request->user_id);
-            $alias = $user->getUserAlias();
-        }
+        $alias = $this->getAppOrUserAlias();
 
         $resource = $this->getResourceByAliasFromBillingDB($alias);
         $dailyUsage = [];
@@ -48,4 +44,37 @@ class InfoAPIController extends Controller
 
         return $this->defaultResponse(['entities' => $dailyUsage]);
     }
+
+    public function getDetailDidUsage()
+    {
+        $this->setValidator($this->usageValidationRules);
+
+        $alias = $this->getAppOrUserAlias();
+
+        $resource = $this->getResourceByAliasFromBillingDB($alias);
+        $didUsage = [];
+        if ($resource) {
+            $dailyUsage = $this->getDIDUsageFromBillingDB($resource->resource_id, '',
+                $this->request->has('app_id'));
+            $didUsage = $dailyUsage->whereBetween('report_time',
+                [$this->request->start, $this->request->end])->get();
+        }
+
+        return $this->defaultResponse(['entities' => $didUsage]);
+
+    }
+
+    protected function getAppOrUserAlias()
+    {
+        if ($this->request->has('app_id')) {
+            $app   = App::find($this->request->app_id);
+            $alias = $app->alias;
+        } else {
+            $user  = AppUser::find($this->request->user_id);
+            $alias = $user->getUserAlias();
+        }
+
+        return $alias;
+    }
+
 }
