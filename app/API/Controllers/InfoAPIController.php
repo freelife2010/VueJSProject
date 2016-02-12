@@ -132,13 +132,90 @@ class InfoAPIController extends Controller
         $resource = $this->getResourceByAliasFromBillingDB($alias);
         $didUsage = [];
         if ($resource) {
-            $dailyUsage = $this->getDIDUsageFromBillingDB($resource->resource_id, '',
+            $didUsage = $this->getDIDUsageFromBillingDB($resource->resource_id, '',
                 $this->request->has('app_id'));
-            $didUsage = $dailyUsage->whereBetween('report_time',
+            $didUsage = $didUsage->whereBetween('report_time',
                 [$this->request->start, $this->request->end])->get();
         }
 
         return $this->defaultResponse(['entities' => $didUsage]);
+
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/api/info/cdr",
+     *     summary="CDR",
+     *     tags={"information"},
+     *     @SWG\Parameter(
+     *         description="APP User ID (if app_id not provided)",
+     *         name="user_id",
+     *         in="query",
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="APP ID (if user_id not provided)",
+     *         name="app_id",
+     *         in="query",
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Start from",
+     *         name="start",
+     *         in="query",
+     *         required=true,
+     *         type="string",
+     *         format="date"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="End to",
+     *         name="end",
+     *         in="query",
+     *         required=true,
+     *         type="string",
+     *         format="date"
+     *     ),
+     *      @SWG\Parameter(
+     *         description="ANI",
+     *         name="ani",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *      @SWG\Parameter(
+     *         description="DNIS",
+     *         name="dnis",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="CDR"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
+    public function getCdr()
+    {
+        $cdrRules = [
+            'ani' => 'required|numeric',
+            'dnis' => 'required|numeric'
+        ];
+
+        $rules = array_merge($cdrRules, $this->usageValidationRules);
+        $this->setValidator($rules);
+
+        $alias    = $this->getAppOrUserAlias();
+        $resource = $this->getResourceByAliasFromBillingDB($alias);
+        $cdr = [];
+        if ($resource) {
+            $cdr = $this->getDIDUsageFromBillingDB($resource->resource_id, '',
+                $this->request->ani,
+                $this->request->dnis,
+                $this->request->has('app_id'))->get();
+        }
+
+        return $this->defaultResponse(['entities' => $cdr]);
 
     }
 

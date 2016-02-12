@@ -247,8 +247,7 @@ trait BillingTrait {
              sum(ingress_call_cost+lnp_cost) as cost';
 
         $queryBuilder = $this->getFluentBilling('cdr_report')->selectRaw($rawFields);
-        $queryBuilder = $egress ? $queryBuilder->whereEgressClientId($resource_id)
-                                    : $queryBuilder->whereIngressClientId($resource_id);
+        $this->selectEgressOrIngressFromBillingDB($queryBuilder, $resource_id, $egress);
         $queryBuilder = $queryBuilder->groupBy('report_time', 'duration');
 
         return $queryBuilder;
@@ -263,11 +262,38 @@ trait BillingTrait {
              sum(ingress_call_cost) as cost';
 
         $queryBuilder = $this->getFluentBilling('did_report')->selectRaw($rawFields);
-        $queryBuilder = $egress ? $queryBuilder->whereEgressClientId($resource_id)
-            : $queryBuilder->whereIngressClientId($resource_id);
+        $this->selectEgressOrIngressFromBillingDB($queryBuilder, $resource_id, $egress);
         $queryBuilder = $queryBuilder->groupBy('report_time', 'duration');
 
         return $queryBuilder;
+    }
+
+    protected function getCDRFromBillingDB($resource_id, $rawFields = '', $ani, $dnis, $egress = true)
+    {
+        $rawFields = $rawFields ?:
+            'session_id,
+            start_time_of_date,
+            release_tod,
+            ani_code_id,
+            dnis_code_id,
+            call_duration,
+            agent_rate,
+            agent_cost,
+            origination_source_number,
+            origination_destination_number';
+
+        $queryBuilder = $this->getFluentBilling('client_cdr')->selectRaw($rawFields);
+        $queryBuilder = $queryBuilder->whereAniCodeId($ani)->whereDnisCodeId($dnis);
+        $this->selectEgressOrIngressFromBillingDB($queryBuilder, $resource_id, $egress);
+        $queryBuilder = $queryBuilder->groupBy('report_time', 'duration');
+
+        return $queryBuilder;
+    }
+
+    private function selectEgressOrIngressFromBillingDB(&$queryBuilder, $resource_id, $egress)
+    {
+        return $egress ? $queryBuilder->whereEgressClientId($resource_id)
+            : $queryBuilder->whereIngressClientId($resource_id);
     }
 
     private function fetchField($result, $field)
