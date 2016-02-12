@@ -3,7 +3,7 @@
 /**
  * @SWG\Swagger(
  *     schemes={"http"},
- *     host="adm.dev",
+ *     host="portal.opentact.org",
  *     consumes={"application/json"},
  *     @SWG\Info(
  *         version="1.0.0",

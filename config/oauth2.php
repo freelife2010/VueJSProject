@@ -31,7 +31,7 @@ return [
     'grant_types' => [
         'client_credentials' => [
             'class' => '\App\API\AppCredentialsGrant',
-            'access_token_ttl' => 999999
+            'access_token_ttl' => 86400
         ]
     ],
 
