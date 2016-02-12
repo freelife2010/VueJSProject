@@ -43,6 +43,8 @@ class AppServiceProvider extends ServiceProvider {
 			'Illuminate\Contracts\Auth\Registrar',
 			'App\Services\Registrar'
 		);
+
+		$this->app->register('Darkaonline\L5Swagger\L5SwaggerServiceProvider');
 	}
 
 }
