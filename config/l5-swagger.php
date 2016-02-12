@@ -48,7 +48,7 @@ return [
     | Edit to set the api key variable
     |--------------------------------------------------------------------------
     */
-    "api-key-var" => env('API_KEY_VAR', 'api_key'),
+    "api-key-var" => env('API_KEY_VAR', 'access_token'),
 
     /*
     |--------------------------------------------------------------------------
@@ -97,7 +97,7 @@ return [
     | Uncomment to add request headers when swagger performs requests
     |--------------------------------------------------------------------------
     */
-    "requestHeaders" => [
-        'Authorization' => 'Bearer '.env('API_AUTH_TOKEN', false)
-    ]
+//    "requestHeaders" => [
+//        'Authorization' => 'Bearer '.env('API_AUTH_TOKEN', false)
+//    ]
 ];
