@@ -24,6 +24,25 @@ class PaymentAPIController extends Controller
         $this->initAPI();
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/balance",
+     *     summary="Return conference file list",
+     *     tags={"payments"},
+     *     @SWG\Parameter(
+     *         description="APP User ID",
+     *         name="userid",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="Balance"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function getBalance(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -43,6 +62,39 @@ class PaymentAPIController extends Controller
         return $this->response->array(['balance' => $balance]);
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/addCredit",
+     *     summary="Add user's credit",
+     *     tags={"payments"},
+     *     @SWG\Parameter(
+     *         description="APP User ID",
+     *         name="userid",
+     *         in="formData",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Amount",
+     *         name="amount",
+     *         in="formData",
+     *         required=true,
+     *         type="number"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Remark",
+     *         name="remark",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function postAddCredit(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -67,6 +119,25 @@ class PaymentAPIController extends Controller
 
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/creditHistory",
+     *     summary="Get credit history",
+     *     tags={"payments"},
+     *     @SWG\Parameter(
+     *         description="APP User ID",
+     *         name="userid",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="Credit history"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function getCreditHistory(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -86,6 +157,25 @@ class PaymentAPIController extends Controller
         return $this->response->array($response);
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/getAllowedCountry",
+     *     summary="Return allowed country",
+     *     tags={"payments"},
+     *     @SWG\Parameter(
+     *         description="APP User ID",
+     *         name="userid",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="Allowed country"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function getAllowedCountry(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -122,6 +212,31 @@ class PaymentAPIController extends Controller
         return $result;
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/getRates",
+     *     summary="Return rates for exact country",
+     *     tags={"payments"},
+     *     @SWG\Parameter(
+     *         description="APP User ID",
+     *         name="userid",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Country",
+     *         name="country",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Rates"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function getRates()
     {
         $request = $this->request;
@@ -153,6 +268,31 @@ class PaymentAPIController extends Controller
 
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/getRate",
+     *     summary="Return rates for exact number",
+     *     tags={"payments"},
+     *     @SWG\Parameter(
+     *         description="APP User ID",
+     *         name="userid",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Number",
+     *         name="number",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="Rates"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function getRate()
     {
         $request = $this->request;

@@ -32,6 +32,25 @@ class FreeswitchController extends Controller
         $this->initAPI();
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/fs/get_call_handler",
+     *     summary="Get call handler",
+     *     tags={"freeswitch"},
+     *     @SWG\Parameter(
+     *         description="DID",
+     *         name="dnis",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="Call handler response"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function getCallHandler(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -49,6 +68,53 @@ class FreeswitchController extends Controller
         return $this->makeResponse($did, $xml);
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/fs/join_conference",
+     *     summary="Join conference",
+     *     tags={"freeswitch"},
+     *     @SWG\Parameter(
+     *         description="DID",
+     *         name="dnis",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="ANI",
+     *         name="ani",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="UUID",
+     *         name="uuid",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Conference name",
+     *         name="conf_name",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Conference Id",
+     *         name="conf_id",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function getJoinConference(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -69,6 +135,39 @@ class FreeswitchController extends Controller
         return $this->createConferenceLogRecord($request, $did);
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/fs/leave_conference",
+     *     summary="Leave conference",
+     *     tags={"freeswitch"},
+     *     @SWG\Parameter(
+     *         description="UUID",
+     *         name="uuid",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Conference name",
+     *         name="conf_name",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Conference Id",
+     *         name="conf_id",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function getLeaveConference(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -88,6 +187,53 @@ class FreeswitchController extends Controller
         return $this->createConferenceLogRecord($request, $enterSession, false);
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/fs/agent_join_queue",
+     *     summary="Join agent queue",
+     *     tags={"freeswitch"},
+     *     @SWG\Parameter(
+     *         description="DID",
+     *         name="dnis",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="ANI",
+     *         name="ani",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="UUID",
+     *         name="uuid",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Queue name",
+     *         name="queue_name",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Queue Id",
+     *         name="queue_id",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function getAgentQueueJoin(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -108,6 +254,39 @@ class FreeswitchController extends Controller
         return $this->createQueueSessionRecord($request, $did, new QueueAgentSession());
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/fs/agent_leave_queue",
+     *     summary="Leave agent queue",
+     *     tags={"freeswitch"},
+     *     @SWG\Parameter(
+     *         description="UUID",
+     *         name="uuid",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Queue name",
+     *         name="queue_name",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Queue Id",
+     *         name="queue_id",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function getAgentQueueLeave(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -224,6 +403,32 @@ class FreeswitchController extends Controller
         return $xml->asXML();
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/dialplan",
+     *     summary="Return freeswitch XML",
+     *     tags={"freeswitch"},
+     *     @SWG\Parameter(
+     *         description="Caller ANI",
+     *         name="Caller-ANI",
+     *         in="formData",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Caller Destination Number",
+     *         name="Caller-Destination-Number",
+     *         in="formData",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="XML"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function getFreeswitchResponse(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -326,6 +531,25 @@ class FreeswitchController extends Controller
         }
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/user",
+     *     summary="Return freeswitch user XML",
+     *     tags={"freeswitch"},
+     *     @SWG\Parameter(
+     *         description="APP user's email",
+     *         name="user",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="XML"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function getFreeswitchUser(Request $request)
     {
         $validator = $this->makeValidator($request, [

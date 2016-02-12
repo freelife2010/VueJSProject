@@ -18,6 +18,17 @@ class QueueAPIController extends Controller
         $this->initAPI();
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/queue/list",
+     *     summary="Get queue list",
+     *     tags={"queues"},
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function getList()
     {
         $appId  = $this->getAPPIdByAuthHeader();
@@ -34,6 +45,38 @@ class QueueAPIController extends Controller
         return $this->defaultResponse(['entities' => $queues]);
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/queue/add",
+     *     summary="Create queue",
+     *     tags={"queues"},
+     *     @SWG\Parameter(
+     *         description="Queue name",
+     *         name="queue_name",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Client waiting prompt",
+     *         name="client_waiting_prompt",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Agent waiting prompt",
+     *         name="agent_waiting_prompt",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function postAdd()
     {
         $this->setValidator([
@@ -54,6 +97,24 @@ class QueueAPIController extends Controller
         return $response;
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/queue/delete",
+     *     summary="Delete queue",
+     *     tags={"queues"},
+     *     @SWG\Parameter(
+     *         description="Queue name",
+     *         name="queue_name",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function postDelete()
     {
         $this->setValidator([

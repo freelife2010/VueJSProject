@@ -24,9 +24,23 @@ class FileAPIController extends Controller
 
 
     /**
-     * Returns voicemail file list
-     * @param $id
-     * @return string
+     * @SWG\Get(
+     *     path="/api/voicemail/list/{user_id}",
+     *     summary="Return voicemail file list",
+     *     tags={"files"},
+     *     @SWG\Parameter(
+     *         description="APP user ID",
+     *         name="user_id",
+     *         in="path",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="File list"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param $user_id
+     * @return bool|mixed
      */
     public function getVoicemailList($user_id)
     {
@@ -44,10 +58,31 @@ class FileAPIController extends Controller
 
 
     /**
-     * Returns voicemail file
+     * @SWG\Get(
+     *     path="/api/voicemail/file/{user_id}",
+     *     summary="Return voicemail file",
+     *     tags={"files"},
+     *     @SWG\Parameter(
+     *         description="APP user ID",
+     *         name="user_id",
+     *         in="path",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *      @SWG\Parameter(
+     *         description="File name",
+     *         name="name",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="File"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
      * @param Request $request
-     * @param $id
-     * @return mixed
+     * @param $user_id
+     * @return bool|mixed
      */
     public function getVoicemailFile(Request $request, $user_id)
     {

@@ -16,6 +16,32 @@ class ConferenceAPIController extends FileAPIController
         parent::__construct();
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/conference/list/{user_id}",
+     *     summary="Return conference file list",
+     *     tags={"files"},
+     *     @SWG\Parameter(
+     *         description="APP user ID",
+     *         name="user_id",
+     *         in="path",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *      @SWG\Parameter(
+     *         description="Conference name",
+     *         name="conf_name",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="File list"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param $user_id
+     * @return bool|mixed
+     */
     public function getList($user_id)
     {
         $this->setValidator([
@@ -37,8 +63,37 @@ class ConferenceAPIController extends FileAPIController
     }
 
     /**
-     * Returns conference record file
-     * @return string
+     * @SWG\Get(
+     *     path="/api/conference/file/{user_id}",
+     *     summary="Return conference record file",
+     *     tags={"files"},
+     *     @SWG\Parameter(
+     *         description="APP user ID",
+     *         name="user_id",
+     *         in="path",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Conference name",
+     *         name="conf_name",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="File name",
+     *         name="name",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="File"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param $user_id
+     * @return bool|mixed
      */
     public function getFile($user_id)
     {
@@ -55,6 +110,45 @@ class ConferenceAPIController extends FileAPIController
 
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/conference/add",
+     *     summary="Create conference",
+     *     tags={"conferences"},
+     *     @SWG\Parameter(
+     *         description="Conference name",
+     *         name="name",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Host PIN",
+     *         name="host_pin",
+     *         in="formData",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Guest PIN",
+     *         name="guest_pin",
+     *         in="formData",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Greeting prompt",
+     *         name="greeting_prompt",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function postAdd()
     {
         $this->setValidator([
@@ -76,6 +170,24 @@ class ConferenceAPIController extends FileAPIController
         return $response;
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/conference/delete",
+     *     summary="Delete conference",
+     *     tags={"conferences"},
+     *     @SWG\Parameter(
+     *         description="Conference name",
+     *         name="name",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function postDelete()
     {
         $this->setValidator([

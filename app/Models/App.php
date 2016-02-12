@@ -26,6 +26,11 @@ class App extends BaseModel
         'tech_prefix'
     ];
 
+    public function developer()
+    {
+        return $this->belongsTo('App\User', 'account_id');
+    }
+
     public function users()
     {
         return $this->hasMany('App\Models\AppUser', 'app_id');

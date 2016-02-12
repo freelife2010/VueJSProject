@@ -24,6 +24,17 @@ class DIDController extends Controller
         $this->scopes('pbx');
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/did/actions-parameters",
+     *     summary="DID Actions-parameters list",
+     *     tags={"did"},
+     *     @SWG\Response(response="200", description="Action list"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function getActionsParameters()
     {
         $selectFields = [
@@ -40,7 +51,18 @@ class DIDController extends Controller
         return $params;
     }
 
-    public function postAvailabilitystate(Request $request)
+    /**
+     * @SWG\Post(
+     *     path="/api/did/availabilitystate",
+     *     summary="DID availability state",
+     *     tags={"did"},
+     *     @SWG\Response(response="200", description="DID States"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
+    public function postAvailabilitystate()
     {
 
         $did = new DID();
@@ -48,6 +70,26 @@ class DIDController extends Controller
         return $did->getStates();
     }
 
+
+    /**
+     * @SWG\Post(
+     *     path="/api/did/availabilitynpanxx",
+     *     summary="DID availability NPA",
+     *     tags={"did"},
+     *     @SWG\Parameter(
+     *         description="State",
+     *         name="state",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="State NPA"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function postAvailabilitynpanxx(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -61,6 +103,25 @@ class DIDController extends Controller
         return $did->getNPA($request->state);
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/did/searchdid",
+     *     summary="Search DIDs by state",
+     *     tags={"did"},
+     *     @SWG\Parameter(
+     *         description="State",
+     *         name="state",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Available DIDs"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
     public function postSearchdid(Request $request)
     {
         $validator = $this->makeValidator($request, [
@@ -83,6 +144,40 @@ class DIDController extends Controller
         return $numbers;
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/did/reserve",
+     *     summary="Buy DID",
+     *     tags={"did"},
+     *     @SWG\Parameter(
+     *         description="DID",
+     *         name="did",
+     *         in="formData",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="DID Action ID",
+     *         name="action_id",
+     *         in="formData",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="DID User ID",
+     *         name="owned_by",
+     *         in="formData",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     * @throws \Exception
+     */
     public function postReserve(Request $request)
     {
         $this->setValidator([

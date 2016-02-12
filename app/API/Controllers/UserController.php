@@ -8,6 +8,7 @@ use App\Helpers\Misc;
 use App\Http\Controllers\Controller;
 use App\Jobs\StoreAPPUserToBillingDB;
 use App\Jobs\StoreAPPUserToChatServer;
+use App\Models\App;
 use App\Models\AppUser;
 use Config;
 use Dingo\Api\Http\Request;
@@ -26,6 +27,15 @@ class UserController extends Controller
         $this->scopes('users');
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/users",
+     *     summary="List APP users",
+     *     tags={"users"},
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     * )
+     */
     public function getUsers()
     {
         $response = [
@@ -34,6 +44,30 @@ class UserController extends Controller
         return $this->defaultResponse($response);
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/users",
+     *     summary="Create APP user(s)",
+     *     tags={"users"},
+     *      @SWG\Parameter(
+     *         description="App user`s email",
+     *         in="formData",
+     *         name="username",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *      @SWG\Parameter(
+     *         description="App user's password",
+     *         in="formData",
+     *         name="password",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Returns created user(s)"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     */
     public function createUsers()
     {
         $rules     = $this->getUserCreationInputRules($this->request);
@@ -104,6 +138,7 @@ class UserController extends Controller
 
     private function getUserData()
     {
+        $appId     = $this->getAPPIdByAuthHeader();
         return $this->getEntities('AppUser', [
             'id as user_id',
             'app_id',
@@ -113,7 +148,7 @@ class UserController extends Controller
             'activated',
             'created_at as created',
             'updated_at as modified'
-        ]);
+        ])->whereAppId($appId);
     }
 
     private function getUserCreationInputRules($request)
@@ -136,7 +171,25 @@ class UserController extends Controller
         return $rules;
     }
 
-
+    /**
+     * @SWG\Get(
+     *     path="/api/users/{email}",
+     *     summary="Get user info",
+     *     tags={"users"},
+     *      @SWG\Parameter(
+     *         description="App user`s email",
+     *         in="path",
+     *         name="email",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="User info"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param $username
+     * @return
+     */
     public function getUserInfo($username)
     {
         $user = $this->getUserData()->whereEmail($username)->first();
@@ -147,6 +200,28 @@ class UserController extends Controller
         return $response;
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/sip-password",
+     *     summary="Get SIP user's password",
+     *     tags={"sip"},
+     *      @SWG\Parameter(
+     *         description="App user id",
+     *         in="query",
+     *         name="userid",
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="App user`s billing alias",
+     *         in="query",
+     *         name="billing_alias",
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Sip password"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     */
     public function getSipPassword()
     {
         $this->setValidator([
@@ -168,6 +243,21 @@ class UserController extends Controller
 
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/sipuser/list",
+     *     summary="List SIP users",
+     *     tags={"sip"},
+     *     @SWG\Parameter(
+     *         description="App user id",
+     *         in="query",
+     *         name="userid",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="List of SIP users")
+     * )
+     */
     public function getSipUserList()
     {
         $this->setValidator([
@@ -185,6 +275,31 @@ class UserController extends Controller
         return $this->defaultResponse(['entities' => $entities]);
     }
 
+
+    /**
+     * @SWG\Post(
+     *     path="/api/sipuser/add",
+     *     summary="Create SIP user",
+     *     tags={"sip"},
+     *     @SWG\Parameter(
+     *         description="App user id",
+     *         in="formData",
+     *         name="userid",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Password",
+     *         in="formData",
+     *         name="password",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     */
     public function postSipUserAdd()
     {
         $this->setValidator([
@@ -210,6 +325,30 @@ class UserController extends Controller
 
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/sipuser/delete",
+     *     summary="Delete SIP user",
+     *     tags={"sip"},
+     *     @SWG\Parameter(
+     *         description="App user id",
+     *         in="formData",
+     *         name="userid",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="SIP Username",
+     *         name="sip_user",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     */
     public function postSipUserDelete()
     {
         $this->setValidator([

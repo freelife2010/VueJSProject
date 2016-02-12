@@ -27,6 +27,45 @@ class InfoAPIController extends Controller
         $this->initAPI();
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/info/daily-usage",
+     *     summary="Daily usage",
+     *     tags={"information"},
+     *     @SWG\Parameter(
+     *         description="APP User ID (if app_id not provided)",
+     *         name="user_id",
+     *         in="query",
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="APP ID (if user_id not provided)",
+     *         name="app_id",
+     *         in="query",
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Start from",
+     *         name="start",
+     *         in="query",
+     *         required=true,
+     *         type="string",
+     *         format="date"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="End to",
+     *         name="end",
+     *         in="query",
+     *         required=true,
+     *         type="string",
+     *         format="date"
+     *     ),
+     *     @SWG\Response(response="200", description="Daily usage"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function getDailyUsage()
     {
         $this->setValidator($this->usageValidationRules);
@@ -45,6 +84,45 @@ class InfoAPIController extends Controller
         return $this->defaultResponse(['entities' => $dailyUsage]);
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/api/info/detail-did-usage",
+     *     summary="Detail DID usage",
+     *     tags={"information"},
+     *     @SWG\Parameter(
+     *         description="APP User ID (if app_id not provided)",
+     *         name="user_id",
+     *         in="query",
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="APP ID (if user_id not provided)",
+     *         name="app_id",
+     *         in="query",
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Start from",
+     *         name="start",
+     *         in="query",
+     *         required=true,
+     *         type="string",
+     *         format="date"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="End to",
+     *         name="end",
+     *         in="query",
+     *         required=true,
+     *         type="string",
+     *         format="date"
+     *     ),
+     *     @SWG\Response(response="200", description="Detail DID usage"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function getDetailDidUsage()
     {
         $this->setValidator($this->usageValidationRules);
