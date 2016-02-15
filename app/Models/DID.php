@@ -186,13 +186,17 @@ class DID extends BaseModel
                 $didParameter->parameter_value = $value;
                 $didParameter->save();
             }
+
+        return true;
     }
 
     public function deleteDIDParameters()
     {
         foreach ($this->actionParameters as $parameter) {
-            $parameter->delete();
+            if (!$parameter->delete()) return false;
         }
+
+        return true;
     }
 
     public function createBillingDBData()

@@ -225,12 +225,60 @@ class DIDController extends Controller
         $did->fill($params);
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/did/set-action",
+     *     summary="Set DID action",
+     *     tags={"did"},
+     *     @SWG\Parameter(
+     *         description="DID",
+     *         name="did",
+     *         in="formData",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="DID Action ID",
+     *         name="action_id",
+     *         in="formData",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Parameters (JSON)",
+     *         name="parameters",
+     *         in="formData",
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Updated DID"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
     public function postSetAction()
     {
         $this->setValidator([
-            'did'        => 'required',
+            'did'        => 'required|exists:did,did,deleted_at,NULL',
             'action_id'  => 'required',
-            'owned_by'   => 'required'
+            'parameters' => 'sometimes|required|json'
         ]);
+
+        $result = ['error' => 'Failed to change DID action'];
+        $did    = DID::whereDid($this->request->did)->first();
+        if ($this->request->parameters)
+            $this->request->parameters = (array)json_decode($this->request->parameters);
+        $did->action_id        = $this->request->action_id;
+        $this->request->action = $did->action_id;
+        if ($did->save()
+            and $did->deleteDIDParameters()
+            and $did->createDIDParameters($this->request)) {
+            $did = DID::find($did->id);
+            $did->actionParameters;
+            $result = ['entities' => $did];
+        }
+
+        return $this->defaultResponse($result);
+
     }
 }
