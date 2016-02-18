@@ -18,6 +18,10 @@
  *   description="DID API"
  * )
  * @SWG\Tag(
+ *   name="sms",
+ *   description="SMS API"
+ * )
+ * @SWG\Tag(
  *   name="freeswitch",
  *   description="Freeswitch API"
  * )

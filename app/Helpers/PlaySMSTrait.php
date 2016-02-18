@@ -69,6 +69,13 @@ trait PlaySMSTrait
         return $response;
     }
 
+    protected function getSMSLog()
+    {
+        $params['op'] = 'ds';
+
+        return json_decode($this->makeSMSRequest($params), true);
+    }
+
     private function makeSMSRequest($params)
     {
         $params   = $this->getParamString($params);

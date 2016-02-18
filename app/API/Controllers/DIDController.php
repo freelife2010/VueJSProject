@@ -4,6 +4,7 @@ namespace App\API\Controllers;
 
 
 use App\API\APIHelperTrait;
+use App\API\Classes\DIDWW;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Models\App;
@@ -280,5 +281,116 @@ class DIDController extends Controller
 
         return $this->defaultResponse($result);
 
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/api/did/available-countries",
+     *     summary="Get DID available countries",
+     *     tags={"did"},
+     *     @SWG\Parameter(
+     *         description="DID",
+     *         name="country_iso",
+     *         in="query",
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="DID Countries"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param DIDWW $handler
+     * @return bool|mixed
+     */
+    public function getAvailableCountries(DIDWW $handler)
+    {
+
+        return $handler->getCountries($this->request->country_iso);
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/api/did/available-regions",
+     *     summary="Get DID available regions",
+     *     tags={"did"},
+     *     @SWG\Parameter(
+     *         description="Country ISO",
+     *         name="country_iso",
+     *         in="query",
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="City prefix",
+     *         name="city_prefix",
+     *         in="query",
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="DID Regions"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param DIDWW $handler
+     * @return bool|mixed
+     */
+    public function getAvailableRegions(DIDWW $handler)
+    {
+
+        return $handler->getRegions($this->request->input());
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/api/did/available-cities",
+     *     summary="Get DID available cities",
+     *     tags={"did"},
+     *     @SWG\Parameter(
+     *         description="Country ISO",
+     *         name="country_iso",
+     *         in="query",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="City ID",
+     *         name="city_id",
+     *         in="query",
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(response="200", description="DID Cities"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param DIDWW $handler
+     * @return bool|mixed
+     */
+    public function getAvailableCities(DIDWW $handler)
+    {
+        $this->setValidator([
+            'country_iso' => 'required'
+        ]);
+
+        return $handler->getCities($this->request->input());
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/api/did/rates",
+     *     summary="Get DID available cities",
+     *     tags={"did"},
+     *     @SWG\Parameter(
+     *         description="Country ISO",
+     *         name="country_iso",
+     *         in="query",
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="DID Rates"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param DIDWW $handler
+     * @return bool|mixed
+     */
+    public function getRates(DIDWW $handler)
+    {
+        return $handler->getRates($this->request->input());
     }
 }
