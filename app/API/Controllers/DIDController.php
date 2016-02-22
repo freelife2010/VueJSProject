@@ -289,7 +289,7 @@ class DIDController extends Controller
      *     summary="Get DID available countries",
      *     tags={"did"},
      *     @SWG\Parameter(
-     *         description="DID",
+     *         description="Country ISO",
      *         name="country_iso",
      *         in="query",
      *         type="string"
@@ -334,7 +334,7 @@ class DIDController extends Controller
     public function getAvailableRegions(DIDWW $handler)
     {
 
-        return $handler->getRegions($this->request->input());
+        return $handler->getRegions($this->request->except('access_token'));
     }
 
     /**
@@ -368,7 +368,7 @@ class DIDController extends Controller
             'country_iso' => 'required'
         ]);
 
-        return $handler->getCities($this->request->input());
+        return $handler->getCities($this->request->except('access_token'));
     }
 
     /**
@@ -391,6 +391,6 @@ class DIDController extends Controller
      */
     public function getRates(DIDWW $handler)
     {
-        return $handler->getRates($this->request->input());
+        return $handler->getRates($this->request->except('access_token'));
     }
 }
