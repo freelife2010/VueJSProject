@@ -70,6 +70,9 @@ class SMSAPIController extends Controller
             'end'    => 'required|date',
         ]);
 
-        return $this->getSMSLog();
+        $params['start'] = $this->request->start;
+        $params['end'] = $this->request->end;
+
+        return $this->getSMSLog($params);
     }
 }

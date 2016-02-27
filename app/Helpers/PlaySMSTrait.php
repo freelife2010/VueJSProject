@@ -69,7 +69,7 @@ trait PlaySMSTrait
         return $response;
     }
 
-    protected function getSMSLog()
+    protected function getSMSLog($params = [])
     {
         $params['op'] = 'ds';
 
