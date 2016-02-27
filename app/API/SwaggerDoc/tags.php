@@ -45,4 +45,8 @@
  *   name="information",
  *   description="Info API (Daily usage, CDR, etc)"
  * )
+ * @SWG\Tag(
+ *   name="ivr",
+ *   description="IVR API"
+ * )
  */
