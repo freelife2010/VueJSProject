@@ -7,20 +7,20 @@
     <script src="{{ asset('js/chart.js') }}"></script>
     <script src="{{ asset('vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             var $from_date = $('#from_date');
             var $to_date = $('#to_date');
 
             $from_date.datetimepicker({
                 format: 'DD.MM.YYYY',
-                defaultDate:  $from_date.val()
-            }).on('dp.change', function(e) {
+                defaultDate: $from_date.val()
+            }).on('dp.change', function (e) {
                 initCharts();
             });
             $to_date.datetimepicker({
                 format: 'DD.MM.YYYY',
-                defaultDate:  $to_date.val()
-            }).on('dp.change', function(e) {
+                defaultDate: $to_date.val()
+            }).on('dp.change', function (e) {
                 initCharts();
             });
 
@@ -28,7 +28,8 @@
     </script>
 @endsection
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}">
+    <link rel="stylesheet"
+          href="{{ asset('vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}">
 @endsection
 @section('subtitle') {{ $subtitle }} @stop
 @section('content')
@@ -37,29 +38,27 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Manage APP</div>
                 <div class="panel-body">
-                    <div class="col-md-2 manage-btn">
-                        <a href="{{{ URL::to('app-keys/index/?app='.$APP->id) }}}"
-                           class="btn btn-labeled btn-xl btn-info">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <a href="{{{ URL::to('app-keys/index/?app='.$APP->id) }}}"
+                               class="btn btn-labeled btn-xl btn-info">
                         <span class="btn-label">
                                <i class="fa fa-key"></i>
                            </span> APP API keys
-                        </a>
-                    </div>
-                    <div class="col-md-2 manage-btn">
-                        <a href="{{{ URL::to('app-users/index/?app='.$APP->id) }}}"
-                           class="btn btn-labeled btn-xl btn-info">
+                            </a>
+                            <a href="{{{ URL::to('app-users/index/?app='.$APP->id) }}}"
+                               class="btn btn-labeled btn-xl btn-info">
                         <span class="btn-label">
                                <i class="fa fa-user"></i>
                            </span> APP Users
-                        </a>
-                    </div>
-                    <div class="col-md-2 manage-btn">
-                        <a href="{{{ URL::to('did/index/?app='.$APP->id) }}}"
-                           class="btn btn-labeled btn-xl btn-green">
+                            </a>
+                            <a href="{{{ URL::to('did/index/?app='.$APP->id) }}}"
+                               class="btn btn-labeled btn-xl btn-green">
                             <span class="btn-label">
                                    <i class="fa fa-phone-square"></i>
                                </span> Manage DID
-                        </a>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
