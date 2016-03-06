@@ -28,7 +28,7 @@ class AppUserRequest extends Request
             'name'     => 'required',
             'phone'    => 'required',
             'password' => 'sometimes|required|min:6',
-            'email'    => 'required|email|unique:users'
+            'email'    => 'required|email|unique:users,email,0,id,deleted_at,NULL'
         ];
 
         if ($id)
