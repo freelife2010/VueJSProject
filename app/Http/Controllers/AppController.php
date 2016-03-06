@@ -97,9 +97,9 @@ class AppController extends AppBaseController
 
         $app = new App();
         if ($app->createApp($request->input())) {
-            $result = $this->getResult(false, 'App created successfully');
-            $this->dispatch(new StoreAPPToBillingDB($app));
-            $this->dispatch(new StoreAPPToChatServer($app));
+            $result = $this->tryToStoreInBillingDB($app);
+            if ($result['error'])
+                $app->delete();
         }
 
         return $result;
@@ -159,6 +159,23 @@ class AppController extends AppBaseController
         $dailyUsage = $this->app->getDailyUsage();
 
         return Datatables::of($dailyUsage)->make(true);
+    }
+
+    protected function tryToStoreInBillingDB($app)
+    {
+        $result = $this->getResult(false, 'App created successfully');
+        try {
+            $this->dispatch(new StoreAPPToBillingDB($app));
+            $this->dispatch(new StoreAPPToChatServer($app));
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            if (strpos($message, 'Unique violation') !== false)
+                $error = "Error: ".substr($message, strpos($message, 'DETAIL:') + mb_strlen('DETAIL: '));
+            else $error = "Error: $message";
+            $result = $this->getResult(true, $error);
+        }
+
+        return $result;
     }
 
 }
