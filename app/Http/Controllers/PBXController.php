@@ -8,7 +8,7 @@ use App\Http\Requests;
 use App\Models\QueueCallerSession;
 use yajra\Datatables\Datatables;
 
-class QueueSessionController extends AppBaseController
+class PBXController extends AppBaseController
 {
     public function getAgentLog()
     {
@@ -16,7 +16,7 @@ class QueueSessionController extends AppBaseController
         $title    = $APP->name . ': Queue agent session log';
         $subtitle = 'View queue agent session log';
 
-        return view('queues.agent_log', compact('APP', 'title', 'subtitle'));
+        return view('pbx.agent_log', compact('APP', 'title', 'subtitle'));
     }
 
     public function getAgentData()
@@ -33,7 +33,7 @@ class QueueSessionController extends AppBaseController
         $title    = $APP->name . ': Queue caller session log';
         $subtitle = 'View queue caller session log';
 
-        return view('queues.caller_log', compact('APP', 'title', 'subtitle'));
+        return view('pbx.caller_log', compact('APP', 'title', 'subtitle'));
     }
 
     public function getCallerData()

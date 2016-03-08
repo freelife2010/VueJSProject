@@ -61,7 +61,7 @@ class AppUser extends BaseModel
         $smsModel             = new SMS();
         $countryId            = $smsModel->getCountryIdByPhone($params['phone']);
         $params['country_id'] = $countryId;
-
+        $params['phone']      = str_replace('_', '', $params['phone']);
 
         return AppUser::create($params);
     }

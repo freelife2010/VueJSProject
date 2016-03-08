@@ -114,12 +114,17 @@ class ConferenceController extends AppBaseController
 
     private function validateInput($request)
     {
-        $this->validate($request, [
+        $rules = [
             'app_id'          => 'required',
-            'host_pin'        => 'required',
-            'guest_pin'       => 'required',
-            'name'            => 'required',
+            'host_pin'        => 'required|integer',
+            'guest_pin'       => 'required|integer',
+            'name'            => 'required|unique:conference,name',
             'greeting_prompt' => 'required'
-        ]);
+        ];
+
+        if ($request->id)
+            $rules['name'] = 'sometimes|required|unique:conference,name,' . $request->id;
+
+        $this->validate($request, $rules);
     }
 }

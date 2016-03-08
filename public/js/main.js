@@ -109,8 +109,12 @@ function showErrorMessage(data, form) {
 
 function showValidationErrors(errors, form) {
     var errors_html = '';
+    var errorClass  = 'label-danger';
+    form.find('label').removeClass(errorClass);
     $.each(errors, function(key, val) {
-        form.find('label[for="'+key+'"]').addClass('label-danger');
+        console.log(key);
+        var label = form.find('label[for="'+key+'"]');
+        label.addClass(errorClass);
         errors_html += '<br/> - '+val;
     });
     var options = {

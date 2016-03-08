@@ -164,12 +164,12 @@ class App extends BaseModel
                     [
                         'name' => 'Agent session log',
                         'icon' => 'fa fa-file-text-o',
-                        'url'  => 'queues/agent-log',
+                        'url'  => 'pbx/agent-log',
                     ],
                     [
                         'name' => 'Caller session log',
                         'icon' => 'fa fa-file-text-o',
-                        'url'  => 'queues/caller-log',
+                        'url'  => 'pbx/caller-log',
                     ]
                 ]
             ],

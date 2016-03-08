@@ -72,9 +72,11 @@ class AppUsersController extends AppBaseController
 
     public function postEdit(AppUserRequest $request, $id)
     {
-        $result = $this->getResult(true, 'Could not edit user');
-        $model  = AppUser::find($id);
-        if ($model->fill($request->input())
+        $result          = $this->getResult(true, 'Could not edit user');
+        $model           = AppUser::find($id);
+        $params          = $request->input();
+        $params['phone'] = str_replace('_', '', $params['phone']);
+        if ($model->fill($params)
             and $model->save()
         )
             $result = $this->getResult(false, 'User saved successfully');

@@ -4,7 +4,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var $state = $('#state');
-            var $did_action = $('#did_action');
+            var $did_action = $('#action');
             setModalWidth(400);
             $state.change(function() {
                 var $rate_center = $('#rate_center');
@@ -58,7 +58,7 @@
 
         function getNumbers() {
             var $did = $('#did');
-            var $did_action = $('#did_action');
+            var $did_action = $('#action');
             $did.prop('disabled', true);
             $did_action.prop('disabled', true);
             var ajaxCallback = function(data) {
@@ -79,7 +79,7 @@
                 $paramsDiv.html(data);
             };
             var params = {
-                'did_action': $('#did_action option:selected').val()
+                'did_action': $('#action option:selected').val()
             };
             ajaxGetData('{{ url('did/parameters?app='.$APP->id) }}', params, ajaxCallback)
 
@@ -112,7 +112,7 @@
         <?= Former::checkbox('outside_number_checkbox')->raw();?>
         <?= Former::label('Outside number')->for('outside_number_checkbox');?>
         <?= Former::text('outside_number')->disabled()->raw() ?><br/>
-        <?= Former::select('action')->id('did_action')->options($actions)
+        <?= Former::select('action')->id('action')->options($actions)
                     ->placeholder('Select action')
                     ->disabled();?>
         <div id="action_parameters"></div>

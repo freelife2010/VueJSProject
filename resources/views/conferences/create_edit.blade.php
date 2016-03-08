@@ -20,9 +20,10 @@
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
         <?= Former::hidden('app_id')->value($APP->id);?>
+        <?= Former::hidden('id');?>
         <?= Former::text('name');?>
-        <?= Former::text('host_pin');?>
-        <?= Former::text('guest_pin');?>
+        <?= Former::text('host_pin')->type('number');?>
+        <?= Former::text('guest_pin')->type('number');?>
         <?= Former::text('greeting_prompt');?>
         <?= Former::hidden('owner_user_id')->value(Auth::user()->id);?>
         <?= Former::hidden('created_on')->value(date('Y-m-d H:i:s'));?>

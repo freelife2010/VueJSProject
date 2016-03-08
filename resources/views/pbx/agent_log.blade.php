@@ -14,7 +14,7 @@
                 "processing": false,
                 "order": [[ 2, "desc" ]],
                 "ajax": {
-                    url : "/queues/caller-data/?app=" + getUrlParam('app')
+                    url : "/pbx/agent-data/?app=" + getUrlParam('app')
                 },
                 "columns": [
                     {data: 'caller_id'},
