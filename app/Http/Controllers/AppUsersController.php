@@ -218,7 +218,9 @@ class AppUsersController extends AppBaseController
 
     public function getCallerIdInputs()
     {
-        $dids = DID::whereAppId($this->app->id)->get()->lists('did', 'did');
+        $dids = DID::whereAppId($this->app->id)
+                ->whereNull('deleted_at')
+                ->get()->lists('did', 'did');
 
         $html = Former::select('caller_id')->addOption('Outside number', 0)
             ->options($dids)->placeholder('Select DID')->label('Number');
