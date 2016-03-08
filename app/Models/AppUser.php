@@ -27,7 +27,7 @@ class AppUser extends BaseModel
 
     public function dids()
     {
-        return $this->hasMany('App\Models\DID', 'owned_by');
+        return $this->hasMany('App\Models\DID', 'owned_by')->whereNull('deleted_at');
     }
 
     protected $table = 'users';
