@@ -83,7 +83,7 @@ class AppUser extends BaseModel
     {
         $validator = Validator::make(
             ['email' => $email],
-            ['email' => 'required|unique:users']
+            ['email' => 'required|unique:users,email,0,id,deleted_at,NULL']
         );
 
         return !$validator->fails();

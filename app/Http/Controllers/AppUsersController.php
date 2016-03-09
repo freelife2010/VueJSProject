@@ -165,10 +165,11 @@ class AppUsersController extends AppBaseController
         $APP    = App::find($request->input('app_id'));
         if ($request->hasFile('sheet_file')
         and $APP) {
-            $columns    = [
+            $columns = [
                 'email'    => $request->input('email'),
                 'username' => $request->input('username'),
-                'password' => $request->input('password')
+                'password' => $request->input('password'),
+                'phone'    => $request->input('phone') ?: 'phone',
             ];
             $pathToFile = $model->saveFile($request->file('sheet_file'));
             $parser     = new ExcelParser($model, $APP);

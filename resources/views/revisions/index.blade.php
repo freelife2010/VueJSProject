@@ -46,7 +46,7 @@
                 <div class="panel-body">
                     <table id="table" class="table table-striped table-hover">
                         <thead>
-                        <tr>
+                        <tr class="th-revision">
                             <th>ID</th>
                             <th>Entity</th>
                             <th>Entity ID</th>

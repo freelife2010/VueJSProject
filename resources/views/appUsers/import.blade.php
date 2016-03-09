@@ -55,6 +55,7 @@
         <?= Former::text('email')->label('E-mail column (unique field)')->value('email');?>
         <?= Former::text('username')->label('Username column')->value('username');?>
         <?= Former::text('password')->label('Password column')->value('password');?>
+        <?= Former::text('phone')->label('Phone column')->value('phone');?>
     </div>
     <div style="clear: both"></div>
     <br/>

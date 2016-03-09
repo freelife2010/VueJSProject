@@ -42,31 +42,32 @@ class ExcelParser {
     }
 
 
-
-
     public function run($file, $columns)
     {
-        $content = Excel::load($file);
-        $this->columns = $columns;
-        $groups  = $content->get()->groupBy($columns['email']);
-        $findEmail = $content->select([$columns['email']])->get();
+        $content       = Excel::load($file);
+        $groups        = $content->get()->groupBy($columns['email']);
+        $findEmail     = $content->select([$columns['email']])->get();
+        $this->columns = array_map(function ($item) {
+            return strtolower($item);
+        }, $columns);
         if (!empty($findEmail)
-            and !empty($findEmail[0])) {
+        and !empty($findEmail[0])) {
             foreach ($groups as $name => $items) {
                 $items = $items->toArray();
-                if ($this->checkItems($items, $columns))
+                if ($this->checkItems($items))
                     $this->saveResult($items[0]);
                 else break;
             }
-        } else $this->errors[] = 'Cannot find column: '.$columns['email'];
+        } else $this->errors[] = 'Cannot find column: ' . $this->columns['email'];
     }
 
-    protected function checkItems($items, $columns)
+    protected function checkItems($items)
     {
         $result = false;
         if (isset($items[0])) {
-            foreach ($columns as $column) {
-                if (!isset($items[0][$column])) {
+            $items = is_array($items[0]) ? array_pop($items[0]) : $items[0];
+            foreach ($this->columns as $column) {
+                if (!isset($items[$column])) {
                     $this->errors[] = 'Cannot find column: '.$column;
                     return false;
                 }
@@ -80,22 +81,27 @@ class ExcelParser {
 
     protected function saveResult($items)
     {
+        $items          = is_array($items) ?
+            array_pop($items) :
+            $items;
         $columns        = $this->columns;
         $emailColumn    = $columns['email'];
         $usernameColumn = $columns['username'];
         $passwordColumn = $columns['password'];
+        $phoneColumn    = $columns['phone'];
         if ($this->model->isValidEmail($items[$emailColumn])) {
             $params = [
                 'app_id'   => $this->APP ? $this->APP->id : 0,
                 'email'    => $items[$emailColumn],
                 'name'     => $items[$usernameColumn],
-                'password' => $items[$passwordColumn]
+                'password' => $items[$passwordColumn],
+                'phone'    => $items[$phoneColumn]
             ];
 
             if ($user = AppUser::createUser($params)) {
                 $this->saved++;
-                $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
-                $this->dispatch(new StoreAPPUserToChatServer($user));
+//                $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
+//                $this->dispatch(new StoreAPPUserToChatServer($user));
             }
         }
     }

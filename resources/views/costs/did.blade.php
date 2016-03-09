@@ -32,26 +32,22 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="row">
-                <div class="col-md-1">
-                    <a href="/costs/did-create"
-                       data-target="#myModal"
-                       data-toggle="modal"
-                       class="btn btn-labeled btn-info">
-                        <span class="btn-label">
-                               <i class="fa fa-plus"></i>
-                           </span>Set new cost
-                    </a>
-                </div>
-                <div class="col-md-1" style="margin-left: 2%">
-                    <a href="/costs/did-default"
-                       data-target="#myModal"
-                       data-toggle="modal"
-                       class="btn btn-labeled {{ $defaultButtonOptions['type'] }}">
-                        <span class="btn-label">
-                               <i class="fa fa-tag"></i>
-                           </span>{{ $defaultButtonOptions['label'] }}
-                    </a>
-                </div>
+                <a href="/costs/did-create"
+                   data-target="#myModal"
+                   data-toggle="modal"
+                   class="btn btn-labeled btn-info">
+                    <span class="btn-label">
+                           <i class="fa fa-plus"></i>
+                       </span>Set new cost
+                </a>
+                <a href="/costs/did-default"
+                   data-target="#myModal"
+                   data-toggle="modal"
+                   class="btn btn-labeled {{ $defaultButtonOptions['type'] }}">
+                    <span class="btn-label">
+                           <i class="fa fa-tag"></i>
+                       </span>{{ $defaultButtonOptions['label'] }}
+                </a>
             </div>
             <br/>
             <div class="panel panel-default">

@@ -72,8 +72,10 @@ function postForm($this, form, url) {
             var type = data.error == 0 ? 'success' : 'danger';
             showMessage(type, data.alert);
 
-            if (type == 'success')
+            if (type == 'success') {
                 closeModalWindow();
+                form.find('label').removeClass('label-danger');
+            }
 
             reloadTables();
 
@@ -112,7 +114,6 @@ function showValidationErrors(errors, form) {
     var errorClass  = 'label-danger';
     form.find('label').removeClass(errorClass);
     $.each(errors, function(key, val) {
-        console.log(key);
         var label = form.find('label[for="'+key+'"]');
         label.addClass(errorClass);
         errors_html += '<br/> - '+val;
