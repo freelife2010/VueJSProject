@@ -24,7 +24,7 @@ class EmailAuthRequest extends Request
     public function rules()
     {
         return [
-            'smtp_host'    => 'required',
+            'smtp_host'    => 'required|host',
             'smtp_port'    => 'required|numeric',
             'from_name'    => 'required',
             'from_address' => 'required',

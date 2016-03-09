@@ -86,6 +86,8 @@ return [
 	|
 	*/
 
+	"host"                 => "The :attribute should be valid",
+
 	'custom' => [
 		'scopes' => [
 			'required' => 'There is should be selected at least one API',

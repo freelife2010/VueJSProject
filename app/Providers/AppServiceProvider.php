@@ -4,6 +4,7 @@ use App\Helpers\SidebarHelper;
 use App\Models\App;
 use Illuminate\Support\ServiceProvider;
 use Queue;
+use Validator;
 
 class AppServiceProvider extends ServiceProvider {
 
@@ -26,6 +27,8 @@ class AppServiceProvider extends ServiceProvider {
         Queue::failing(function ($connection, $job, $data) {
             $job->delete();
         });
+
+		$this->addCustomValidationRules();
 	}
 
 	/**
@@ -45,6 +48,14 @@ class AppServiceProvider extends ServiceProvider {
 		);
 
 		$this->app->register('Darkaonline\L5Swagger\L5SwaggerServiceProvider');
+	}
+
+	private function addCustomValidationRules()
+	{
+		Validator::extend('host', function($attribute, $value, $parameters, $validator) {
+
+			return checkdnsrr($value, 'A');
+		});
 	}
 
 }
