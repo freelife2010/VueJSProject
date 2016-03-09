@@ -30,7 +30,6 @@
         <?= Former::hidden('id');?>
         <?= Former::text('name')->label('Name');?>
         <?= Former::text('email')->label('E-mail');?>
-        <?= Former::text('phone');?>
         @if(isset($model))
             <?= Former::checkbox('set_password')->raw();?>
             <?= Former::label('Set new password')->for('set_password');?>

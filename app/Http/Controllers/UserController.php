@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AppUserRequest;
 use App\Http\Requests\DeleteRequest;
+use App\Http\Requests\DeveloperRequest;
 use App\User;
 
 use App\Http\Requests;
@@ -52,7 +53,7 @@ class UserController extends Controller
         return view('users.create_edit', compact('title'));
     }
 
-    public function postCreate(AppUserRequest $request)
+    public function postCreate(DeveloperRequest $request)
     {
         $result                    = $this->getResult(true, 'Could not create developer');
         $params                    = $request->input();
@@ -76,7 +77,7 @@ class UserController extends Controller
         return view('users.create_edit', compact('title', 'model'));
     }
 
-    public function postEdit(AppUserRequest $request, $id)
+    public function postEdit(DeveloperRequest $request, $id)
     {
         $result = $this->getResult(true, 'Could not edit user');
         $model  = User::find($id);
