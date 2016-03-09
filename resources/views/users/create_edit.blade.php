@@ -5,7 +5,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             setModalWidth(350);
-            $('#phone').inputmask('+9 (999) 999-99-99')
+            $('#phone').inputmask('+9 (999) 999-99-99');
             $('#set_password').click(function() {
                var $password = $('#password');
                 $password.prop('disabled', !$password.prop('disabled'));
@@ -29,6 +29,8 @@
     <div style="margin-left: 15px">
         <?= Former::hidden('id');?>
         <?= Former::text('name')->label('Name');?>
+        <?= Former::text('email')->label('E-mail');?>
+        <?= Former::text('phone');?>
         @if(isset($model))
             <?= Former::checkbox('set_password')->raw();?>
             <?= Former::label('Set new password')->for('set_password');?>
@@ -36,7 +38,6 @@
         @else
             <?= Former::text('password')->type('password')->label('Password');?>
         @endif
-        <?= Former::text('email')->label('E-mail');?>
     </div>
     <div style="clear: both"></div>
     <br/>
