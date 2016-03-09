@@ -100,8 +100,8 @@ class ExcelParser {
 
             if ($user = AppUser::createUser($params)) {
                 $this->saved++;
-//                $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
-//                $this->dispatch(new StoreAPPUserToChatServer($user));
+                $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
+                $this->dispatch(new StoreAPPUserToChatServer($user));
             }
         }
     }
