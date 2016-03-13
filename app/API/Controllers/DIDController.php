@@ -374,7 +374,7 @@ class DIDController extends Controller
     /**
      * @SWG\Get(
      *     path="/api/did/rates",
-     *     summary="Get DID available cities",
+     *     summary="Get DID rates",
      *     tags={"did"},
      *     @SWG\Parameter(
      *         description="Country ISO",

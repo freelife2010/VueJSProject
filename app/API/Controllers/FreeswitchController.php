@@ -106,7 +106,7 @@ class FreeswitchController extends Controller
      *         name="conf_id",
      *         in="query",
      *         required=true,
-     *         type="string"
+     *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="Success result"),
      *     @SWG\Response(response="401", description="Auth required"),
@@ -159,7 +159,7 @@ class FreeswitchController extends Controller
      *         name="conf_id",
      *         in="query",
      *         required=true,
-     *         type="string"
+     *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="Success result"),
      *     @SWG\Response(response="401", description="Auth required"),
@@ -225,7 +225,7 @@ class FreeswitchController extends Controller
      *         name="queue_id",
      *         in="query",
      *         required=true,
-     *         type="string"
+     *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="Success result"),
      *     @SWG\Response(response="401", description="Auth required"),
@@ -278,7 +278,7 @@ class FreeswitchController extends Controller
      *         name="queue_id",
      *         in="query",
      *         required=true,
-     *         type="string"
+     *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="Success result"),
      *     @SWG\Response(response="401", description="Auth required"),
@@ -432,8 +432,8 @@ class FreeswitchController extends Controller
     public function getFreeswitchResponse(Request $request)
     {
         $validator = $this->makeValidator($request, [
-            'Caller-ANI'                => 'required',
-            'Caller-Destination-Number' => 'required'
+            'Caller-ANI'                => 'required|integer',
+            'Caller-Destination-Number' => 'required|integer'
         ]);
         if ($validator->fails()) {
             return $this->validationFailed($validator);
@@ -545,6 +545,7 @@ class FreeswitchController extends Controller
      *     ),
      *     @SWG\Response(response="200", description="XML"),
      *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="404", description="Not found"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
      * @param Request $request
