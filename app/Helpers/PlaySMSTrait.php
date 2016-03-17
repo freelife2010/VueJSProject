@@ -80,11 +80,17 @@ trait PlaySMSTrait
     {
         $params   = $this->getParamString($params);
         $client   = new Client([
-            'base_uri' => $this->smsResource
+            'base_uri' => $this->smsResource,
+            'timeout'  => 3
         ]);
-        $response = $client->request('GET', 'index.php', ['query' => $params]);
+        try {
+            $response = $client->request('GET', 'index.php', ['query' => $params]);
+            $response = (string) $response->getBody();
+        } catch (\Exception $e) {
+            $response = '';
+        }
 
-        return (string) $response->getBody();
+        return (string) $response;
 
     }
 

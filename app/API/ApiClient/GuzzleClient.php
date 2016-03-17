@@ -17,7 +17,7 @@ trait GuzzleClient {
     protected $client = null;
 
     protected $config = [
-        'base_uri' => 'http://104.131.190.229:80',
+        'base_uri' => 'http://104.131.190.229',
         'timeout'  => 2.5
     ];
 
