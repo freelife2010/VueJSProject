@@ -29,7 +29,6 @@ class AppController extends AppBaseController
     public function getList()
     {
         $title    = 'APP List';
-        $this->checkSMSInbox();
         $subtitle = 'Manage APP';
 
         return view('app.index', compact('title', 'subtitle'));
