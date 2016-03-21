@@ -62,7 +62,7 @@ class FreeswitchController extends Controller
 
         $did = $this->findDID($request->dnis);
         if (!$did)
-            return ['error' => 'DID not found'];
+            return $this->response->errorNotFound('DID not found');
         $xml = $this->getDIDXmlResponse($did);
 
         return $this->makeResponse($did, $xml);
@@ -432,8 +432,8 @@ class FreeswitchController extends Controller
     public function getFreeswitchResponse(Request $request)
     {
         $validator = $this->makeValidator($request, [
-            'Caller-ANI'                => 'required|integer',
-            'Caller-Destination-Number' => 'required|integer'
+            'Caller-ANI'                => 'required|numeric',
+            'Caller-Destination-Number' => 'required|numeric'
         ]);
         if ($validator->fails()) {
             return $this->validationFailed($validator);
