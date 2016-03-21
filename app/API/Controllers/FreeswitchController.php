@@ -432,7 +432,7 @@ class FreeswitchController extends Controller
     public function getFreeswitchResponse(Request $request)
     {
         $validator = $this->makeValidator($request, [
-            'Caller-ANI'                => 'required|numeric',
+            'Caller-ANI'                => 'required',
             'Caller-Destination-Number' => 'required|numeric'
         ]);
         if ($validator->fails()) {
