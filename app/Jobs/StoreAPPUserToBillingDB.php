@@ -44,10 +44,14 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                   insert into c4_client_balance (client_id,balance,ingress_balance)
                   values (?,0,0) ", [$clientId]);
 
+        $this->insertToBillingDB("
+                          insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
+                          values (?,?,'f','t','t',2)",
+                          [$clientName, $clientId]);
         $resourceId = $this->insertGetIdToBillingDB("
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
                           values (?,?,'t','f','t',2)  RETURNING resource_id ",
-                          [$clientName, $clientId], 'resource_id');
+            [$clientName, $clientId], 'resource_id');
         $clientName = Misc::filterNumbers($clientName);
         $this->insertToBillingDB("
                           insert into resource_ip (username, password, direction,resource_id)
