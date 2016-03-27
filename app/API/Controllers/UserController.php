@@ -307,7 +307,7 @@ class UserController extends Controller
             'password' => 'required'
         ]);
 
-        $user     = AppUser::find($this->request->userid);
+        $user     = AppUser::findOrFail($this->request->userid);
         $alias    = $user->getUserAlias();
         $resource = $this->getResourceByAliasFromBillingDB($alias);
         $username = rand(100,999).Misc::filterNumbers($alias);
