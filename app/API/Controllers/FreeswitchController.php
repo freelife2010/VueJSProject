@@ -18,6 +18,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use SimpleXMLElement;
 use Symfony\Component\HttpFoundation\Response;
+use Webpatser\Uuid\Uuid;
 
 class FreeswitchController extends Controller
 {
@@ -120,10 +121,11 @@ class FreeswitchController extends Controller
         $validator = $this->makeValidator($request, [
             'dnis'      => 'required',
             'ani'       => 'required',
-            'uuid'      => 'required',
+            'uuid'      => 'required|uuid',
             'conf_name' => 'required',
             'conf_id'   => 'required'
         ]);
+
         if ($validator->fails()) {
             return $this->validationFailed($validator);
         }

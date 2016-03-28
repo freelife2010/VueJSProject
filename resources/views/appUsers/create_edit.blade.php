@@ -65,8 +65,8 @@
         @endif
         <?= Former::text('email')->label('E-mail');?>
         <?= Former::text('phone')->label('Phone');?>
-        <?= Former::checkbox('allow_outgoing_call')->raw();?>
-        <?= Former::label('Allow outgoing call')->for('allow_outgoing_call');?>
+        <?= Former::checkbox('allow_outgoing_call')->style('margin-left: 0')->raw();?>
+        <?= Former::label('Allow outgoing call')->style('margin-left: 20px')->for('allow_outgoing_call');?>
         <br/>
         <did id="caller_id_block" class="hide">
 

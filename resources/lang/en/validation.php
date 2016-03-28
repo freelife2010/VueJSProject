@@ -87,6 +87,7 @@ return [
 	*/
 
 	"host"                 => "The :attribute should be valid",
+	"uuid"                 => "The :attribute should be valid UUID",
 
 	'custom' => [
 		'scopes' => [
