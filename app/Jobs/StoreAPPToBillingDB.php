@@ -9,6 +9,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Log;
 
 class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
 {
@@ -114,6 +115,8 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
     private function checkAliasExistence()
     {
         $exists = $this->getResourceByAliasFromBillingDB($this->app->alias);
+
+        Log::debug('Checking app alias. Found:  '.$exists);
 
         if ($exists) throw new \Exception('Unique violation. App alias already exists');
     }
