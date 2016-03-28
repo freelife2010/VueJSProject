@@ -118,17 +118,13 @@ class FreeswitchController extends Controller
      */
     public function getJoinConference(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'dnis'      => 'required',
             'ani'       => 'required',
             'uuid'      => 'required|uuid',
             'conf_name' => 'required',
-            'conf_id'   => 'required'
+            'conf_id'   => 'required|exists:conference,id'
         ]);
-
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
 
         $did = $this->findDID($request->dnis);
         if (!$did)
@@ -172,14 +168,11 @@ class FreeswitchController extends Controller
      */
     public function getLeaveConference(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'uuid'      => 'required',
             'conf_name' => 'required',
-            'conf_id'   => 'required'
+            'conf_id'   => 'required|exists:conference,id'
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
 
         $enterSession = ConferenceLog::whereUuid($request->uuid)->first();
         if (!$enterSession)
@@ -238,16 +231,13 @@ class FreeswitchController extends Controller
      */
     public function getAgentQueueJoin(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'dnis'       => 'required',
             'ani'        => 'required',
             'uuid'       => 'required',
             'queue_name' => 'required',
-            'queue_id'   => 'required',
+            'queue_id'   => 'required|exists:queue,id',
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
 
         $did = $this->findDID($request->dnis);
         if (!$did)
@@ -291,14 +281,12 @@ class FreeswitchController extends Controller
      */
     public function getAgentQueueLeave(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'uuid'       => 'required',
             'queue_name' => 'required',
-            'queue_id'   => 'required',
+            'queue_id'   => 'required|exists:queue,id',
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
+
         $enterSession = QueueAgentSession::whereUuid($request->uuid)->first();
 
         if (!$enterSession)
