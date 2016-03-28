@@ -93,7 +93,8 @@ class AppController extends AppBaseController
     public function postCreate(AppRequest $request)
     {
         $result = $this->getResult(true, 'Could not create APP');
-
+        if (App::whereName($request->name)->whereAccountId(\Auth::user()->id)->first())
+            return $this->getResult(true, 'App with the same name already exists');
         $app = new App();
         if ($app->createApp($request->input())) {
             $result = $this->tryToStoreInBillingDB($app);
