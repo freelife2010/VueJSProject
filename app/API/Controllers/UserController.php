@@ -319,6 +319,9 @@ class UserController extends Controller
                     'username'    => $username,
                     'password'    => $this->request->password
                 ]);
+            if ($inserted)
+                $inserted = $this->getFluentBilling('resource_ip')
+                            ->whereUsername($username)->first();
         }
 
         return $this->defaultResponse(['result' => $inserted]);
