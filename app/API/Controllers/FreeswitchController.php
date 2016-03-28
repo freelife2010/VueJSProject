@@ -122,7 +122,7 @@ class FreeswitchController extends Controller
             'dnis'      => 'required',
             'ani'       => 'required',
             'uuid'      => 'required|uuid',
-            'conf_name' => 'required',
+            'conf_name' => 'required|string',
             'conf_id'   => 'required|exists:conference,id'
         ]);
 
@@ -169,8 +169,8 @@ class FreeswitchController extends Controller
     public function getLeaveConference(Request $request)
     {
         $this->setValidator([
-            'uuid'      => 'required',
-            'conf_name' => 'required',
+            'uuid'      => 'required|uuid',
+            'conf_name' => 'required|string',
             'conf_id'   => 'required|exists:conference,id'
         ]);
 
@@ -234,8 +234,8 @@ class FreeswitchController extends Controller
         $this->setValidator([
             'dnis'       => 'required',
             'ani'        => 'required',
-            'uuid'       => 'required',
-            'queue_name' => 'required',
+            'uuid'       => 'required|uuid',
+            'queue_name' => 'required|string',
             'queue_id'   => 'required|exists:queue,id',
         ]);
 
@@ -282,8 +282,8 @@ class FreeswitchController extends Controller
     public function getAgentQueueLeave(Request $request)
     {
         $this->setValidator([
-            'uuid'       => 'required',
-            'queue_name' => 'required',
+            'uuid'       => 'required|uuid',
+            'queue_name' => 'required|string',
             'queue_id'   => 'required|exists:queue,id',
         ]);
 

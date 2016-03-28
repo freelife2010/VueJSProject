@@ -26,7 +26,7 @@ class ConferenceAPIController extends FileAPIController
      *         name="user_id",
      *         in="path",
      *         required=true,
-     *         type="string"
+     *         type="integer"
      *     ),
      *      @SWG\Parameter(
      *         description="Conference name",
@@ -45,6 +45,7 @@ class ConferenceAPIController extends FileAPIController
     public function getList($user_id)
     {
         $this->setValidator([
+            'user_id'   => 'required|integer',
             'conf_name' => 'required',
         ]);
         $id = preg_replace('/[^0-9]/', '', $user_id);

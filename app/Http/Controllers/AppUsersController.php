@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Requests\AppUserRequest;
 use App\Http\Requests\DeleteRequest;
 use App\Http\Requests\UploadUsersRequest;
+use App\Jobs\DeleteAPPUserFromBillingDB;
 use App\Jobs\DeleteAPPUserFromChatServer;
 use App\Jobs\DeleteAPPUserToChatServer;
 use App\Jobs\StoreAPPUserToBillingDB;
@@ -98,6 +99,7 @@ class AppUsersController extends AppBaseController
         $result = $this->getResult(true, 'Could not delete user');
         $model  = AppUser::find($id);
         if ($model->delete()) {
+            $this->dispatch(new DeleteAPPUserFromBillingDB($model));
             $this->dispatch(new DeleteAPPUserFromChatServer($model));
             $result = $this->getResult(false, 'User deleted');
         }
