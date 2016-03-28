@@ -116,6 +116,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
     {
         $exists = $this->getResourceByAliasFromBillingDB($this->app->alias);
 
+        Log::debug('Checking app alias. Alias is:  '.$this->app->alias);
         Log::debug('Checking app alias. Found:  '.print_r($exists, true));
 
         if ($exists) throw new \Exception('Unique violation. App alias already exists');
