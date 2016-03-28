@@ -36,6 +36,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
+        $this->checkAliasExistence();
         $currencyId  = $this->getCurrencyIdFromBillingDB();
         $rateTableId = $this->insertGetIdToBillingDB('
                             insert into rate_table
@@ -106,4 +107,15 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
     {
         $this->delete();
     }
+
+    /**
+     * @throws \Exception
+     */
+    private function checkAliasExistence()
+    {
+        $exists = $this->getResourceByAliasFromBillingDB($this->app->alias);
+
+        if ($exists) throw new \Exception('Unique violation. App alias already exists');
+    }
+
 }

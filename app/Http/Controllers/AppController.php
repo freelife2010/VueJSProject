@@ -133,13 +133,16 @@ class AppController extends AppBaseController
 
     public function postDelete(DeleteRequest $request, $id)
     {
-        $result = $this->getResult(true, 'Could not delete APP');
-        $model  = App::find($id);
-        $users  = $model->users;
+        $result   = $this->getResult(true, 'Could not delete APP');
+        $model    = App::find($id);
+        $users    = $model->users;
+
         if ($users->count())
             $result = $this->getResult(true, 'Could not delete APP: It has users');
-        elseif ($model->delete())
+        elseif ($model->delete()) {
+            $model->deleteAppFromBilling();
             $result = $this->getResult(false, 'APP deleted');
+        }
 
         return $result;
     }
@@ -168,9 +171,7 @@ class AppController extends AppBaseController
             $this->dispatch(new StoreAPPToChatServer($app));
         } catch (\Exception $e) {
             $message = $e->getMessage();
-            if (strpos($message, 'Unique violation') !== false)
-                $error = "Error: ".substr($message, strpos($message, 'DETAIL:') + mb_strlen('DETAIL: '));
-            else $error = "Error: $message";
+            $error = "Error: $message";
             $result = $this->getResult(true, $error);
         }
 

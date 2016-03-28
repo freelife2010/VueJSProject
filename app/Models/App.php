@@ -210,4 +210,13 @@ class App extends BaseModel
             ],
         ];
     }
+
+    public function deleteAppFromBilling()
+    {
+        $resource = $this->getResourceByAliasFromBillingDB($this->alias);
+        if ($resource) {
+            $this->getFluentBilling('resource')->whereAlias($this->alias)->delete();
+            $this->getFluentBilling('route_strategy')->whereName($this->name)->delete();
+        }
+    }
 }
