@@ -105,8 +105,8 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->controller('ivr', 'App\API\Controllers\IVRAPIController');
 
     //File api routes
-    $api->get('voicemail/list/{user_id}', 'App\API\Controllers\FileAPIController@getVoicemailList');
-    $api->get('voicemail/file/{user_id}', 'App\API\Controllers\FileAPIController@getVoicemailFile');
+    $api->get('voicemail/list/{id}', 'App\API\Controllers\FileAPIController@getVoicemailList');
+    $api->get('voicemail/file/{id}', 'App\API\Controllers\FileAPIController@getVoicemailFile');
 
     //freeSwitch routes
     $api->get('fs/get_call_handler', 'App\API\Controllers\FreeswitchController@getCallHandler');

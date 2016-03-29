@@ -3,6 +3,7 @@
 namespace App\API\Controllers;
 
 use App\API\APIHelperTrait;
+use App\Models\AppUser;
 use Dingo\Api\Contract\Http\Request;
 use Dingo\Api\Routing\Helpers;
 
@@ -33,7 +34,7 @@ class FileAPIController extends Controller
      *         name="user_id",
      *         in="path",
      *         required=true,
-     *         type="string"
+     *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="File list"),
      *     @SWG\Response(response="401", description="Auth required"),
@@ -44,7 +45,8 @@ class FileAPIController extends Controller
      */
     public function getVoicemailList($user_id)
     {
-        $id = preg_replace('/[^0-9]/', '', $user_id);
+        $id   = preg_replace('/[^0-9]/', '', $user_id);
+        $user = AppUser::findOrFail($id);
         $this->baseDir .= '108.165.2.110/';
         $process = new Process('ls -al ' . $this->baseDir . $id);
         $process->run();
@@ -67,7 +69,7 @@ class FileAPIController extends Controller
      *         name="user_id",
      *         in="path",
      *         required=true,
-     *         type="string"
+     *         type="integer"
      *     ),
      *      @SWG\Parameter(
      *         description="File name",
@@ -93,7 +95,8 @@ class FileAPIController extends Controller
             return $this->validationFailed($validator);
         }
 
-        $id = preg_replace('/[^0-9]/', '', $user_id);
+        $id   = preg_replace('/[^0-9]/', '', $user_id);
+        $user = AppUser::findOrFail($id);
         $this->baseDir .= '108.165.2.110/';
         $path = $this->baseDir . $id . "/$request->name";
 
