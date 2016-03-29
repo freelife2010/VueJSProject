@@ -71,10 +71,9 @@ class UserController extends Controller
     public function createUsers()
     {
         $rules     = $this->getUserCreationInputRules($this->request);
-        $validator = $this->makeValidator($this->request, $rules);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
+        $user      = AppUser::whereEmail($this->request->username)->first();
+        if ($user) return $this->response->errorInternal('The username has already been taken');
+        $this->setValidator($rules);
         $appId    = $this->getAPPIdByAuthHeader();
         $response = $this->createUsersAndGetResponse($this->request, $appId);
 
@@ -154,7 +153,7 @@ class UserController extends Controller
     private function getUserCreationInputRules($request)
     {
         $rules      = [
-            'username'   => 'required|email|unique:users,email',
+            'username'   => 'required|email',
             'password'   => 'required'
         ];
         $input      = $request->input();

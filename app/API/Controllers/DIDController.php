@@ -130,16 +130,18 @@ class DIDController extends Controller
      */
     public function postSearchdid(Request $request)
     {
-        $validator = $this->makeValidator($request, [
-            'state' => 'required'
+        $this->setValidator([
+            'state' => 'required|string'
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
 
         $state       = $request->state;
         $rateCenter  = isset($request->rate_center) ? $request->rate_center : '';
         $did         = new DID();
+        $states      = $did->getStates();
+        if ($states)
+            $states  = array_flip($states);
+        if (!isset($states[$state]))
+            return $this->response->errorNotFound('State not found');
 
         $numbers     = $did->getAvailableNumbers($state, $rateCenter);
         if (!empty($numbers->Numbers)) {

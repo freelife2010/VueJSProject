@@ -413,6 +413,7 @@ class FreeswitchController extends Controller
      *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="XML"),
+     *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
@@ -421,13 +422,10 @@ class FreeswitchController extends Controller
      */
     public function getFreeswitchResponse(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'Caller-ANI'                => 'required',
             'Caller-Destination-Number' => 'required|numeric'
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
 
         APILogger::log($request->all(), 'Freeswitch API request');
 
