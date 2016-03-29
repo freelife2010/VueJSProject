@@ -86,6 +86,7 @@ class DIDController extends Controller
      *     ),
      *     @SWG\Response(response="200", description="State NPA"),
      *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="404", description="State not found"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
      * @param Request $request
@@ -93,14 +94,18 @@ class DIDController extends Controller
      */
     public function postAvailabilitynpanxx(Request $request)
     {
-        $validator = $this->makeValidator($request, [
-            'state' => 'required'
+        $this->setValidator([
+            'state' => 'required|string'
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
 
         $did = new DID();
+        $states = $did->getStates();
+        if ($states) $states = array_flip($states);
+
+        return isset($states[$request->state]) ?
+            $did->getNPA($request->state) :
+            $this->response->errorNotFound('State not found');
+
         return $did->getNPA($request->state);
     }
 
