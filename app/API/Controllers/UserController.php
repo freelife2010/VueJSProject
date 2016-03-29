@@ -50,9 +50,16 @@ class UserController extends Controller
      *     summary="Create APP user(s)",
      *     tags={"users"},
      *      @SWG\Parameter(
+     *         description="App user`s name",
+     *         in="formData",
+     *         name="name",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *      @SWG\Parameter(
      *         description="App user`s email",
      *         in="formData",
-     *         name="username",
+     *         name="email",
      *         required=true,
      *         type="string"
      *     ),
@@ -71,7 +78,7 @@ class UserController extends Controller
     public function createUsers()
     {
         $rules     = $this->getUserCreationInputRules($this->request);
-        $user      = AppUser::whereEmail($this->request->username)->first();
+        $user      = AppUser::whereEmail($this->request->email)->first();
         if ($user) return $this->response->errorInternal('The username has already been taken');
         $this->setValidator($rules);
         $appId    = $this->getAPPIdByAuthHeader();
@@ -90,8 +97,8 @@ class UserController extends Controller
             $entities = [];
             foreach ($input as $userParams) {
                 if (!is_array($userParams)) continue;
-                $params['username'] = $userParams['username'];
-                $params['email']    = $userParams['username'];
+                $params['name'] = $userParams['name'];
+                $params['email']    = $userParams['email'];
                 $params['phone']    = $userParams['phone'];
                 $params['password'] = $userParams['password'];
                 $params['app_id']   = $appId;
@@ -101,8 +108,8 @@ class UserController extends Controller
             }
             $response = $this->defaultResponse(['entities' => $entities]);
         } else {
-            $params['username'] = $input['username'];
-            $params['email']    = $input['username'];
+            $params['name']     = $input['name'];
+            $params['email']    = $input['email'];
             $params['password'] = $input['password'];
             $params['phone']    = $input['phone'];
             $params['app_id']   = $appId;
@@ -117,8 +124,6 @@ class UserController extends Controller
 
     private function createSingleUser($params)
     {
-        $params['name']   = $params['username'];
-        $params['email']  = $params['username'];
         if ($user = AppUser::createUser($params)) {
             $user->raw_password = $params['password'];
             $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
@@ -152,9 +157,10 @@ class UserController extends Controller
 
     private function getUserCreationInputRules($request)
     {
-        $rules      = [
-            'username'   => 'required|email',
-            'password'   => 'required'
+        $rules = [
+            'email'    => 'required|email',
+            'name'     => 'required|string',
+            'password' => 'required'
         ];
         $input      = $request->input();
         if ($this->isMultiDimensionalArray($input)) {
@@ -162,7 +168,7 @@ class UserController extends Controller
             foreach($input as $key => $val)
             {
                 if (!is_array($val)) continue;
-                $rules[$key.'.username'] = 'required|email|unique:users,email';
+                $rules[$key.'.email'] = 'required|email|unique:users,email';
                 $rules[$key.'.password'] = 'required';
             }
         }
