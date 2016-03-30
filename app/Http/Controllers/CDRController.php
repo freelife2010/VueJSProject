@@ -18,19 +18,19 @@ class CDRController extends Controller
      */
     public function getIndex()
     {
-        $title = 'CDR';
-        $subtitle = '';
+        $title     = 'CDR';
+        $subtitle  = '';
+        $callTypes = ['Outgoing calls', 'Incoming calls'];
 
-        return view('cdr.index', compact('title', 'subtitle'));
+        return view('cdr.index', compact('title', 'subtitle', 'callTypes'));
     }
 
-    public function getData()
+    public function getData(Request $request)
     {
         $fields = [
-            'session_id',
+            'time',
+            'trunk_id_origination',
             'resource.alias',
-            'start_time_of_date',
-            'release_tod',
             'ani_code_id',
             'dnis_code_id',
             'call_duration',
@@ -40,8 +40,11 @@ class CDRController extends Controller
             'origination_destination_number',
         ];
 
+        $callType = $request->input('call_type');
+
         $cdr = $this->getFluentBilling('client_cdr')
                     ->select($fields)
+                    ->whereCallType($callType)
                     ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
 
         return Datatables::of($cdr)->make(true);

@@ -14,38 +14,37 @@
                 "processing": true,
                 "serverSide": true,
                 "order": [[ 2, "desc" ]],
-                "ajax": "{{ URL::to('cdr/data/') }}",
+                "ajax": {
+                    url: "{{ URL::to('cdr/data/') }}",
+                    type: "GET",
+                    data : function (d) {
+                        d.call_type = $('#call_type').val();
+                    }
+                },
                 "columns": [
-                    {data: 'session_id', name: 'session_id'},
-                    {data: 'alias', name: 'alias'},
-                    {data: 'start_time_of_date', name: 'start_time_of_date'},
-                    {data: 'release_tod', name: 'release_tod'},
-                    {data: 'ani_code_id', name: 'ani_code_id'},
-                    {data: 'dnis_code_id', name: 'dnis_code_id'},
+                    {data: 'time', name: 'time'},
+                    {data: 'trunk_id_origination', name: 'trunk_id_origination'},
+                    {data: 'alias', name: 'resource.alias'},
+                    {data: 'origination_source_number', name: 'origination_source_number'},
+                    {data: 'origination_destination_number', name: 'origination_destination_number'},
                     {data: 'call_duration', name: 'call_duration'},
                     {data: 'agent_rate', name: 'agent_rate'},
-                    {data: 'agent_cost', name: 'agent_cost'},
-                    {data: 'origination_source_number', name: 'origination_source_number'},
-                    {data: 'origination_destination_number', name: 'origination_destination_number'}
+                    {data: 'agent_cost', name: 'agent_cost'}
                 ],
                 "fnDrawCallback": function() {
                     $('.col-filter').css('width', '16%');
-                    bindRowEvents();
+                    setCallTypeEvents();
                 }
             });
         });
 
-        function bindRowEvents() {
-            var $tr = $('#table').find('tr:not(:first)');
-            $.each($tr, function (key, val) {
-                var $this = $(val);
-                var td = $this.find('td:not(:last)');
-                var id = $this.find('td:first').text();
-                td.click(function(e) {
-//                    openAppDashboard(id);
-                });
+        function setCallTypeEvents()
+        {
+            $('#call_type').change(function() {
+                oTable.ajax.reload();
             });
         }
+
 
     </script>
 @endsection
@@ -54,22 +53,26 @@
     <div class="row">
         <div class="col-lg-12">
             <br/>
+            <div style="width: 30%">
+                <?= Former::horizontal_open() ?>
+                <?= Former::select('call_type')->options($callTypes, 0)->label('Call type')
+                        ->style('width: 150px')?>
+                <?= Former::close()?>
+            </div>
+            <br/>
             <div class="panel panel-default">
                 <div class="panel-body">
                     <table id="table" class="table table-striped table-hover cursor-pointer">
                         <thead>
                         <tr>
-                            <th>Session ID</th>
-                            <th>User alias</th>
-                            <th>Start time</th>
-                            <th>End time</th>
-                            <th>ANI</th>
-                            <th>DNIS</th>
+                            <th>Time</th>
+                            <th>APP</th>
+                            <th>User</th>
+                            <th>Call From</th>
+                            <th>Call To</th>
                             <th>Duration</th>
                             <th>Rate</th>
                             <th>Cost</th>
-                            <th>Source Number</th>
-                            <th>Destination Number</th>
                         </tr>
                         </thead>
                         <tbody></tbody>

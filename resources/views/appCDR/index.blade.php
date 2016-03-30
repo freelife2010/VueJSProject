@@ -36,23 +36,10 @@
                 ],
                 "fnDrawCallback": function() {
                     $('.col-filter').css('width', '16%');
-                    bindRowEvents();
                     setCallTypeEvents();
                 }
             });
         });
-
-        function bindRowEvents() {
-            var $tr = $('#table').find('tr:not(:first)');
-            $.each($tr, function (key, val) {
-                var $this = $(val);
-                var td = $this.find('td:not(:last)');
-                var id = $this.find('td:first').text();
-                td.click(function(e) {
-//                    openAppDashboard(id);
-                });
-            });
-        }
 
         function setCallTypeEvents()
         {
@@ -70,7 +57,7 @@
             <br/>
             <div style="width: 30%">
                 <?= Former::horizontal_open() ?>
-                <?= Former::select('call_type')->options($callTypes, 1)->label('Call type')
+                <?= Former::select('call_type')->options($callTypes, 0)->label('Call type')
                         ->style('width: 150px')?>
                 <?= Former::close()?>
             </div>

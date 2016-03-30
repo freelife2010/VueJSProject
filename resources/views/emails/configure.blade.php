@@ -31,7 +31,7 @@
                 </div>
                 <div class="col-sm-2 pull-left">
                     <?= Former::text('smtp_user')->label('SMTP User') ?>
-                    <?= Former::text('smtp_password')->label('SMTP Password') ?>
+                    <?= Former::text('smtp_password')->type('password')->label('SMTP Password') ?>
                 </div>
                 <div class="clearfix"></div>
                 <br/>
@@ -133,6 +133,14 @@
                                 <em class="fa fa-repeat"></em>
                             </a>
                         </div>
+                    </div>
+                        <br/>
+                    <div class="well well-sm">
+                        <strong>Markers:</strong>
+                        <ul>
+                            <li>__username__</li>
+                            <li>__activation_link__</li>
+                        </ul>
                     </div>
                     <div style="overflow:scroll; height:250px;max-height:250px"
                          id="editor"
