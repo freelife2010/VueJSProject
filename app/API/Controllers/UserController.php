@@ -33,6 +33,7 @@ class UserController extends Controller
      *     summary="List APP users",
      *     tags={"users"},
      *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
      * )
      */

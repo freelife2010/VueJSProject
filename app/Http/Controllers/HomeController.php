@@ -1,5 +1,7 @@
 <?php namespace App\Http\Controllers;
 
+use Auth;
+
 class HomeController extends Controller {
 
 	/*
@@ -12,6 +14,14 @@ class HomeController extends Controller {
 	| controller as you wish. It is just here to get your app started!
 	|
 	*/
+	/**
+	 * HomeController constructor.
+	 */
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
+
 
 	/**
 	 * Show the application dashboard to the user.
@@ -20,7 +30,8 @@ class HomeController extends Controller {
 	 */
 	public function getIndex()
 	{
-		return redirect('app/list');
+		$user = Auth::user();
+		return $user->isAdmin() ? redirect('users') : redirect('app/list');
 	}
 
 }

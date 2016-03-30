@@ -80,9 +80,9 @@ class QueueAPIController extends Controller
     public function postAdd()
     {
         $this->setValidator([
-            'queue_name'            => 'required',
-            'client_waiting_prompt' => 'required',
-            'agent_waiting_prompt'  => 'required'
+            'queue_name'            => 'required|string',
+            'client_waiting_prompt' => 'required|string',
+            'agent_waiting_prompt'  => 'required|string'
         ]);
 
         $appId            = $this->getAPPIdByAuthHeader();

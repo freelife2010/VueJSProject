@@ -39,9 +39,9 @@ Route::controllers([
     'password' => 'Auth\PasswordController'
 ]);
 
+Route::get('/', 'HomeController@getIndex');
 
-Route::group(['middleware' => ['auth', 'csrf']], function() {
-    Route::get('/', 'HomeController@getIndex');
+Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function() {
     Route::get('/edit-profile/{id}', 'UserController@getEditProfile');
     Route::post('/users/edit/{id}', 'UserController@postEdit');
     Route::controller('home', 'HomeController');
@@ -65,7 +65,7 @@ Route::get('/resendEmail', 'Auth\AuthController@resendEmail');
 Route::get('/activate/{code}', 'Auth\AuthController@activateAccount');
 
 //Admin routes
-Route::group(['middleware' => ['admin', 'csrf']], function() {
+Route::group(['middleware' => ['auth','admin', 'csrf']], function() {
     Route::controller('emails', 'EmailController');
     Route::controller('costs', 'CostController');
     Route::controller('revisions', 'RevisionsController');

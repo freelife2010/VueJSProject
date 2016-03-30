@@ -7,6 +7,7 @@ use App\Helpers\BillingTrait;
 use App\Models\App;
 use App\Models\IVR;
 use App\User;
+use Auth;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Http\Request;
 
@@ -70,6 +71,7 @@ class IVRAPIController extends Controller
      *         type="string"
      *     ),
      *     @SWG\Response(response="200", description="Created IVR"),
+     *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
@@ -78,8 +80,8 @@ class IVRAPIController extends Controller
     public function postAdd()
     {
         $this->setValidator([
-            'name' => 'required|string',
-            'alias' => 'required|string'
+            'name' => 'required|alpha',
+            'alias' => 'required|alpha'
         ]);
 
         $appId     = $this->getAPPIdByAuthHeader();
@@ -106,19 +108,26 @@ class IVRAPIController extends Controller
      *         type="string"
      *     ),
      *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="404", description="Not found"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
      * @return bool|mixed
      */
-    public function postDelete() {
+    public function postDelete()
+    {
         $this->setValidator([
-            'alias' => 'required|string'
+            'alias' => 'required|alpha'
         ]);
 
-        $result = IVR::whereAlias($this->request->alias)->delete();
+        $appId  = $this->getAPPIdByAuthHeader();
+        $user   = App::findOrFail($appId)->developer;
+        $result = IVR::whereAlias($this->request->alias)->whereAccountId($user->id)->delete();
 
-        return $this->defaultResponse(['result' => ['deleted' => $result]]);
+        return $result ?
+            $this->defaultResponse(['result' => ['deleted' => $result]]) :
+            $this->response->errorNotFound('IVR alias not found');
     }
 
 }

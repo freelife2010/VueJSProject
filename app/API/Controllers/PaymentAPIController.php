@@ -27,7 +27,7 @@ class PaymentAPIController extends Controller
     /**
      * @SWG\Get(
      *     path="/api/balance",
-     *     summary="Return conference file list",
+     *     summary="Return user balance",
      *     tags={"payments"},
      *     @SWG\Parameter(
      *         description="APP User ID",
@@ -37,6 +37,7 @@ class PaymentAPIController extends Controller
      *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="Balance"),
+     *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
@@ -45,12 +46,9 @@ class PaymentAPIController extends Controller
      */
     public function getBalance(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'userid' => $this->userIdValidationRule
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
         $user = AppUser::find($request->userid);
 
         $balance = 0;
@@ -89,6 +87,7 @@ class PaymentAPIController extends Controller
      *         type="string"
      *     ),
      *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
@@ -97,13 +96,10 @@ class PaymentAPIController extends Controller
      */
     public function postAddCredit(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'userid' => $this->userIdValidationRule,
             'amount' => 'required|numeric'
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
 
         $user = AppUser::find($request->userid);
 
@@ -132,6 +128,7 @@ class PaymentAPIController extends Controller
      *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="Credit history"),
+     *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
@@ -140,12 +137,9 @@ class PaymentAPIController extends Controller
      */
     public function getCreditHistory(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'userid' => $this->userIdValidationRule
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
         $user = AppUser::find($request->userid);
 
         $response = [];
@@ -170,6 +164,7 @@ class PaymentAPIController extends Controller
      *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="Allowed country"),
+     *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
@@ -178,12 +173,9 @@ class PaymentAPIController extends Controller
      */
     public function getAllowedCountry(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'userid' => $this->userIdValidationRule
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
         $user = AppUser::find($request->userid);
 
         $response = [];
@@ -232,6 +224,7 @@ class PaymentAPIController extends Controller
      *         type="string"
      *     ),
      *     @SWG\Response(response="200", description="Rates"),
+     *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
@@ -288,6 +281,7 @@ class PaymentAPIController extends Controller
      *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="Rates"),
+     *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
@@ -298,7 +292,7 @@ class PaymentAPIController extends Controller
         $request = $this->request;
         $this->setValidator([
             'userid' => $this->userIdValidationRule,
-            'number' => 'required'
+            'number' => 'required|integer'
         ]);
 
         $user = AppUser::find($request->userid);
