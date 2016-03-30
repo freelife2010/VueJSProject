@@ -51,7 +51,7 @@
                 $rate_center.prop('disabled', ($outsideNumCheckbox.prop('checked')));
                 $did.prop('disabled', ($outsideNumCheckbox.prop('checked')));
                 $outsideNumber.prop('disabled', !$outsideNumCheckbox.prop('checked'));
-                $did_action.prop('disabled', !$outsideNumCheckbox.prop('checked'));
+                $did_action.prop('disabled', (!$outsideNumCheckbox.prop('checked') && !$state.val()));
             });
 
         }
