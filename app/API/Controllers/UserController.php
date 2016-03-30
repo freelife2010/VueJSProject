@@ -326,9 +326,19 @@ class UserController extends Controller
                     'password'    => $this->request->password,
                     'reg_srv_ip'  => '158.69.203.191'
                 ]);
-            if ($inserted)
+            if ($inserted) {
                 $inserted = $this->getFluentBilling('resource_ip')
-                            ->whereUsername($username)->first();
+                    ->whereUsername($username)->first();
+                $clientId = $this->getClientIdByAliasFromBillingDB($alias);
+                $this->getFluentBilling('resource')->insert([
+                    'alias'          => $username,
+                    'client_id'      => $clientId,
+                    'ingress'        => true,
+                    'egress'         => 'false',
+                    'enough_balance' => true,
+                    'media_type'     => 2
+                ]);
+            }
         }
 
         return $this->defaultResponse(['result' => $inserted]);
