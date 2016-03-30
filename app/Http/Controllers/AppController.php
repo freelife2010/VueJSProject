@@ -10,12 +10,33 @@ use App\Jobs\StoreAPPToBillingDB;
 use App\Jobs\StoreAPPToChatServer;
 use App\Models\App;
 use App\Http\Requests;
+use Illuminate\Http\Request;
 use URL;
 use yajra\Datatables\Datatables;
 
 class AppController extends AppBaseController
 {
     use BillingTrait, PlaySMSTrait;
+
+    /**
+     * AppController constructor.
+     * @param Request $request
+     */
+    public function __construct(Request $request)
+    {
+        parent::__construct($request);
+        $this->middleware('auth');
+        $this->middleware('csrf');
+        $this->middleware('role:developer', [
+            'except' => [
+                'getEdit',
+                'postEdit',
+                'getDelete',
+                'postDelete'
+            ]
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *

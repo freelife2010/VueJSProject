@@ -323,7 +323,8 @@ class UserController extends Controller
                 ->insert([
                     'resource_id' => $resource->resource_id,
                     'username'    => $username,
-                    'password'    => $this->request->password
+                    'password'    => $this->request->password,
+                    'reg_srv_ip'  => '158.69.203.191'
                 ]);
             if ($inserted)
                 $inserted = $this->getFluentBilling('resource_ip')

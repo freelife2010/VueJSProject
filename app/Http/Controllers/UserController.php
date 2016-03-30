@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AppUserRequest;
 use App\Http\Requests\DeleteRequest;
 use App\Http\Requests\DeveloperRequest;
+use App\Models\App;
 use App\User;
 
 use App\Http\Requests;
@@ -38,7 +39,9 @@ class UserController extends Controller
 
         return Datatables::of($users)
             ->add_column('app_count', function ($user) {
-                return $user->apps->count();
+                $totalApps = $user->apps->count();
+                return sprintf('<a href="%s" class="btn btn-sm btn-default">%s</a>',
+                    url('users/app-list/'.$user->id), $totalApps);
             })
             ->add_column('actions', function($user) {
                 return $user->getDefaultActionButtons('users');
@@ -116,5 +119,47 @@ class UserController extends Controller
         unset($model->password);
 
         return view('users.create_edit', compact('title', 'model'));
+    }
+
+    public function getAppList($id)
+    {
+        $model    = User::findOrFail($id);
+        $title    = "$model->email: APP list";
+        $subtitle = 'View developer apps';
+
+        return view('users.app_list', compact('title', 'model', 'subtitle'));
+    }
+
+    public function getApps($userId)
+    {
+        $apps = App::select([
+            'id',
+            'tech_prefix',
+            'name',
+            'presence'])->whereAccountId($userId);
+
+        return Datatables::of($apps)
+            ->add_column('users', function ($app) {
+                $users = $app->users;
+                return count($users->all());
+            })
+            ->add_column('actions', function($app) {
+                return $app->getDefaultActionButtons('app');
+            })
+            ->add_column('daily_active', function($app) {
+                return '';
+            })
+            ->add_column('weekly_active', function($app) {
+                return '';
+            })
+            ->add_column('monthly_active', function($app) {
+                return '';
+            })
+            ->edit_column('presence', function($app) {
+                $icon = $app->presence ? 'fa fa-check' : 'fa fa-remove';
+                return '<em class="'.$icon.'"></em>';
+            })
+            ->setRowId('id')
+            ->make(true);
     }
 }
