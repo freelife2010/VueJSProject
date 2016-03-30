@@ -231,15 +231,12 @@ class CostController extends Controller
     public function postSmsEdit(Request $request, $id)
     {
         $this->validate($request, [
-            'country_id'  => 'required',
+            'country_id'  => 'required|integer',
             'cents_value' => 'required|numeric',
         ]);
         $result = $this->getResult(true, 'Could not edit cost');
         $model  = SMSCost::find($id);
-        if (SMSCost::whereCountryId($request->country_id)->first())
-            $result = $this->getResult(true, 'There is already defined cost for this country. <br/>
-                                                Please, choose another country');
-        elseif ($model->fill($request->input())
+        if ($model->fill($request->input())
             and $model->save()
         )
             $result = $this->getResult(false, 'Cost saved successfully');
