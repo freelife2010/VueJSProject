@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AppUserRequest;
 use App\Http\Requests\DeleteRequest;
 use App\Http\Requests\DeveloperRequest;
+use App\Jobs\DeleteDeveloperFromBillingDB;
 use App\Models\App;
 use App\User;
 
@@ -104,7 +105,10 @@ class UserController extends Controller
     {
         $result = $this->getResult(true, 'Could not delete developer');
         $model  = User::find($id);
-        if ($model->delete()) {
+        $email  = $model->email;
+        $model->email = "{$model->email}.deleted";
+        if ($model->save() and $model->delete()) {
+            $this->dispatch(new DeleteDeveloperFromBillingDB($email));
             $result = $this->getResult(false, 'Developer deleted');
         }
 

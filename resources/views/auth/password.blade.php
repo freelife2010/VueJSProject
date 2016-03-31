@@ -21,7 +21,7 @@
         @endif
         <form role="form" method="POST" data-parsley-validate="">
             <input type="hidden" name="_token" value="{{ csrf_token() }}" >
-            <p class="text-center">Fill with your mail to receive instructions on how to reset your password.</p>
+            <p class="text-center">Enter your mail to receive instructions on how to reset your password.</p>
             <div class="form-group has-feedback">
                 <label for="resetInputEmail1" class="text-muted">Email address</label>
                 <input id="resetInputEmail1" type="email" placeholder="Enter email"

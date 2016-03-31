@@ -14,7 +14,7 @@ return [
 	'anEmailWasSent'	=> 'An email was sent to :email on :date.',
 	'clickHereResend'	=> 'Click here to resend the email.',
 	
-	'whoops'			=> 'Whoops!',
+	'whoops'			=> '',
 	'someProblems'		=> 'There were some problems with your input.',
 	'email'				=> 'E-Mail Address',
 	'password'			=> 'Password',

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades;
+use Lang;
 use Mail;
 use Validator;
 
@@ -150,6 +151,13 @@ class AuthController extends Controller {
 		\Session::flash('message', \Lang::get('auth.unsuccessful') );
 		return redirect('app/list');
 
+	}
+
+	protected function getFailedLoginMessage()
+	{
+		return Lang::has('auth.failed')
+			? Lang::get('auth.failed')
+			: 'These credentials do not match our records.';
 	}
 
 }

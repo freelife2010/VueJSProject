@@ -1,11 +1,17 @@
 @extends('layouts.auth')
-
+@section('styles')
+    <style>
+        .control-label {
+            padding-top: 0 !important;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="panel-body">
         <p class="text-center pv">PASSWORD RESET</p>
         @if (count($errors) > 0)
             <div class="alert alert-danger">
-                <strong>{{ Lang::get('auth.whoops') }}</strong> {{ Lang::get('auth.someProblems') }}<br><br>
+                {{ Lang::get('auth.someProblems') }}<br><br>
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
