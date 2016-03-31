@@ -19,7 +19,7 @@
             <ul class="nav navbar-nav">
                 <li>
                     <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
-                    <a href="#" data-toggle-state="aside-collapsed" class="hidden-xs">
+                    <a href="#" data-toggle-state="aside-collapsed" class="hidden-xs" title="Collapse/expand sidebar">
                         <em class="fa fa-navicon"></em>
                     </a>
                     <!-- Button to show/hide the sidebar on mobile. Visible on mobile only.-->

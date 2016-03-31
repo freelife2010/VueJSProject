@@ -67,9 +67,9 @@
                         <thead>
                         <tr>
                             <th>Session ID</th>
-                            <th>User alias</th>
-                            <th>Start time</th>
-                            <th>End time</th>
+                            <th>User Alias</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
                             <th>ANI</th>
                             <th>DNIS</th>
                             <th>Duration</th>

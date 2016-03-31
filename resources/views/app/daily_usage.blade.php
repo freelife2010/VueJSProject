@@ -42,7 +42,7 @@
                     <table id="table" class="table table-striped table-hover">
                         <thead>
                         <tr>
-                            <th>Report time</th>
+                            <th>Report Time</th>
                             <th>Duration</th>
                             <th>Cost</th>
                             <th>Min</th>

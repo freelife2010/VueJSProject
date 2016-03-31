@@ -46,8 +46,8 @@
                         <tr>
                             <th>Caller ID</th>
                             <th>Queue ID</th>
-                            <th>Queue name</th>
-                            <th>Enter time</th>
+                            <th>Queue Name</th>
+                            <th>Enter Time</th>
                             <th>Leave Time</th>
                             <th>UUID</th>
                         </tr>

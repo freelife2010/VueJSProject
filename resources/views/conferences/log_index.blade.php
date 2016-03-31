@@ -45,8 +45,8 @@
                         <thead>
                         <tr>
                             <th>Conference ID</th>
-                            <th>Conference name</th>
-                            <th>Enter time</th>
+                            <th>Conference Name</th>
+                            <th>Enter Time</th>
                             <th>Leave Time</th>
                             <th>Caller ID</th>
                             <th>UUID</th>

@@ -1,3 +1,8 @@
+$.extend( $.fn.dataTable.defaults, {
+    "language": {
+        "sLengthMenu": "Display _MENU_ Records per page"
+    }
+} );
 
 $(document).ready(function () {
     $('button[data-submit=ajax]').on('click', function(e) {
