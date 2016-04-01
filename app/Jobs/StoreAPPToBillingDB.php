@@ -57,6 +57,8 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
 
         $resourceId      = $this->createResource($rateTableId);
         $routeStrategyId = $this->createRouteStrategy();
+//        $staticRouteId = $this->createStaticRoute();
+//        $this->createRoute($routeStrategyId, $staticRouteId);
         $this->createProducts($resourceId, $routeStrategyId);
     }
 
@@ -110,6 +112,38 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
         $this->insertToBillingDB("
                   INSERT INTO route(digits, static_route_id, route_type, route_strategy_id)
                   VALUES('', ?, 2, ?)", [$productId, $routeStrategyId]);
+    }
+
+    public function createStaticRoute()
+    {
+
+        $staticRouteId = $this->insertGetIdToBillingDB(
+            "insert into product (name,modify_time,
+                                  update_by,code_type,code_deck_id,route_lrn)
+                          values (?, CURRENT_TIMESTAMP (0), 'admin', 0, 1, 1) RETURNING product_id",
+            ["static_route"], 'product_id');
+
+        $this->getFluentBilling('route_strategy')->insert([
+            'name'      => 'plan',
+            'update_at' => \DB::raw('CURRENT_TIMESTAMP (0)'),
+            'update_by' => 'admin'
+        ]);
+
+        return $staticRouteId;
+    }
+
+    public function createRoute($routeStrategyId, $staticRouteId)
+    {
+        $this->getFluentBilling('route')->insert([
+            'route_type_flg"' => 2,
+            'route_strategy_id' => $routeStrategyId,
+            'ani_prefix' => 2,
+            'digits' => 3,
+            'route_type' => 2,
+            'static_route_id' => $staticRouteId,
+            'update_at' => \DB::raw('CURRENT_TIMESTAMP (0)'),
+            'update_by' => 'admin'
+        ]);
     }
 
     public function failed()

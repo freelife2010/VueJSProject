@@ -56,7 +56,7 @@
                             <th>Name</th>
                             <th>Host PIN</th>
                             <th>Guest PIN</th>
-                            <th>Greeting prompt</th>
+                            <th>Greeting Prompt</th>
                             <th>Actions</th>
                         </tr>
                         </thead>

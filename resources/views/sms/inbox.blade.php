@@ -58,7 +58,7 @@
                             <th>Source</th>
                             <th>Destination</th>
                             <th>Message</th>
-                            <th>Datetime</th>
+                            <th>Date Time</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
