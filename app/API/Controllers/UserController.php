@@ -324,15 +324,8 @@ class UserController extends Controller
                     'resource_id' => $resource->resource_id,
                     'username'    => $username,
                     'password'    => $this->request->password,
-                    'reg_type'    => 1,
-                    'direction'   => 0
-                ]);
-            $this->getFluentBilling('resource_ip')
-                ->insert([
-                    'resource_id' => $resource->resource_id,
-                    'reg_type'    => 0,
                     'ip'          => '158.69.203.191',
-                    'port'        => '5060',
+                    'reg_type'    => 2,
                     'direction'   => 0
                 ]);
         }
