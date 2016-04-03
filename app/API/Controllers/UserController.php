@@ -316,7 +316,7 @@ class UserController extends Controller
         $user     = AppUser::findOrFail($this->request->userid);
         $alias    = $user->getUserAlias();
         $resource = $this->getResourceByAliasFromBillingDB($alias);
-        $username = rand(100,999).Misc::filterNumbers($alias);
+        $username = Misc::filterNumbers($alias).rand(100,999);
         $inserted = false;
         if ($resource) {
             $inserted = $this->getFluentBilling('resource_ip')
