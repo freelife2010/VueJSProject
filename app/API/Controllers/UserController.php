@@ -325,7 +325,8 @@ class UserController extends Controller
                     'username'    => $username,
                     'password'    => $this->request->password,
                     'reg_srv_ip'  => '158.69.203.191',
-                    'reg_type'    => 2,
+                    'reg_type'    => 1,
+                    'reg_status'  => 1,
                     'direction'   => 0
                 ]);
         }
