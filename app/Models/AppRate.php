@@ -23,7 +23,9 @@ class AppRate extends BaseModel
     {
         parent::__construct();
         $this->app            = $app;
-        $this->appRateTableId = $this->getRateTableIdByName($this->app->name);
+        $this->appRateTableId = $this->getRateTableIdByName("{$this->app->tech_prefix}_IDD");
+        if (!$this->appRateTableId)
+            $this->appRateTableId = $this->getRateTableIdByName($this->app->tech_prefix);
     }
 
     public function setRateById($rateId)
