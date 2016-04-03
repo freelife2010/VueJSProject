@@ -324,7 +324,7 @@ class UserController extends Controller
                     'resource_id' => $resource->resource_id,
                     'username'    => $username,
                     'password'    => $this->request->password,
-                    'ip'          => '158.69.203.191',
+                    'reg_srv_ip'  => '158.69.203.191',
                     'reg_type'    => 2,
                     'direction'   => 0
                 ]);
