@@ -152,7 +152,7 @@ return [
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
         Former\FormerServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
-//        Yajra\Datatables\DatatablesServiceProvider::class,
+        Yajra\Datatables\DatatablesServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
         LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider::class,
         App\Providers\CustomOAuth2Provider::class,
