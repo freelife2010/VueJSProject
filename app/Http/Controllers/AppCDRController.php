@@ -8,7 +8,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use URL;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class AppCDRController extends AppBaseController
 {

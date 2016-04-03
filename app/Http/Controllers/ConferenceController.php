@@ -9,7 +9,7 @@ use App\Models\ConferenceLog;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use URL;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class ConferenceController extends AppBaseController
 {

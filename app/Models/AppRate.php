@@ -85,4 +85,14 @@ class AppRate extends BaseModel
 
         return $result;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAppRateTableId()
+    {
+        return $this->appRateTableId;
+    }
+
+
 }

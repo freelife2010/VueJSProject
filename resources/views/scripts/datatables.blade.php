@@ -1,5 +1,5 @@
 <!-- Datatables-->
-<script src="{{ asset('vendor/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bower_components/datatables/media/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables-colvis/js/dataTables.colVis.js') }}"></script>
 <script src="{{ asset('vendor/datatable-bootstrap/js/dataTables.bootstrap.js') }}"></script>
 <script src="{{ asset('vendor/datatable-bootstrap/js/dataTables.bootstrapPagination.js') }}"></script>

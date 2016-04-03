@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\BillingTrait;
 
 use App\Http\Requests;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class PaymentController extends Controller
 {

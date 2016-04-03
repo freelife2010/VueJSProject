@@ -25,9 +25,51 @@
                     {data: 'custom_rate', name: 'custom_rate'}
                 ],
                 "fnDrawCallback": function() {
+                    setAppRateBtnEvent();
                 }
             });
         });
+
+        function setAppRateBtnEvent() {
+            $('.add_rate_btn').click(function(e) {
+                e.preventDefault();
+                var $this= $(this);
+                var url = $this.prop('href');
+                var rateInput = $this.prev().find('input');
+                if (!rateInput.val())
+                    rateInput.parent().addClass('has-error');
+                else setAppRate(url, $this, rateInput);
+            });
+        }
+
+        function setAppRate(url, addRateBtn, rateInput) {
+            var rate = rateInput.val();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    rate: rate,
+                    _token: $('.content-wrapper').find('input[name=_token]').val()
+                },
+                beforeSend: function() {
+                    rateInput.prop('disabled', true);
+                    addRateBtn.prop('disabled', true);
+                },
+                success: function(data) {
+                    var type = data.error == 0 ? 'success' : 'danger';
+                    showMessage(type, data.alert);
+                    if (type == 'success')
+                        reloadTables();
+                },
+                error: function(data) {
+                    showDefaultErrorMessage(data);
+                },
+                complete: function() {
+                    rateInput.prop('disabled', false);
+                    addRateBtn.prop('disabled', false);
+                }
+            });
+        }
 
 
     </script>
@@ -55,4 +97,5 @@
             </div>
         </div>
     </div>
+    <?= csrf_field() ?>
 @endsection

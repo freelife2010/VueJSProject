@@ -6,7 +6,7 @@ use App\Helpers\BillingTrait;
 use App\Http\Requests;
 use DB;
 use Illuminate\Http\Request;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class CDRController extends Controller
 {

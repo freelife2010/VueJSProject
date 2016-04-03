@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use URL;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class DIDController extends AppBaseController
 {

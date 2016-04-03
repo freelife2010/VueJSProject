@@ -13,7 +13,7 @@ use App\Models\SMSCost;
 use Former;
 use Illuminate\Http\Request;
 use URL;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class CostController extends Controller
 {

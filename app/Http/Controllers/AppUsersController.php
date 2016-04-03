@@ -19,7 +19,7 @@ use App\Models\DID;
 use Former\Facades\Former;
 use Illuminate\Support\Collection;
 use URL;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class AppUsersController extends AppBaseController
 {

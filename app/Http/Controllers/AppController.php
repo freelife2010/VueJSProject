@@ -12,7 +12,7 @@ use App\Models\App;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use URL;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class AppController extends AppBaseController
 {

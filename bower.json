@@ -51,7 +51,7 @@
     "bootstrap-tagsinput": "0.4.2",
     "bootstrap-filestyle": "1.1.2",
     "parsleyjs": "2.0.7",
-    "datatables": "1.10.5",
+    "datatables": "1.10.11",
     "datatables-colvis": "1.1.1",
     "bootstrap-wysiwyg": "mindmup/bootstrap-wysiwyg",
     "jquery-localize-i18n": "*",
@@ -78,7 +78,8 @@
     "mjolnic-bootstrap-colorpicker": "~2.3.0",
     "jquery-knob": "~1.2.11",
     "cropper": "~0.11.0",
-    "bootstrap-fileinput": "~4.2.7"
+    "bootstrap-fileinput": "~4.2.7",
+    "datatables.net-buttons": "^1.1.2"
   },
   "resolutions": {
     "jquery-ui": "1.11.3",

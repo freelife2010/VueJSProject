@@ -12,7 +12,7 @@ use App\User;
 use App\Http\Requests;
 use Bican\Roles\Models\Role;
 use URL;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class UserController extends Controller
 {

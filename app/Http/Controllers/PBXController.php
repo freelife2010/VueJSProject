@@ -6,7 +6,7 @@ use App\Models\QueueAgentSession;
 
 use App\Http\Requests;
 use App\Models\QueueCallerSession;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class PBXController extends AppBaseController
 {

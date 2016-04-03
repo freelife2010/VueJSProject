@@ -9,7 +9,7 @@ use App\Models\SMS;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use yajra\Datatables\Datatables;
+use Yajra\Datatables\Datatables;
 
 class SMSController extends AppBaseController
 {
