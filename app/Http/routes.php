@@ -80,6 +80,11 @@ $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function ($api) {
     $api->post('apps', 'App\API\Controllers\PublicAPIController@CreateAPP');
+
+    //Grants access token
+    $api->post('token', function() {
+        return Response::json(Authorizer::issueAccessToken());
+    });
 });
 
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
@@ -126,10 +131,6 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->get('getRate', 'App\API\Controllers\PaymentAPIController@getRate');
 });
 
-//Grants access token
-Route::post('api/token', function() {
-    return Response::json(Authorizer::issueAccessToken());
-});
 
 //Freeswitch XML response method
 Route::post('dialplan', '\App\API\Controllers\FreeswitchController@getFreeswitchResponse');
