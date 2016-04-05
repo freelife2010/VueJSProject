@@ -60,10 +60,10 @@ class DIDXMLActionBuilder
                 $actionSet->addAttribute('application', 'set');
                 $actionSet->addAttribute('data', 'skip_greeting=true');
                 $user = AppUser::find($actionParameter);
-                $actionParameter = $user ? $user->email : '';
                 $actionParameter = 'default 108.165.2.110 '.$user->app_id;
                 break;
             case 'Stream Audio':
+                $actionName = 'playback';
                 $this->did->name = 'playback';
                 $actionParameter = "vlc://$actionParameter";
                 break;
@@ -88,6 +88,15 @@ class DIDXMLActionBuilder
             case 'Playback TTS':
                 $actionName = 'playback';
                 $actionParameter = url('/voice/'.$actionParameter);
+                break;
+            case 'Playback URL':
+                $actionName = 'playback';
+                break;
+            case 'Playback File':
+                $actionName = 'playback';
+                break;
+            case 'Hang Up':
+                $actionName = 'hangup';
                 break;
             default:
                 break;
