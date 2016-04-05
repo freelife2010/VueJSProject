@@ -78,7 +78,8 @@ class DIDXMLActionBuilder
                 break;
             case 'Queue':
                 $actionName = 'fifo';
-                $actionParameter .= $this->did->id.' in';
+                $appId      = $this->did->appUser->app_id;
+                $actionParameter .= $this->did->id."-$appId".' in';
                 break;
             case 'Dequeue':
                 $actionName = 'fifo';
