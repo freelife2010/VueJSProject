@@ -10,6 +10,8 @@ namespace App\Helpers;
 
 
 use DB;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Storage;
 
 class Misc
 {
@@ -35,5 +37,20 @@ class Misc
     public static function filterNumbers($string)
     {
         return preg_replace( '/[^0-9]/', '', $string );
+    }
+
+    public static function getFile($storage, $filename)
+    {
+        $file = null;
+        try {
+            Storage::disk($storage)->has($filename);
+            $file = Storage::disk($storage)->get($filename);
+        } catch (FileNotFoundException $e) {
+            \Log::warning('File not found', [
+                'file'    => $filename
+            ]);
+        }
+
+        return $file;
     }
 }

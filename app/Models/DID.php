@@ -7,10 +7,14 @@ use App\Helpers\BillingTrait;
 use Auth;
 use Former\Facades\Former;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
+use Symfony\Component\Process\Process;
 
 class DID extends BaseModel
 {
     use GuzzleClient, SoftDeletes, BillingTrait;
+
+    const ACTION_TTS_ID = 9;
 
     protected $table = 'did';
 
@@ -179,6 +183,8 @@ class DID extends BaseModel
 
         if ($parameters)
             foreach ($parameters as $paramId => $value) {
+                if ($request->action == self::ACTION_TTS_ID)
+                    $value = $this->makePlaybackTTS($value);
                 $didParameter                  = new DIDActionParameters();
                 $didParameter->did_id          = $this->id;
                 $didParameter->action_id       = $request->action;
@@ -216,6 +222,26 @@ class DID extends BaseModel
             $this->getFluentBilling('product_items_resource')->insert($values);
         }
 
+    }
+
+    public function makePlaybackTTS($string)
+    {
+        $playbackHost = 'http://198.245.49.222';
+        $filename     = Str::random(10)."_$this->id.wav";
+        $workDir      = '../storage/app/voice';
+
+        $data = addslashes(json_encode([
+            'speaker_name' => 'opentact',
+            'text'         => $string
+        ]));
+
+        $curlCmd = 'curl -H "Content-Type: application/json" -X POST -d';
+
+        $process = new Process("$curlCmd \"$data\" $playbackHost > $filename", $workDir);
+        $process->run();
+
+
+        return $process->isSuccessful() ? $filename : false;
     }
 
 }

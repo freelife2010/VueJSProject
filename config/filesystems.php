@@ -47,7 +47,10 @@ return [
 			'driver' => 'local',
 			'root'   => storage_path().'/app',
 		],
-
+		'voicemail' => [
+			'driver' => 'local',
+			'root'   => storage_path('app').'/voice',
+		],
 		's3' => [
 			'driver' => 's3',
 			'key'    => 'your-key',

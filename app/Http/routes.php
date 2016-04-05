@@ -40,6 +40,7 @@ Route::controllers([
 ]);
 
 Route::get('/', 'HomeController@getIndex');
+Route::get('/voice/{filename}', 'HomeController@getVoiceMail');
 Route::controller('app', 'AppController');
 
 Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function() {

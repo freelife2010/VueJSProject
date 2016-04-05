@@ -85,6 +85,10 @@ class DIDXMLActionBuilder
                 $actionName = 'fifo';
                 $actionParameter .= $this->did->id.' out';
                 break;
+            case 'Playback TTS':
+                $actionName = 'playback';
+                $actionParameter = url('/voice/'.$actionParameter);
+                break;
             default:
                 break;
         }

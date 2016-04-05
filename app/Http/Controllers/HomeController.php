@@ -1,6 +1,9 @@
 <?php namespace App\Http\Controllers;
 
+use App\Helpers\Misc;
 use Auth;
+use Response;
+use Storage;
 
 class HomeController extends Controller {
 
@@ -32,6 +35,14 @@ class HomeController extends Controller {
 	{
 		$user = Auth::user();
 		return $user->isAdmin() ? redirect('users') : redirect('app/list');
+	}
+
+	public function getVoiceMail($filename)
+	{
+		if (Storage::disk('voicemail')->has($filename))
+			return Response::download(storage_path('app/voice')."/$filename", $filename);
+		else return redirect('/');
+
 	}
 
 }
