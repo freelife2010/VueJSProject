@@ -37,13 +37,26 @@ class AppRate extends BaseModel
     public function getGlobalRates()
     {
         return $this->selectFromBillingDB('
-                                SELECT max(rate) as rate, code_name as destination,
-                                       country, code, rate_id
-                                FROM  rate WHERE rate_table_id = ?
-                                AND ((now() BETWEEN effective_date AND end_date)
-                                    OR end_date IS NULL)
-                                AND country IS NOT NULL
-                                GROUP BY code_name, country, rate_id', [$this->opentactRateTableId]);
+                                SELECT MAX (rate.rate) AS rate,
+                                    rate.code_name AS destination,
+                                    rate.country,
+                                    rate.code,
+                                    rate.rate_id,
+                                    app_rate.rate as app_rate,
+                                    app_rate.rate_id AS app_rate_id
+                                FROM  rate
+                                LEFT JOIN rate AS app_rate
+                                  ON app_rate.rate_table_id = ?
+                                  AND app_rate.code = rate.code
+                                WHERE rate.rate_table_id = ?
+                                AND ((now() BETWEEN rate.effective_date AND rate.end_date)
+                                    OR rate.end_date IS NULL)
+                                AND rate.country IS NOT NULL
+                                GROUP BY
+                                  rate.code_name,
+                                  rate.country,
+                                  rate.rate_id,
+                                  app_rate.rate_id', [$this->appRateTableId, $this->opentactRateTableId]);
     }
 
     public function createRate($originalRateId, $ratePrice)

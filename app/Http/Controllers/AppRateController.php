@@ -51,14 +51,13 @@ class AppRateController extends AppBaseController
                     'title' => 'Set app rate'
                 ];
 
-                $customRate = $appRate->findAppRateByCode($rate->code);
-                if ($customRate) {
-                    $params['url']   = 'app-rates/edit-rate/' . $customRate->rate_id .
+                if ($rate->app_rate) {
+                    $params['url']   = 'app-rates/edit-rate/' . $rate->app_rate_id .
                         '?app=' . $this->app->id;
                     $params['icon']  = 'fa fa-check';
                     $params['class'] = 'btn-success add_rate_btn';
                     $params['title'] = 'Change app rate';
-                    $input->value = round($customRate->rate, 2);
+                    $input->value = round($rate->app_rate, 2);
                 }
 
                 $html = "<div class=\"form-group\">$input</div>";

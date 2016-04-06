@@ -5,6 +5,9 @@
 @include('styles.datatables')
 @section('scripts')
     @include('scripts.datatables')
+    <script src="{{ asset('bower_components/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('bower_components/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('bower_components/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
     <script>
         var oTable;
         var $table = $('#table');
@@ -17,6 +20,20 @@
                 "ajax": {
                     url : '{{ url("/app-rates/data?app=".$APP->id) }}'
                 },
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: 'Export to CSV',
+                        filename: 'rates',
+                        className: 'btn btn-primary',
+                        exportOptions: {
+                            modifier: {
+                                search: 'none'
+                            }
+                        }
+                    }
+                ],
                 "columns": [
                     {data: 'country', name: 'country'},
                     {data: 'destination', name: 'destination'},
