@@ -53,7 +53,7 @@ class AuthController extends Controller {
 	public function validator(array $data)
 	{
 		return Validator::make($data, [
-				'name' => 'required|max:255',
+				'name' => 'required|alpha_num|max:255',
 				'email' => 'required|email|max:255|unique:accounts',
 				'password' => 'required|confirmed|min:6',
 				]);

@@ -47,12 +47,6 @@
                 <span class="fa fa-lock form-control-feedback text-muted"></span>
             </div>
             <div class="clearfix">
-                <div class="checkbox c-checkbox pull-left mt0">
-                    <label>
-                        <input type="checkbox" value="" required name="agreed">
-                        <span class="fa fa-check"></span>I agree with the <a href="#">terms</a>
-                    </label>
-                </div>
             </div>
             <button type="submit" class="btn btn-block btn-primary mt-lg">Create account</button>
         </form>
