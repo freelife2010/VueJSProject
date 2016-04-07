@@ -99,15 +99,19 @@ class AppUser extends BaseModel
         $country   = $this->country;
         $countryId = $country ? $country->equivalent : '000';
 
-        return $this->app->tech_prefix . '-' . $countryId.'-'.$this->tech_prefix;
+        return $this->app->tech_prefix . '-' . $countryId . '-' . $this->tech_prefix;
     }
 
     public function createSipAccount($password)
     {
         $alias    = $this->getUserAlias();
         $resource = $this->getResourceByAliasFromBillingDB($alias);
-        $username = Misc::filterNumbers($alias).rand(100,999);
+        $username = Misc::filterNumbers($alias) . rand(100, 999);
         $inserted = false;
+        \Log::debug('User data', [
+            'alias'    => $alias,
+            'resource' => $resource
+        ]);
         if ($resource) {
             $inserted = $this->getFluentBilling('resource_ip')
                 ->insert([
