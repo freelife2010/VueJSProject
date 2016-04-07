@@ -252,9 +252,7 @@ class AppUsersController extends AppBaseController
             'resource_ip_id',
             'username',
             'password',
-            'ip',
-            'port',
-            'reg_type'
+            'reg_status'
         ];
 
         $appUser     = AppUser::find($request->app_user_id);

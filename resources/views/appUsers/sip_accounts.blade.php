@@ -32,6 +32,7 @@
                         {data: 'resource_ip_id'},
                         {data: 'username'},
                         {data: 'password'},
+                        {data: 'reg_status'},
                         {data: 'actions'}
                     ],
                     "fnDrawCallback": function() {
@@ -81,8 +82,9 @@
                         <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Username</th>
+                            <th>Caller ID</th>
                             <th>Password</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
