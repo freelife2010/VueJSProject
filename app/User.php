@@ -106,7 +106,6 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 				$balanceData  = $paypal->call('GetBalance');
 			} catch (\Exception $e) {
 				$balanceData = [0.0];
-				\Log::alert('Could not connect to Paypal go obtain balance');
 			}
 			if ($balanceData)
 				$balance = reset($balanceData);

@@ -108,10 +108,6 @@ class AppUser extends BaseModel
         $resource = $this->getResourceByAliasFromBillingDB($alias);
         $username = Misc::filterNumbers($alias) . rand(100, 999);
         $inserted = false;
-        \Log::debug('User data', [
-            'alias'    => $alias,
-            'resource' => $resource
-        ]);
         if ($resource) {
             $inserted = $this->getFluentBilling('resource_ip')
                 ->insert([
