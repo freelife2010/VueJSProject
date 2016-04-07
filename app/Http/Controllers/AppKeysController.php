@@ -44,6 +44,9 @@ class AppKeysController extends AppBaseController
             ->add_column('status', function($app) {
                 return $app->isExpired() ? 'Expired' : 'Active';
             })
+            ->add_column('days_left', function($app) {
+                return $app->getExpireStatus();
+            })
             ->add_column('scopes', function($app) {
                 return $app->getScopes();
             })

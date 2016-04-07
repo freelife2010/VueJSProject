@@ -23,6 +23,7 @@
                     {data: 'secret'},
                     {data: 'scopes'},
                     {data: 'created_at'},
+                    {data: 'days_left'},
                     {data: 'status'},
                     {data: 'actions'}
                 ],
@@ -61,6 +62,7 @@
                             <th>Secret</th>
                             <th>Permitted APIs</th>
                             <th>Created at</th>
+                            <th>Days Left</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>

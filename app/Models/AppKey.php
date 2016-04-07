@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Str;
 use Webpatser\Uuid\Uuid;
@@ -31,9 +32,28 @@ class AppKey extends BaseModel
         return ($this->save() and $this->setScopes($scopes));
     }
 
+
+    public function getExpireStatus()
+    {
+        if ($this->isExpired())
+            $status = 'Expired';
+        else $status = $this->getRemainingDays();
+
+        return $status;
+    }
+
     public function isExpired()
     {
         return $this->expire_time < time();
+    }
+
+    public function getRemainingDays()
+    {
+        $currentDate = new Carbon('00:00:00');
+        $expireDate  = Carbon::createFromTimestamp($this->expire_time);
+        $days = $currentDate->diff($expireDate);
+
+        return $days->format('%a');
     }
 
     public function setScopes($scopes)
@@ -43,12 +63,13 @@ class AppKey extends BaseModel
             $scope = DB::table('oauth_scopes')->whereId($scope)->first();
             if ($scope and !DB::table('oauth_client_scopes')->insert(
                     [
-                        'client_id' => $this->id,
-                        'scope_id' => $scope->id,
+                        'client_id'  => $this->id,
+                        'scope_id'   => $scope->id,
                         'created_at' => date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s')
                     ]
-                ))  $result = false;
+                )
+            ) $result = false;
         }
 
         return $result;
@@ -58,8 +79,8 @@ class AppKey extends BaseModel
     {
         $html   = '';
         $scopes = DB::table('oauth_client_scopes')->select(['oauth_scopes.description', 'oauth_scopes.id'])
-                    ->join('oauth_scopes', 'oauth_scopes.id', '=', 'oauth_client_scopes.scope_id')
-                    ->whereClientId($this->id)->get();
+            ->join('oauth_scopes', 'oauth_scopes.id', '=', 'oauth_client_scopes.scope_id')
+            ->whereClientId($this->id)->get();
 
         foreach ($scopes as $scope) {
             $html .= "$scope->description ($scope->id)<br/>";
