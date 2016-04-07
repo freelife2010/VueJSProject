@@ -17,6 +17,7 @@
                     url : "/costs/did-data"
                 },
                 "columns": [
+                    {data: 'country_id'},
                     {data: 'state'},
                     {data: 'rate_center'},
                     {data: 'value'},
@@ -55,6 +56,7 @@
                     <table id="table" class="table table-striped table-hover">
                         <thead>
                         <tr>
+                            <th>Country</th>
                             <th>State</th>
                             <th>Rate Center</th>
                             <th>Value (USD)</th>

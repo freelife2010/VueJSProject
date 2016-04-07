@@ -24,11 +24,11 @@ class CostController extends Controller
      */
     public function getDid()
     {
-        $title    = 'DID cost';
-        $subtitle = 'Modify DID cost';
-        $defaultCost = DIDCost::whereState('default')->first();
+        $title                = 'DID cost';
+        $subtitle             = 'Modify DID cost';
+        $defaultCost          = DIDCost::whereState('default')->first();
         $defaultButtonOptions = [
-            'type' => 'btn-default',
+            'type'  => 'btn-default',
             'label' => 'Set default cost'
         ];
         $defaultButtonOptions = !$defaultCost ?
@@ -45,9 +45,13 @@ class CostController extends Controller
 
 
         return Datatables::of($didCosts)
+            ->edit_column('country_id', function ($cost) {
+                if ($cost->country) return $cost->country->name;
+            })
             ->add_column('actions', function ($cost) {
-                $urls['edit'] = url('costs/did-edit/'.$cost->id);
-                $urls['delete'] = url('costs/did-delete/'.$cost->id);
+                $urls['edit']   = url('costs/did-edit/' . $cost->id);
+                $urls['delete'] = url('costs/did-delete/' . $cost->id);
+
                 return $cost->getDefaultActionButtons('', $urls);
             })
             ->make(true);
@@ -55,12 +59,20 @@ class CostController extends Controller
 
     public function getDidCreate()
     {
-        $title = 'Set new cost';
-        $did      = new DID();
-        $states   = $did->getStates();
-        $states   = array_combine($states, $states);
+        $title     = 'Set new cost';
+        $countries = Country::getCountryList();
 
-        return view('costs.create_edit_did', compact('title', 'states'));
+        return view('costs.create_edit_did', compact('title', 'countries'));
+    }
+
+    public function getDidStates(Request $request)
+    {
+        $did    = new DID();
+        $states = $did->getStates();
+        $states = array_combine($states, $states);
+
+        return Former::select('state')->options($states)->placeholder('Select state');
+
     }
 
     public function getDidCities(Request $request)
@@ -70,19 +82,18 @@ class CostController extends Controller
         $rateCenters = $did->getNPA($state);
         $rateCenters = $did->getList($rateCenters, 'RateCenter');
 
-        return Former::select('rate_center')->options($rateCenters)->raw();
+        return Former::select('rate_center')->options($rateCenters);
 
     }
 
     public function postDidCreate(Request $request)
     {
         $this->validate($request, [
-            'state'       => 'required',
-            'rate_center' => 'required',
-            'value'       => 'required|numeric'
+            'country_id' => 'required',
+            'value'      => 'required|numeric'
         ]);
-        $result = $this->getResult(true, 'Could not set new cost');
-        $params = $request->all();
+        $result                = $this->getResult(true, 'Could not set new cost');
+        $params                = $request->all();
         $params['rate_center'] = $params['rate_center'] != 0 ?: 'All';
         if ($didCost = DIDCost::create($params)) {
             $result = $this->getResult(false, 'New cost has been set');
@@ -93,23 +104,26 @@ class CostController extends Controller
 
     public function getDidEdit($id)
     {
-        $title  = 'Edit cost';
-        $model  = DIDCost::find($id);
-        $did    = new DID();
-        $states = $did->getStates();
+        $title     = 'Edit cost';
+        $model     = DIDCost::find($id);
+        $countries = Country::getCountryList();
+        $did       = new DID();
+        $states    = $did->getStates();
+        $states    = array_combine($states, $states);
 
-        return view('costs.create_edit_did', compact('title', 'model', 'states'));
+        return view('costs.create_edit_did', compact('title', 'model', 'countries', 'states'));
     }
 
     public function postDidEdit(Request $request, $id)
     {
         $this->validate($request, [
-            'state'       => 'required',
-            'rate_center' => 'required',
-            'value'       => 'required|numeric'
+            'country_id' => 'required',
+            'value'      => 'required|numeric'
         ]);
-        $result = $this->getResult(true, 'Could not edit cost');
-        $model  = DIDCost::find($id);
+        $result             = $this->getResult(true, 'Could not edit cost');
+        $model              = DIDCost::find($id);
+        $model->state       = $request->state ?: '';
+        $model->rate_center = $request->rate_center ?: '';
         if ($model->fill($request->input())
             and $model->save()
         )
@@ -149,13 +163,13 @@ class CostController extends Controller
     public function postDidDefaultCreate(Request $request)
     {
         $this->validate($request, [
-            'value'       => 'required|numeric'
+            'value' => 'required|numeric'
         ]);
-        $result = $this->getResult(true, 'Could not set default cost');
-        $params = $request->all();
-        $params['state'] = 'default';
+        $result                = $this->getResult(true, 'Could not set default cost');
+        $params                = $request->all();
+        $params['state']       = 'default';
         $params['rate_center'] = 'default';
-        $defaultCost = DIDCost::whereState('default')->first();
+        $defaultCost           = DIDCost::whereState('default')->first();
         if ($defaultCost)
             $defaultCost->delete();
 
@@ -186,8 +200,9 @@ class CostController extends Controller
                 return $cost->country ? $cost->country->code : '';
             })
             ->add_column('actions', function ($cost) {
-                $urls['edit'] = url('costs/sms-edit/'.$cost->id);
-                $urls['delete'] = url('costs/sms-delete/'.$cost->id);
+                $urls['edit']   = url('costs/sms-edit/' . $cost->id);
+                $urls['delete'] = url('costs/sms-delete/' . $cost->id);
+
                 return $cost->getDefaultActionButtons('', $urls);
             })
             ->make(true);

@@ -5,22 +5,31 @@
     <script type="text/javascript">
         $(document).ready(function() {
             setModalWidth(400);
-            var $state = $('#state');
+            var country = $('#country_id');
             var $value = $('#value');
-            $state.change(function() {
-                var $rate_center = $('#rate_center');
-                $rate_center.prop('disabled', true);
+            var usStates = $('#us_states');
+            var usRateCenterDiv = $('#us_rate_center');
+            bindStateEvent();
+            country.change(function() {
                 $value.prop('disabled', true);
-                var ajaxCallback = function(data) {
-                    $rate_center.replaceWith(data);
-                    $rate_center.prop('disabled', false);
+                if (country.val() == 1)
+                    getDidStates();
+                else {
+                    usStates.html('');
+                    usRateCenterDiv.html('');
                     $value.prop('disabled', false);
+                }
+            });
+
+            function getDidStates() {
+                var ajaxCallback = function(data) {
+                    usStates.html(data);
+                    bindStateEvent();
                 };
                 var params = {
-                    'state': $('#state option:selected').text()
                 };
-                ajaxGetData('{{ url('costs/did-cities') }}', params, ajaxCallback)
-            });
+                ajaxGetData('{{ url('costs/did-states') }}', params, ajaxCallback)
+            }
 
             function ajaxGetData(url, params, success) {
                 $.ajax({
@@ -30,7 +39,26 @@
                     success: success
                 })
             }
+
+            function bindStateEvent() {
+                var $state = $('#state');
+                var $value = $('#value');
+                $state.change(function () {
+                    var $rate_center = usRateCenterDiv.find('select');
+                    $rate_center.prop('disabled', true);
+                    $value.prop('disabled', true);
+                    var ajaxCallback = function (data) {
+                        usRateCenterDiv.html(data);
+                        $value.prop('disabled', false);
+                    };
+                    var params = {
+                        'state': $('#state option:selected').text()
+                    };
+                    ajaxGetData('{{ url('costs/did-cities') }}', params, ajaxCallback)
+                });
+            }
         });
+
 
     </script>
 @stop
@@ -49,12 +77,21 @@
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
         <?= Former::hidden('id');?>
-        <?= Former::select('state')->options($states)->placeholder('Select state');?>
-        @if (isset($model))
-            <?= Former::text('rate_center')->readonly();?>
-        @else
-            <?= Former::select('rate_center')->disabled();?>
-        @endif
+        <?= Former::select('country_id')
+                ->label('Country')
+                ->options($countries)
+                ->placeholder('Select country');?>
+        <div id="us_states">
+            @if (isset($model) and $model->country_id == \App\Models\Country::COUNTRY_US_ID)
+                <?= Former::select('state')->options($states, $states[$model->state]);?>
+            @endif
+        </div>
+        <div id="us_rate_center">
+            @if (isset($model) and $model->country_id == \App\Models\Country::COUNTRY_US_ID)
+                <?= Former::text('rate_center')->readonly();?>
+            @endif
+        </div>
+        <br/>
         <?php
             $former = Former::text('value')->label('Value (USD)');
 
