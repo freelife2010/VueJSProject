@@ -32,6 +32,8 @@
                 <span class="fa fa-envelope form-control-feedback text-muted"></span>
             </div>
             <button type="submit" class="btn btn-danger btn-block">Reset</button>
+            <a href="{{ url('/') }}"
+               class="btn btn-block btn-default">Back</a>
         </form>
     </div>
 @endsection
