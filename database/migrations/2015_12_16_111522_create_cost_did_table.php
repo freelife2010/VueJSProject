@@ -14,8 +14,8 @@ class CreateCostDidTable extends Migration
     {
         Schema::create('costs_did', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->string('state');
-            $table->string('rate_center');
+            $table->string('state')->nullable();
+            $table->string('rate_center')->nullable();
             $table->integer('value', false, true)->default(0);
             $table->timestamps();
 

@@ -41,7 +41,7 @@ class CostController extends Controller
 
     public function getDidData()
     {
-        $didCosts = DIDCost::where('state', '!=', 'default')->where('rate_center', '!=', 'default')->get();
+        $didCosts = DIDCost::where('state', '!=', 'default')->where('rate_center', '!=', 'default');
 
 
         return Datatables::of($didCosts)
@@ -94,7 +94,10 @@ class CostController extends Controller
         ]);
         $result                = $this->getResult(true, 'Could not set new cost');
         $params                = $request->all();
-        $params['rate_center'] = $params['rate_center'] != 0 ?: 'All';
+        $params['state']       = $request->state ?: '';
+        $params['rate_center'] = $request->rate_center ?: '';
+        if ($request->has('rate_center') and $request->rate_center == 0)
+            $params['rate_center'] = 'All';
         if ($didCost = DIDCost::create($params)) {
             $result = $this->getResult(false, 'New cost has been set');
         }
