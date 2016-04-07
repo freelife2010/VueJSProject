@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\BillingTrait;
+use App\Helpers\Misc;
 use App\Jobs\Job;
 use Illuminate\Contracts\Bus\SelfHandling;
 
@@ -32,8 +33,14 @@ class DeleteAPPUserFromBillingDB extends Job implements SelfHandling
     public function handle()
     {
         $clientName = $this->user->getUserAlias();
-        $this->getFluentBilling('client')->whereName($clientName)->delete();
+        $client = $this->getFluentBilling('client')->whereName($clientName)->first();
+        if ($client) {
+            $this->getFluentBilling('c4_client_balance')->whereClientId($client->client_id)->delete();
+            $this->getFluentBilling('client')->whereName($clientName)->first();
+        }
         $this->getFluentBilling('resource')->whereAlias($clientName)->delete();
         $this->getFluentBilling('resource')->whereAlias("{$clientName}_DID")->delete();
+        $clientName = Misc::filterNumbers($clientName);
+        $this->getFluentBilling('resource_ip')->whereUsername($clientName)->delete();
     }
 }
