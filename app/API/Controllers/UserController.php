@@ -314,22 +314,7 @@ class UserController extends Controller
         ]);
 
         $user     = AppUser::findOrFail($this->request->userid);
-        $alias    = $user->getUserAlias();
-        $resource = $this->getResourceByAliasFromBillingDB($alias);
-        $username = Misc::filterNumbers($alias).rand(100,999);
-        $inserted = false;
-        if ($resource) {
-            $inserted = $this->getFluentBilling('resource_ip')
-                ->insert([
-                    'resource_id' => $resource->resource_id,
-                    'username'    => $username,
-                    'password'    => $this->request->password,
-                    'reg_srv_ip'  => '158.69.203.191',
-                    'reg_type'    => 1,
-                    'reg_status'  => 1,
-                    'direction'   => 0
-                ]);
-        }
+        $inserted = $user->createSipAccount($this->request->password);
 
         return $this->defaultResponse(['result' => $inserted]);
 

@@ -179,6 +179,11 @@ class App extends BaseModel
                 'url'        => 'sms/inbox'
             ],
             [
+                'name'       => 'SIP Accounts',
+                'icon'       => 'icon-earphones',
+                'url'        => 'app-users/sip'
+            ],
+            [
                 'name'       => 'API keys',
                 'icon'       => 'icon-key',
                 'url'        => 'app-keys/index',

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Helpers\BillingTrait;
 use App\Helpers\Misc;
 use Auth;
 use File;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Validator;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -13,7 +13,7 @@ use Webpatser\Uuid\Uuid;
 
 class AppUser extends BaseModel
 {
-    use SoftDeletes, RevisionableTrait;
+    use SoftDeletes, RevisionableTrait, BillingTrait;
 
     public function app()
     {
@@ -100,6 +100,28 @@ class AppUser extends BaseModel
         $countryId = $country ? $country->equivalent : '000';
 
         return $this->app->tech_prefix . '-' . $countryId.'-'.$this->tech_prefix;
+    }
+
+    public function createSipAccount($password)
+    {
+        $alias    = $this->getUserAlias();
+        $resource = $this->getResourceByAliasFromBillingDB($alias);
+        $username = Misc::filterNumbers($alias).rand(100,999);
+        $inserted = false;
+        if ($resource) {
+            $inserted = $this->getFluentBilling('resource_ip')
+                ->insert([
+                    'resource_id' => $resource->resource_id,
+                    'username'    => $username,
+                    'password'    => $password,
+                    'reg_srv_ip'  => '158.69.203.191',
+                    'reg_type'    => 1,
+                    'reg_status'  => 1,
+                    'direction'   => 0
+                ]);
+        }
+
+        return $inserted;
     }
 
 

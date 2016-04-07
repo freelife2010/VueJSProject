@@ -38,9 +38,8 @@ class BaseModel extends Model
         return $this->getButtonsHtml($urls, $except);
     }
 
-    public function getActionButtonsWithAPP($controller, $app, $except = [])
+    public function getActionButtonsWithAPP($controller, $app, $except = [], $urls = [])
     {
-        $urls     = [];
         $getParam = '?app=' . $app->id;
         $this->getActionUrls($urls, $controller, $getParam);
 
