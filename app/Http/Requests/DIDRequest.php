@@ -26,7 +26,6 @@ class DIDRequest extends Request
     {
         $rules = [
             'did'            => 'required_without:outside_number',
-            'outside_number' => 'required_without:did',
             'owned_by'       => 'required',
             'action'         => 'required'
         ];
