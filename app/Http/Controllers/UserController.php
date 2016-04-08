@@ -23,8 +23,8 @@ class UserController extends Controller
      */
     public function getIndex()
     {
-        $title     = 'Developers list';
-        $subtitle  = 'See developers';
+        $title    = 'Developers list';
+        $subtitle = 'See developers';
 
         return view('users.index', compact('title', 'subtitle'));
     }
@@ -41,10 +41,11 @@ class UserController extends Controller
         return Datatables::of($users)
             ->add_column('app_count', function ($user) {
                 $totalApps = $user->apps->count();
+
                 return sprintf('<a href="%s" class="btn btn-sm btn-default">%s</a>',
-                    url('users/app-list/'.$user->id), $totalApps);
+                    url('users/app-list/' . $user->id), $totalApps);
             })
-            ->add_column('actions', function($user) {
+            ->add_column('actions', function ($user) {
                 return $user->getDefaultActionButtons('users');
             })
             ->make(true);
@@ -59,10 +60,10 @@ class UserController extends Controller
 
     public function postCreate(DeveloperRequest $request)
     {
-        $result                    = $this->getResult(true, 'Could not create developer');
-        $params                    = $request->input();
-        $params['active']          = true;
-        $params['resent']          = 0;
+        $result           = $this->getResult(true, 'Could not create developer');
+        $params           = $request->input();
+        $params['active'] = true;
+        $params['resent'] = 0;
         if ($user = User::create($params)) {
             $developerRole = Role::whereSlug('developer')->first();
             $user->attachRole($developerRole);
@@ -97,15 +98,16 @@ class UserController extends Controller
     {
         $title = 'Delete developer ?';
         $model = User::find($id);
-        $url   = Url::to('users/delete/'.$model->id);
+        $url   = Url::to('users/delete/' . $model->id);
+
         return view('users.delete', compact('title', 'model', 'url'));
     }
 
     public function postDelete(DeleteRequest $request, $id)
     {
-        $result = $this->getResult(true, 'Could not delete developer');
-        $model  = User::find($id);
-        $email  = $model->email;
+        $result       = $this->getResult(true, 'Could not delete developer');
+        $model        = User::find($id);
+        $email        = $model->email;
         $model->email = "{$model->email}.deleted";
         if ($model->save() and $model->delete()) {
             $this->dispatch(new DeleteDeveloperFromBillingDB($email));
@@ -140,30 +142,50 @@ class UserController extends Controller
             'id',
             'tech_prefix',
             'name',
-            'presence'])->whereAccountId($userId);
+            'presence'
+        ])->whereAccountId($userId);
 
         return Datatables::of($apps)
             ->add_column('users', function ($app) {
                 $users = $app->users;
+
                 return count($users->all());
             })
-            ->add_column('actions', function($app) {
+            ->add_column('actions', function ($app) {
                 return $app->getDefaultActionButtons('app');
             })
-            ->add_column('daily_active', function($app) {
+            ->add_column('daily_active', function ($app) {
                 return '';
             })
-            ->add_column('weekly_active', function($app) {
+            ->add_column('weekly_active', function ($app) {
                 return '';
             })
-            ->add_column('monthly_active', function($app) {
+            ->add_column('monthly_active', function ($app) {
                 return '';
             })
-            ->edit_column('presence', function($app) {
+            ->add_column('did', function ($app) {
+                $totalDids = $app->did->count();
+
+                return sprintf('<a href="%s" class="btn btn-sm btn-default">%s</a>',
+                    url('users/did-list/' . $app->id), $totalDids);
+            })
+            ->edit_column('presence', function ($app) {
                 $icon = $app->presence ? 'fa fa-check' : 'fa fa-remove';
-                return '<em class="'.$icon.'"></em>';
+
+                return '<em class="' . $icon . '"></em>';
             })
             ->setRowId('id')
             ->make(true);
+    }
+
+    public function getDidList($id)
+    {
+        $APP      = App::findOrFail($id);
+        $title    = 'DID List';
+        $subtitle = 'Manage DIDs';
+
+        return view('users.did_list', compact(
+            'APP', 'title', 'subtitle'
+        ));
     }
 }

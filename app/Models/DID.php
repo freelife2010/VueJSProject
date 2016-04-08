@@ -38,9 +38,19 @@ class DID extends BaseModel
         'token' => ''
     ];
 
+    protected function app()
+    {
+        return $this->belongsTo('App\Models\App', 'app_id');
+    }
+
     protected function appUser()
     {
         return $this->belongsTo('App\Models\AppUser', 'owned_by');
+    }
+
+    protected function developer()
+    {
+        return $this->belongsTo('App\User', 'account_id');
     }
 
     public function actionParameters() {

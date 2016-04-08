@@ -16,6 +16,18 @@ use Yajra\Datatables\Datatables;
 
 class DIDController extends AppBaseController
 {
+
+    public function __construct(Request $request)
+    {
+        parent::__construct($request);
+        $this->middleware('auth');
+        $this->middleware('csrf');
+        $this->middleware('role:developer', [
+            'except' => [
+                'getData'
+            ]
+        ]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -34,6 +46,7 @@ class DIDController extends AppBaseController
     {
         $selectFields = [
             'did.id',
+            'app_id',
             'account_id',
             'owned_by',
             'action_id',
@@ -51,6 +64,13 @@ class DIDController extends AppBaseController
         return Datatables::of($DIDs)
             ->add_column('actions', function($did) {
                 return $did->getActionButtonsWithAPP('did', $this->app);
+            })
+            ->add_column('developer', function($did) {
+                return $did->developer ? $did->developer->email : '';
+            })
+            ->add_column('app', function($did) {
+                $app = $did->app;
+                return $did->app ? $did->app->name : '';
             })
             ->edit_column('owned_by', function($did) {
                 return $did->appUser ? $did->appUser->email : '';

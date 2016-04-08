@@ -42,12 +42,12 @@ Route::controllers([
 Route::get('/', 'HomeController@getIndex');
 Route::get('/voice/{filename}', 'HomeController@getVoiceMail');
 Route::controller('app', 'AppController');
+Route::controller('did', 'DIDController');
 
 Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function() {
     Route::get('/edit-profile/{id}', 'UserController@getEditProfile');
     Route::post('/users/edit/{id}', 'UserController@postEdit');
     Route::controller('home', 'HomeController');
-    Route::controller('did', 'DIDController');
     Route::controller('payments', 'PaymentController');
     Route::controller('app-users', 'AppUsersController');
     Route::controller('app-keys', 'AppKeysController');

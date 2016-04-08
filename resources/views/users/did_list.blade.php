@@ -4,7 +4,7 @@
 @endsection
 @include('styles.datatables')
 @section('scripts')
-   @include('scripts.datatables')
+    @include('scripts.datatables')
     <script>
         var oTable;
         var $table = $('#table');
@@ -12,20 +12,18 @@
             oTable = $table.DataTable({
                 "bPaginate": true,
                 "processing": false,
-                "order": [[ 2, "desc" ]],
+                "order": [[ 0, "desc" ]],
                 "ajax": {
-                    url : "{{url('/users/apps/'.$model->id)}}"
+                    url : '{{ url("did/data?app=".$APP->id) }}'
                 },
                 "columns": [
-                    {data: 'tech_prefix'},
-                    {data: 'name'},
-                    {data: 'users'},
-                    {data: 'daily_active'},
-                    {data: 'weekly_active'},
-                    {data: 'monthly_active'},
+                    {data: 'id'},
                     {data: 'did'},
-                    {data: 'presence'},
-                    {data: 'actions'}
+                    {data: 'created_at'},
+                    {data: 'developer'},
+                    {data: 'app'},
+                    {data: 'owned_by'},
+                    {data: 'name'}
                 ],
                 "fnDrawCallback": function() {
                 }
@@ -45,14 +43,12 @@
                         <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Name</th>
-                            <th>Users</th>
-                            <th>Daily active</th>
-                            <th>Weekly active</th>
-                            <th>Monthly active</th>
-                            <th>DIDs</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>DID Number</th>
+                            <th>Activation Time</th>
+                            <th>Developer</th>
+                            <th>APP</th>
+                            <th>APP User</th>
+                            <th>Dialplan Action</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
