@@ -1,5 +1,12 @@
 @extends('partials.modal')
-@section('title', "<em class=\"icon-trash\"></em>&nbsp;  $title")
+@section('title')
+    <em class="icon-trash"></em>&nbsp;  {{$title}}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setModalWidth(220);
+        });
+    </script>
+@stop
 @section('modal_body')
     <form id="deleteForm" class="form-horizontal" method="post"
           action="{{ URL::to($url) }}"

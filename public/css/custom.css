@@ -50,3 +50,14 @@
 .th-revision th{
     padding: 15px !important;
 }
+
+.table>thead>tr>th {
+    padding: 14px 11px;
+}
+.uk-notify {
+    width: initial;
+}
+
+.uk-notify-message > div {
+    display: inline-block;
+}

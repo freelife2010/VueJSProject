@@ -56,9 +56,14 @@
         <div class="col-lg-12">
             <br/>
             <div style="width: 30%">
-                <?= Former::horizontal_open() ?>
-                <?= Former::select('call_type')->options($callTypes, 0)->label('Call type')
-                        ->style('width: 150px')?>
+                <div class="form-group">
+                    <?= Former::horizontal_open() ?>
+                    <div class="row">
+                        <label for="call_type" class="col-sm-3">Call type</label>
+                        <?= Former::select('call_type')->options($callTypes, 0)
+                                ->style('width: 150px')->raw()?>
+                    </div>
+                </div>
                 <?= Former::close()?>
             </div>
             <div class="panel panel-default">

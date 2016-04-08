@@ -140,7 +140,7 @@ class AppController extends AppBaseController
         if ($model->fill($request->input())
             and $model->save()
         )
-            $result = $this->getResult(false, 'App saved successfully');
+            $result = $this->getResult(false, "App [$model->name] saved successfully");
 
         return $result;
     }
@@ -150,7 +150,7 @@ class AppController extends AppBaseController
         $title = 'Delete APP ?';
         $model = App::find($id);
         $url   = Url::to('app/delete/'.$model->id);
-        return view('appUsers.delete', compact('title', 'model', 'url'));
+        return view('app.delete', compact('title', 'model', 'url'));
     }
 
     public function postDelete(DeleteRequest $request, $id)
@@ -187,7 +187,7 @@ class AppController extends AppBaseController
 
     protected function tryToStoreInBillingDB($app)
     {
-        $result = $this->getResult(false, 'App created successfully');
+        $result = $this->getResult(false, "App [$app->name] created successfully");
         try {
             $this->dispatch(new StoreAPPToBillingDB($app));
             $this->dispatch(new StoreAPPToChatServer($app));

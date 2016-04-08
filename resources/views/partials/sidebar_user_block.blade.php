@@ -7,7 +7,10 @@
                     data-target="#myModal"
                     data-toggle="modal">
                     <div class="user-block-status">
-                            <img src="{{ asset('img/user/userpic.png') }}" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">
+                            <img src="{{ asset('img/user/userpic.png') }}"
+                                 alt="Avatar"
+                                 title="Click to edit"
+                                 width="60" height="60" class="img-thumbnail img-circle">
                             <div class="circle circle-success circle-lg"></div>
                     </div>
                 </a>
