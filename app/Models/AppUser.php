@@ -124,5 +124,13 @@ class AppUser extends BaseModel
         return $inserted;
     }
 
+    public function getDefaultSipAccount()
+    {
+        $alias = Misc::filterNumbers($this->getUserAlias());
+        $sip   = $this->getFluentBilling('resource_ip')->whereUsername($alias)->first();
+
+        return $sip ? $sip->username : '';
+    }
+
 
 }

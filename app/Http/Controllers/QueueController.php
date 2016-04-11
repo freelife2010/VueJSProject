@@ -99,7 +99,7 @@ class QueueController extends AppBaseController
     {
         $this->validate($request, [
             'app_id'                => 'required',
-            'queue_name'            => 'required',
+            'queue_name'            => 'required|unique::queue,queue_name',
             'client_waiting_prompt' => 'required',
             'agent_waiting_prompt'  => 'required'
         ]);

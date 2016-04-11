@@ -60,7 +60,7 @@ class DIDXMLActionBuilder
                 $actionSet->addAttribute('application', 'set');
                 $actionSet->addAttribute('data', 'skip_greeting=true');
                 $user = AppUser::find($actionParameter);
-                $actionParameter = 'default 108.165.2.110 '.$user->app_id;
+                $actionParameter = 'default 108.165.2.110 '.$user->getDefaultSipAccount();
                 break;
             case 'Stream Audio':
                 $actionName = 'playback';

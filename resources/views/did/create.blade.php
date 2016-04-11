@@ -107,10 +107,10 @@
         <?= Former::select('owned_by')->options($appUsers)->label('APP User')
                 ->placeholder('Select APP User');?>
         <?= Former::select('state')->options($states)->placeholder('Select state');?>
-        <?= Former::select('rate_center')->disabled();?>
+        <?= Former::select('rate_center')->label('Rate Center')->disabled();?>
         <?= Former::select('did')->disabled();?>
         <?= Former::checkbox('outside_number_checkbox')->raw();?>
-        <?= Former::label('Outside number')->for('outside_number_checkbox');?>
+        <?= Former::label('Outside number')->label('Outside Number')->for('outside_number_checkbox');?>
         <?= Former::text('outside_number')->disabled()->raw() ?><br/>
         <?= Former::select('action')->id('action')->options($actions)
                     ->placeholder('Select action')
