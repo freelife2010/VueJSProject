@@ -71,6 +71,8 @@ Route::group(['middleware' => ['auth','admin', 'csrf']], function() {
     Route::controller('costs', 'CostController');
     Route::controller('revisions', 'RevisionsController');
     Route::controller('users', 'UserController');
+    Route::controller('rates', 'RateController');
+
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 });
 
@@ -141,49 +143,5 @@ Route::post('user', '\App\API\Controllers\FreeswitchController@getFreeswitchUser
 //test xml conversion method
 Route::post('testxml', function() {
     $request = \Illuminate\Http\Request::capture();
-    $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');
-    $xml->addAttribute('type', 'freeswitch/xml');
-    $section = $xml->addChild('section');
-    $section->addAttribute('name', 'dialplan');
-    $section->addAttribute('description', 'dialplan');
-    $context = $section->addChild('context');
-    $context->addAttribute('name', 'default');
-    $extension = $context->addChild('extension');
-    $extension->addAttribute('name', 'test9');
-    $condition = $extension->addChild('condition');
-    $condition->addAttribute('field', 'destination_number');
-    $condition->addAttribute('expression', '^(.*)$');
-    parseXml($request->xml, $condition);
-
-    return new \Dingo\Api\Http\Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
+    return \App\Helpers\Misc::testXml($request);
 });
-
-function parseXml($simpleXml, $condition)
-{
-    $simpleXml = new SimpleXMLElement($simpleXml);
-    $action    = $condition->addChild('action');
-    appendAttributes($simpleXml->attributes(), $action);
-    appendChildren($simpleXml, $action);
-}
-
-function appendChildren($element, $parent)
-{
-    $children = $element->children();
-
-    foreach ($children as $child) {
-        $appendedChild = $parent->addChild($child->getName(), (string) $child);
-        if ($child->attributes())
-            appendAttributes($child->attributes(), $appendedChild);
-        if ($child->children())
-            appendChildren($child, $appendedChild);
-    }
-}
-
-function appendAttributes($attributes, $parent)
-{
-    $attr = $parent->attributes();
-    foreach ($attributes as $attribute) {
-        if (!isset($attr[$attribute->getName()]))
-        $parent->addAttribute($attribute->getName(), (string) $attribute);
-    }
-}

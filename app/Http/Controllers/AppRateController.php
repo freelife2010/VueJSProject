@@ -41,7 +41,7 @@ class AppRateController extends AppBaseController
             })
             ->add_column('custom_rate', function ($rate) use ($appRate) {
                 $input = Former::text('app_rate')->label('')
-                    ->type('number')->step('0.1')
+                    ->type('number')->step('0.01')
                     ->style('width: 80px');
                 $params = [
                     'url'   => 'app-rates/add-rate/' . $rate->rate_id . '?app=' . $this->app->id,

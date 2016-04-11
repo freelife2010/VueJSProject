@@ -12,7 +12,7 @@
                     <span data-localize="sidebar.heading.MORE">Settings</span>
                 </li>
                 <li class=" {{ $helper->isActive('emails') }}">
-                    <a href="##emails" title="Email configuration" data-toggle="collapse">
+                    <a href="#emails" title="Email configuration" data-toggle="collapse">
                         <em class="icon-envelope-open"></em>
                         <span>E-mail requests</span>
                     </a>
@@ -47,16 +47,28 @@
                         <span>Developers</span>
                     </a>
                 </li>
-                <li class=" {{ $helper->isActive('costs/did') }}">
-                    <a href=" {{ url('costs/did') }}" title="DID cost">
+                <li class=" {{ $helper->isActive('costs') }}">
+                    <a href="#costs" title="Manage costs" data-toggle="collapse">
                         <em class="fa fa-money"></em>
-                        <span>DID cost</span>
+                        <span>Costs</span>
                     </a>
+                    <ul id="costs" class="nav sidebar-subnav collapse">
+                        <li class=" {{ $helper->isActive('costs/did') }}">
+                            <a href=" {{ url('costs/did') }}" title="Modify DID costs">
+                                <span>DID Cost</span>
+                            </a>
+                        </li>
+                        <li class=" {{ $helper->isActive('costs/sms') }}">
+                            <a href=" {{ url('costs/sms') }}" title="Modify SMS Cosrt">
+                                <span>SMS Cost</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class=" {{ $helper->isActive('costs/sms') }}">
-                    <a href=" {{ url('costs/sms') }}" title="SMS cost">
-                        <em class="fa fa-paper-plane-o"></em>
-                        <span>SMS cost</span>
+                <li class=" {{ $helper->isActive('rates') }}">
+                    <a href=" {{ url('rates') }}" title="Rates">
+                        <em class="fa fa-dollar"></em>
+                        <span>Rates</span>
                     </a>
                 </li>
             </ul>

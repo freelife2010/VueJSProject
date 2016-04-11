@@ -19,13 +19,15 @@ class AppRate extends BaseModel
     /**
      * @param mixed $app
      */
-    public function __construct($app)
+    public function __construct($app = null)
     {
         parent::__construct();
-        $this->app            = $app;
-        $this->appRateTableId = $this->getRateTableIdByName("{$this->app->tech_prefix}_IDD");
-        if (!$this->appRateTableId)
-            $this->appRateTableId = $this->getRateTableIdByName($this->app->tech_prefix);
+        if ($app) {
+            $this->app            = $app;
+            $this->appRateTableId = $this->getRateTableIdByName("{$this->app->tech_prefix}_IDD");
+            if (!$this->appRateTableId)
+                $this->appRateTableId = $this->getRateTableIdByName($this->app->tech_prefix);
+        }
     }
 
     public function setRateById($rateId)
