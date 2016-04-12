@@ -36,6 +36,7 @@ class ConferenceAPIController extends FileAPIController
      *         type="string"
      *     ),
      *     @SWG\Response(response="200", description="File list"),
+     *     @SWG\Response(response="400", description="Bad request"),
      *     @SWG\Response(response="401", description="Auth required"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
@@ -45,7 +46,6 @@ class ConferenceAPIController extends FileAPIController
     public function getList($user_id)
     {
         $this->setValidator([
-            'user_id'   => 'required|integer',
             'conf_name' => 'required',
         ]);
         $id = preg_replace('/[^0-9]/', '', $user_id);
@@ -57,7 +57,7 @@ class ConferenceAPIController extends FileAPIController
         $process->run();
 
         if (!$process->isSuccessful()) {
-            return $process->getErrorOutput();
+            return $this->response->errorBadRequest($process->getErrorOutput());
         }
 
         return $process->getOutput();
