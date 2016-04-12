@@ -191,15 +191,15 @@ class UserController extends Controller
      *     ),
      *     @SWG\Response(response="200", description="User info"),
      *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="404", description="Not found"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
      * @param $username
-     * @return
      */
     public function getUserInfo($username)
     {
         $user = $this->getUserData()->whereEmail($username)->first();
-        $response = $this->makeErrorResponse('Cannot find user');
+        $response = $this->response->errorNotFound();
         if ($user)
             $response = $this->defaultResponse($user->toArray());
 

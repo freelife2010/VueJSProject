@@ -53,7 +53,7 @@
     <div class="row">
         <div class="col-lg-12">
             <br/>
-            <div style="width: 30%">
+            <div style="width: 40%">
                 <?= Former::horizontal_open() ?>
                 <?= Former::select('call_type')->options($callTypes, 0)->label('Call type')
                         ->style('width: 150px')?>

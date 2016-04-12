@@ -101,7 +101,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
         $productId = $this->insertGetIdToBillingDB(
                              "insert into product (name)
                               values (?) RETURNING product_id",
-                              [$this->app->name], 'product_id');
+                              [$this->app->tech_prefix], 'product_id');
         $itemId    = $this->insertGetIdToBillingDB(
                              "insert into product_items (product_id)
                               values (?) RETURNING item_id",

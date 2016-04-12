@@ -226,6 +226,7 @@ class PaymentAPIController extends Controller
      *     @SWG\Response(response="200", description="Rates"),
      *     @SWG\Response(response="400", description="Validation failed"),
      *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="404", description="Not found"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
      * @return bool|mixed
@@ -249,7 +250,7 @@ class PaymentAPIController extends Controller
                 $response = $this->queryRates($rateTableId, $request->country);
         }
 
-        return $this->response->array($response);
+        return $response ? $this->response->array($response) : $this->response->errorNotFound();
     }
 
     protected function queryRates($rateTableId, $country)
