@@ -19,6 +19,7 @@
     ?>
     <?= Former::vertical_open()->action($action_url) ?>
     <div style="margin-left: 15px">
+        <?= Former::hidden('id');?>
         <?= Former::hidden('app_id')->value($APP->id);?>
         <?= Former::text('queue_name');?>
         <?= Former::text('client_waiting_prompt');?>

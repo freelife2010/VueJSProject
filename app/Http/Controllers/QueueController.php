@@ -18,7 +18,7 @@ class QueueController extends AppBaseController
         $conferences = Queue::whereAppId($this->app->id);
 
         return Datatables::of($conferences)
-            ->add_column('actions', function($conference) {
+            ->add_column('actions', function ($conference) {
                 return $conference->getActionButtonsWithAPP('queues', $this->app);
             })
             ->make(true);
@@ -45,8 +45,8 @@ class QueueController extends AppBaseController
     {
         $this->validateInput($request);
         $result = $this->getResult(true, 'Could not create queue');
-        if (Queue::create($request->all()))
-            $result = $this->getResult(false, 'Queue has been created');
+        if ($queue = Queue::create($request->all()))
+            $result = $this->getResult(false, "Queue [$queue->queue_name] has been created");
 
         return $result;
     }
@@ -89,7 +89,7 @@ class QueueController extends AppBaseController
         $result = $this->getResult(true, 'Could not delete queue');
         $model  = Queue::find($id);
         if ($model->delete()) {
-            $result = $this->getResult(false, 'Queue deleted');
+            $result = $this->getResult(false, "Queue [$model->queue_name] deleted");
         }
 
         return $result;
@@ -97,12 +97,16 @@ class QueueController extends AppBaseController
 
     private function validateInput($request)
     {
-        $this->validate($request, [
+        $id    = $request->get("id");
+        $rules = [
             'app_id'                => 'required',
-            'queue_name'            => 'required|unique::queue,queue_name',
+            'queue_name'            => 'required|unique:queue,queue_name',
             'client_waiting_prompt' => 'required',
             'agent_waiting_prompt'  => 'required'
-        ]);
+        ];
+        if ($id)
+            $rules['queue_name'] = 'sometimes|required|unique:queue,queue_name,' . $id;
+        $this->validate($request, $rules);
     }
 
 }

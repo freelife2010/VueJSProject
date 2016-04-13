@@ -79,7 +79,7 @@ class AppKeysController extends AppBaseController
         $app        = App::find($request->input('app_id'));
         $expireDays = $request->input('expire_days');
         if ($appKey->generateKeys($app, $expireDays, $request->scopes))
-            $result = $this->getResult(false, 'App key has been generated');
+            $result = $this->getResult(false, 'APP key has been generated');
 
         return $result;
     }

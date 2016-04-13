@@ -91,7 +91,7 @@ return [
 
 	'custom' => [
 		'scopes' => [
-			'required' => 'There is should be selected at least one API',
+			'required' => 'At least one API should be selected',
 		],
 	],
 

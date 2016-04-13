@@ -62,8 +62,8 @@ class ConferenceController extends AppBaseController
     {
         $this->validateInput($request);
         $result = $this->getResult(true, 'Could not create conference');
-        if (Conference::create($request->all()))
-            $result = $this->getResult(false, 'Conference has been created');
+        if ($conference = Conference::create($request->all()))
+            $result = $this->getResult(false, "Conference [$conference->name] has been created");
 
         return $result;
     }
@@ -106,7 +106,7 @@ class ConferenceController extends AppBaseController
         $result = $this->getResult(true, 'Could not delete conference');
         $model  = Conference::find($id);
         if ($model->delete()) {
-            $result = $this->getResult(false, 'Conference deleted');
+            $result = $this->getResult(false, "Conference [$model->name] deleted");
         }
 
         return $result;
