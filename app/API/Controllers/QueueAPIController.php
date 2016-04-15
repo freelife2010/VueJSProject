@@ -80,7 +80,7 @@ class QueueAPIController extends Controller
     public function postAdd()
     {
         $this->setValidator([
-            'queue_name'            => 'required|string',
+            'queue_name'            => 'required|alpha',
             'client_waiting_prompt' => 'required|string',
             'agent_waiting_prompt'  => 'required|string'
         ]);

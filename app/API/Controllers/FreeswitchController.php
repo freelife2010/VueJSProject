@@ -138,6 +138,20 @@ class FreeswitchController extends Controller
      *     path="/api/fs/leave_conference",
      *     summary="Leave conference",
      *     tags={"freeswitch"},
+     *     *@SWG\Parameter(
+     *         description="DID",
+     *         name="dnis",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="ANI",
+     *         name="ani",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
      *     @SWG\Parameter(
      *         description="UUID",
      *         name="uuid",
@@ -170,6 +184,8 @@ class FreeswitchController extends Controller
     {
         $this->setValidator([
             'uuid'      => 'required|uuid',
+            'dnis'      => 'required',
+            'ani'       => 'required',
             'conf_name' => 'required|string',
             'conf_id'   => 'required|exists:conference,id'
         ]);
@@ -252,6 +268,20 @@ class FreeswitchController extends Controller
      *     summary="Leave agent queue",
      *     tags={"freeswitch"},
      *     @SWG\Parameter(
+     *         description="DID",
+     *         name="dnis",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="ANI",
+     *         name="ani",
+     *         in="query",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
      *         description="UUID",
      *         name="uuid",
      *         in="query",
@@ -282,6 +312,8 @@ class FreeswitchController extends Controller
     public function getAgentQueueLeave(Request $request)
     {
         $this->setValidator([
+            'dnis'       => 'required',
+            'ani'        => 'required',
             'uuid'       => 'required|uuid',
             'queue_name' => 'required|string',
             'queue_id'   => 'required|exists:queue,id',
