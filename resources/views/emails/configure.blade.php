@@ -152,7 +152,10 @@
                             Former::primary_button($submit_label)->class('btn btn-primary btn-lg')
                                     ->setAttribute('data-submit', 'ajax')
                                     ->id('submit-btn')
-                                    ->type('submit')); ?>
+                                    ->type('submit'),
+                            Former::link("Reset")->class('btn btn-default btn-lg')
+                                    ->setAttribute('href', $actionUrl)
+                        ); ?>
                 </div>
             </div>
         </fieldset>

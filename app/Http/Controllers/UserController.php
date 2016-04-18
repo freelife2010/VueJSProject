@@ -67,7 +67,7 @@ class UserController extends Controller
         if ($user = User::create($params)) {
             $developerRole = Role::whereSlug('developer')->first();
             $user->attachRole($developerRole);
-            $result = $this->getResult(false, 'Developer created successfully');
+            $result = $this->getResult(false, "Developer [$user->name] created successfully");
         }
 
         return $result;
@@ -111,7 +111,7 @@ class UserController extends Controller
         $model->email = "{$model->email}.deleted";
         if ($model->save() and $model->delete()) {
             $this->dispatch(new DeleteDeveloperFromBillingDB($email));
-            $result = $this->getResult(false, 'Developer deleted');
+            $result = $this->getResult(false, "Developer [$model->name] deleted");
         }
 
         return $result;

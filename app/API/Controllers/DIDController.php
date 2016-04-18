@@ -123,6 +123,7 @@ class DIDController extends Controller
      *     ),
      *     @SWG\Response(response="200", description="Available DIDs"),
      *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="404", description="Not found"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
      * @param Request $request
