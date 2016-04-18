@@ -35,9 +35,12 @@ class Authenticate {
 	{
         $user = Auth::user();
 		if ($user and !$user->active) {
-			return view('auth.guest_activate')
+			$view = view('auth.guest_activate')
 				->with( 'email', \Auth::user()->email )
 				->with( 'date', \Auth::user()->created_at->format('Y-m-d') );
+
+			\Auth::logout();
+			return $view;
 		}
 		
 		if ($this->auth->guest())

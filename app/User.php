@@ -47,13 +47,15 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
     }
 	public function accountIsActive($code) {
 		$user = User::where('activation_code', '=', $code)->first();
-		$user->active = 1;
-		$user->activation_code = '';
-		if($user->save()) {
-			\Auth::login($user);
-		}
-        $this->fill($user->attributesToArray());
-		return true;
+		if ($user) {
+			$user->active = 1;
+			$user->activation_code = '';
+			if($user->save()) {
+				\Auth::login($user);
+			}
+			$this->fill($user->attributesToArray());
+			return true;
+		} return false;
 	}
 
     public function setPasswordAttribute($pass){
