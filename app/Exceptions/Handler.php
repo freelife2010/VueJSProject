@@ -37,6 +37,7 @@ class Handler extends ExceptionHandler {
 	public function render($request, Exception $e)
 	{
 		if ($e instanceof \Bican\Roles\Exceptions\RoleDeniedException) {
+			\Auth::logout();
 			return redirect('/');
 		}
 

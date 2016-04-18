@@ -86,9 +86,9 @@ class AuthController extends Controller {
 
 		if ($user->save()) {
 			Cache::put('playSMSPass', $request->input('password'), 1);
-            $this->dispatch(new StoreDeveloperToBillingDB($user));
             $role = Role::whereSlug('developer')->first();
             $user->attachRole($role);
+			$this->dispatch(new StoreDeveloperToBillingDB($user));
 			$this->sendEmail($user, 'authorization');
 
 			return view('auth.activateAccount')
