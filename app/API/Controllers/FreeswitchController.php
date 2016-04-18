@@ -47,6 +47,7 @@ class FreeswitchController extends Controller
      *     ),
      *     @SWG\Response(response="200", description="Call handler response"),
      *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="404", description="Not found"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
      * @param Request $request
@@ -315,7 +316,7 @@ class FreeswitchController extends Controller
             'dnis'       => 'required',
             'ani'        => 'required',
             'uuid'       => 'required|uuid',
-            'queue_name' => 'required|string',
+            'queue_name' => 'required|alpha',
             'queue_id'   => 'required|exists:queue,id',
         ]);
 

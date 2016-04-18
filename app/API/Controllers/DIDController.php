@@ -275,8 +275,12 @@ class DIDController extends Controller
 
         $result = ['error' => 'Failed to change DID action'];
         $did    = DID::whereDid($this->request->did)->first();
-        if ($this->request->parameters)
-            $this->request->parameters = (array)json_decode($this->request->parameters);
+        if ($this->request->parameters) {
+            $jsonData = json_decode($this->request->parameters, true);
+            if (!is_array($jsonData))
+                return $this->response->error('Parameters must be valid JSON', 500);
+            $this->request->parameters = $jsonData;
+        }
         $did->action_id        = $this->request->action_id;
         $this->request->action = $did->action_id;
         if ($did->save()
