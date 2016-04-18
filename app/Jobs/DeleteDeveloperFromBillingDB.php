@@ -31,7 +31,6 @@ class DeleteDeveloperFromBillingDB extends Job implements SelfHandling
      */
     public function handle()
     {
-        $client = $this->getFluentBilling('client')->whereName($this->email)->first();
-        if ($client) $client->delete();
+        $client = $this->getFluentBilling('client')->whereName($this->email)->delete();
     }
 }

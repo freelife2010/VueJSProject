@@ -6,6 +6,7 @@ use App\Http\Requests\AppUserRequest;
 use App\Http\Requests\DeleteRequest;
 use App\Http\Requests\DeveloperRequest;
 use App\Jobs\DeleteDeveloperFromBillingDB;
+use App\Jobs\StoreDeveloperToBillingDB;
 use App\Models\App;
 use App\User;
 
@@ -67,6 +68,7 @@ class UserController extends Controller
         if ($user = User::create($params)) {
             $developerRole = Role::whereSlug('developer')->first();
             $user->attachRole($developerRole);
+            $this->dispatch(new StoreDeveloperToBillingDB($user));
             $result = $this->getResult(false, "Developer [$user->name] created successfully");
         }
 
@@ -108,7 +110,7 @@ class UserController extends Controller
         $result       = $this->getResult(true, 'Could not delete developer');
         $model        = User::find($id);
         $email        = $model->email;
-        $model->email = "{$model->email}.deleted";
+        $model->email = "{$model->email}_deleted";
         if ($model->save() and $model->delete()) {
             $this->dispatch(new DeleteDeveloperFromBillingDB($email));
             $result = $this->getResult(false, "Developer [$model->name] deleted");

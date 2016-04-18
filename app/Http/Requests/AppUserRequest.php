@@ -32,7 +32,7 @@ class AppUserRequest extends Request
         ];
 
         if ($id)
-            $rules['email'] = 'sometimes|required|unique:users,email,' . $id;
+            $rules['email'] = 'sometimes|required|unique:users,email,' . $id . ',id,deleted_at,NULL';
 
         return $rules;
     }
