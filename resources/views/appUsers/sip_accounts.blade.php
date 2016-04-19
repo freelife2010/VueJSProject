@@ -53,7 +53,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <?= Former::horizontal_open() ?>
                     <?= Former::select('app_user')
                             ->addOption('Select APP user')

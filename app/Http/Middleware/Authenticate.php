@@ -39,7 +39,6 @@ class Authenticate {
 				->with( 'email', \Auth::user()->email )
 				->with( 'date', \Auth::user()->created_at->format('Y-m-d') );
 
-			\Auth::logout();
 			return $view;
 		}
 		

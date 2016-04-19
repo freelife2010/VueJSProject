@@ -13,6 +13,11 @@
 				<p>{{ Lang::get('auth.clickInEmail') }}</p>
 
 				<p><a href='/resendEmail'>{{ Lang::get('auth.clickHereResend') }}</a></p>
+				<div class="text-center">
+					<a class="btn btn-default" href="{{url('auth/logout')}}">
+						Logout
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>
