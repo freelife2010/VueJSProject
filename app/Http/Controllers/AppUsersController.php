@@ -80,6 +80,7 @@ class AppUsersController extends AppBaseController
         $model           = AppUser::find($id);
         $params          = $request->input();
         $params['phone'] = str_replace('_', '', $params['phone']);
+        $params['allow_outgoing_call'] = $request->has('allow_outgoing_call') ?: null;
         if ($model->fill($params)
             and $model->save()
         )
