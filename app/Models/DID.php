@@ -238,7 +238,7 @@ class DID extends BaseModel
     {
         $playbackHost = 'http://198.245.49.222';
         $filename     = Str::random(10)."_$this->id.wav";
-        $workDir      = '../storage/app/voice';
+        $workDir      = storage_path('app/voice');
 
         $data = addslashes(json_encode([
             'speaker_name' => 'opentact',
