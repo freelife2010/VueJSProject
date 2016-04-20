@@ -33,7 +33,7 @@ class DIDXMLActionBuilder
             case 'Conference':
                 $actionName = 'conference';
                 $actionSet = $this->condition->addChild('action');
-                $actionSet->addAttribute('name', 'set');
+                $actionSet->addAttribute('application', 'set');
                 $value = sprintf(
                     'auto-record=/mnt/gdrive/conference/%s/%s.wav',
                         $actionParameter,
