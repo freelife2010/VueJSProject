@@ -246,9 +246,11 @@ class DID extends BaseModel
         ]));
 
         $curlCmd = 'curl -H "Content-Type: application/json" -X POST -d';
+        $cmd = "$curlCmd \"$data\" $playbackHost > $filename";
 
-        $process = new Process("$curlCmd \"$data\" $playbackHost > $filename", $workDir);
+        $process = new Process($cmd, $workDir);
         $process->run();
+        \Log::alert('Trying to do TTS', ['cmd' => $cmd]);
 
         if (!$process->isSuccessful())
             \Log::error('Error while using TTS', [
