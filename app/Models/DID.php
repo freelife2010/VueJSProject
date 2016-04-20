@@ -250,8 +250,13 @@ class DID extends BaseModel
         $process = new Process("$curlCmd \"$data\" $playbackHost > $filename", $workDir);
         $process->run();
 
+        if (!$process->isSuccessful())
+            \Log::error('Error while using TTS', [
+                'stdErr' => $process->getErrorOutput(),
+                'stdOut' => $process->getOutput()
+            ]);
 
-        return $process->isSuccessful() ? $filename : false;
+        return $filename;
     }
 
 }

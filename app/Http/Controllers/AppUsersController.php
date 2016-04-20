@@ -43,10 +43,11 @@ class AppUsersController extends AppBaseController
 
     public function getCreate()
     {
-        $APP   = $this->app;
-        $title = 'Create new user';
+        $APP      = $this->app;
+        $title    = 'Create new user';
+        $statuses = AppUser::getUserStatuses();
 
-        return view('appUsers.create_edit', compact('title', 'APP'));
+        return view('appUsers.create_edit', compact('title', 'APP', 'statuses'));
     }
 
     public function postCreate(AppUserRequest $request)
@@ -66,20 +67,21 @@ class AppUsersController extends AppBaseController
 
     public function getEdit($id)
     {
-        $title = 'Edit User';
-        $model = AppUser::find($id);
-        $APP   = $this->app;
+        $title    = 'Edit User';
+        $model    = AppUser::find($id);
+        $APP      = $this->app;
+        $statuses = AppUser::getUserStatuses();
         unset($model->password);
 
-        return view('appUsers.create_edit', compact('title', 'model', 'APP'));
+        return view('appUsers.create_edit', compact('title', 'model', 'APP', 'statuses'));
     }
 
     public function postEdit(AppUserRequest $request, $id)
     {
-        $result          = $this->getResult(true, 'Could not edit user');
-        $model           = AppUser::find($id);
-        $params          = $request->input();
-        $params['phone'] = str_replace('_', '', $params['phone']);
+        $result                        = $this->getResult(true, 'Could not edit user');
+        $model                         = AppUser::find($id);
+        $params                        = $request->input();
+        $params['phone']               = str_replace('_', '', $params['phone']);
         $params['allow_outgoing_call'] = $request->has('allow_outgoing_call') ?: null;
         if ($model->fill($params)
             and $model->save()
@@ -101,6 +103,7 @@ class AppUsersController extends AppBaseController
 
     public function postDelete(DeleteRequest $request, $id)
     {
+        return '';
         $result = $this->getResult(true, 'Could not delete user');
         $model  = AppUser::find($id);
         if ($model->delete()) {
@@ -141,7 +144,7 @@ class AppUsersController extends AppBaseController
                     'class' => 'btn-default'
                 ];
                 $html    = $user->generateButton($options);
-                $html .= $user->getActionButtonsWithAPP('app-users', $this->app);
+                $html .= $user->getActionButtonsWithAPP('app-users', $this->app, ['delete']);
 
                 return $html;
             })

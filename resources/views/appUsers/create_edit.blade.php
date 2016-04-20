@@ -65,6 +65,7 @@
         @endif
         <?= Former::text('email')->label('E-mail');?>
         <?= Former::text('phone')->label('Phone');?>
+        <?= Former::select('last_status')->options($statuses)->label('Status');?>
         <?= Former::checkbox('allow_outgoing_call')->style('margin-left: 0')->raw();?>
         <?= Former::label('Allow outgoing call')->style('margin-left: 20px')->for('allow_outgoing_call');?>
         <br/>

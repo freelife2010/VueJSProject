@@ -68,7 +68,7 @@
                             <th>E-mail</th>
                             <th>Phone</th>
                             <th>DID</th>
-                            <th>Last status</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                         </thead>

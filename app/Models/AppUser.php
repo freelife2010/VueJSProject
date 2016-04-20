@@ -38,6 +38,7 @@ class AppUser extends BaseModel
         'name',
         'password',
         'email',
+        'last_status',
         'phone',
         'tech_prefix',
         'user_id',
@@ -130,6 +131,14 @@ class AppUser extends BaseModel
         $sip   = $this->getFluentBilling('resource_ip')->whereUsername($alias)->first();
 
         return $sip ? $sip->username : '';
+    }
+
+    public static function getUserStatuses()
+    {
+        $statuses = ['Inactive', 'Active'];
+        asort($statuses);
+
+        return $statuses;
     }
 
 
