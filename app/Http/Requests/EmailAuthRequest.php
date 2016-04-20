@@ -27,7 +27,7 @@ class EmailAuthRequest extends Request
             'smtp_host'    => 'required|host',
             'smtp_port'    => 'required|numeric',
             'from_name'    => 'required',
-            'from_address' => 'required',
+            'from_address' => 'required|email',
             'content'      => 'required',
             'subject'      => 'required|max:255'
         ];

@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EmailAuthRequest;
 use App\Models\Email;
-use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
 
 class EmailController extends Controller
 {
