@@ -39,6 +39,9 @@ class HomeController extends Controller {
 
 	public function getVoiceMail($filename)
 	{
+		$freeswitchIp = env('FREESWITCH_IP');
+		if ($_SERVER['REMOTE_ADDR'] != $freeswitchIp)
+			return Response::make('Forbidden', 403);
 		if (Storage::disk('voicemail')->has($filename))
 			return Response::download(storage_path('app/voice')."/$filename", $filename);
 		else return redirect('/');
