@@ -241,7 +241,7 @@ class DID extends BaseModel
         $workDir      = storage_path('app/voice');
 
         $data = addslashes(json_encode([
-            'speaker_name' => 'opentact',
+            'speaker_name' => 'Allison',
             'text'         => $string
         ]));
 
