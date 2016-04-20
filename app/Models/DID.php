@@ -54,8 +54,7 @@ class DID extends BaseModel
     }
 
     public function actionParameters() {
-        return $this->hasMany('App\Models\DIDActionParameters', 'action_id', 'action_id')
-                    ->whereDidId($this->id);
+        return $this->hasMany('App\Models\DIDActionParameters', 'did_id');
     }
 
     public function scopeAction($query) {
@@ -208,7 +207,8 @@ class DID extends BaseModel
 
     public function deleteDIDParameters()
     {
-        foreach ($this->actionParameters as $parameter) {
+        $didParams = $this->actionParameters;
+        foreach ($didParams as $parameter) {
             if (!$parameter->delete()) return false;
         }
 
