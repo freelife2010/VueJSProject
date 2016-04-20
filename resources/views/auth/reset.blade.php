@@ -20,42 +20,36 @@
             </div>
         @endif
 
-        <form class="form-horizontal" role="form"
+        <form class="mb-lg" role="form"
               data-parsley-validate=""
               method="POST" action="{{ url('/password/reset') }}">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="token" value="{{ $token }}">
 
-            <div class="form-group">
-                <label class="col-md-4 control-label">{{ Lang::get('auth.email') }}</label>
-                <div class="col-md-6">
-                    <input type="email" class="form-control" name="email" required value="{{ old('email') }}">
-                </div>
+            <div class="form-group has-feedback">
+                <input type="email" placeholder="Enter email"
+                       name="email"
+                       required class="form-control"
+                       value="{{ old('email') }}">
+                <span class="fa fa-envelope form-control-feedback text-muted"></span>
+            </div>
+
+            <div class="form-group has-feedback">
+                <input type="password" name="password" placeholder="Password" required class="form-control">
+                <span class="fa fa-lock form-control-feedback text-muted"></span>
+            </div>
+
+            <div class="form-group has-feedback">
+                <input type="password" name="password_confirmation"
+                       data-parsley-equalto='#password'
+                       placeholder="{{ Lang::get('auth.confirmPassword') }}" required class="form-control">
+                <span class="fa fa-lock form-control-feedback text-muted"></span>
             </div>
 
             <div class="form-group">
-                <label class="col-md-4 control-label">{{ Lang::get('auth.password') }}</label>
-                <div class="col-md-6">
-                    <input type="password" class="form-control" required id="password"
-                           name="password">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-4 control-label">{{ Lang::get('auth.confirmPassword') }}</label>
-                <div class="col-md-6">
-                    <input type="password" class="form-control" data-parsley-equalto='#password'
-                           required
-                           name="password_confirmation">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-6 col-md-offset-4">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-block btn-primary mt-lg">
                         {{ Lang::get('auth.resetPassword') }}
                     </button>
-                </div>
             </div>
         </form>
     </div>
