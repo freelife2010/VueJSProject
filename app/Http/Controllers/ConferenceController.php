@@ -35,7 +35,7 @@ class ConferenceController extends AppBaseController
 
     public function getLogData()
     {
-        $conferenceLogEntries = ConferenceLog::all();
+        $conferenceLogEntries = ConferenceLog::whereAppId($this->app->id);
 
         return Datatables::of($conferenceLogEntries)
             ->make(true);

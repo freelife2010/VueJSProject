@@ -21,7 +21,7 @@ class PBXController extends AppBaseController
 
     public function getAgentData()
     {
-        $conferenceLogEntries = QueueAgentSession::all();
+        $conferenceLogEntries = QueueAgentSession::whereAppId($this->app->id);
 
         return Datatables::of($conferenceLogEntries)
             ->make(true);
@@ -38,7 +38,7 @@ class PBXController extends AppBaseController
 
     public function getCallerData()
     {
-        $conferenceLogEntries = QueueCallerSession::all();
+        $conferenceLogEntries = QueueCallerSession::whereAppId($this->app->id);
 
         return Datatables::of($conferenceLogEntries)
             ->make(true);
