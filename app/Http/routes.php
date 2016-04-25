@@ -45,8 +45,6 @@ Route::controller('app', 'AppController');
 Route::controller('did', 'DIDController');
 
 Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function() {
-    Route::get('/edit-profile/{id}', 'UserController@getEditProfile');
-    Route::post('/users/edit/{id}', 'UserController@postEdit');
     Route::controller('home', 'HomeController');
     Route::controller('payments', 'PaymentController');
     Route::controller('app-users', 'AppUsersController');
@@ -59,6 +57,11 @@ Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function() {
     Route::controller('pbx', 'PBXController');
     Route::controller('sms', 'SMSController');
     Route::controller('conferences', 'ConferenceController');
+});
+
+Route::group(['middleware' => ['auth', 'csrf']], function() {
+    Route::get('/edit-profile/{id}', 'UserController@getEditProfile');
+    Route::post('/users/edit/{id}', 'UserController@postEdit');
 });
 
 Route::get('/resendEmail', 'Auth\AuthController@resendEmail');
