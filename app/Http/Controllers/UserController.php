@@ -12,6 +12,7 @@ use App\User;
 
 use App\Http\Requests;
 use Bican\Roles\Models\Role;
+use Illuminate\Support\Str;
 use URL;
 use Yajra\Datatables\Datatables;
 
@@ -110,7 +111,8 @@ class UserController extends Controller
         $result       = $this->getResult(true, 'Could not delete developer');
         $model        = User::find($id);
         $email        = $model->email;
-        $model->email = "{$model->email}_deleted";
+        $randomStr    = Str::random(4);
+        $model->email = "{$model->email}_{$randomStr}_deleted";
         if ($model->save() and $model->delete()) {
             $this->dispatch(new DeleteDeveloperFromBillingDB($email));
             $result = $this->getResult(false, "Developer [$model->name] deleted");
