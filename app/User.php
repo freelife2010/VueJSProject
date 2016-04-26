@@ -132,7 +132,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 
 		$db = $this->getFluentBilling('c4_client_balance');
 
-
+		$this->clearBalanceCache();
 
 		return $db->whereClientId($clientId)->update(['balance' => $newSum]);
 	}
@@ -167,7 +167,6 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 			'email' => $this->email
 		]);
 		$this->setStripeId($customer->id);
-		$this->save();
 	}
 
 

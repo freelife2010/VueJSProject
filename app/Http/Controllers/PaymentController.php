@@ -52,8 +52,6 @@ class PaymentController extends Controller
 
         $result = $this->getResult(true, 'Could not add credit');
         $user     = Auth::user();
-        if (!$user->stripe_id)
-            $user->createStripeId($request->stripeToken);
 
         $charged = $user->charge($request->amount*100, [
             'receipt_email' => $user->email,
