@@ -490,7 +490,7 @@ class FreeswitchController extends Controller
         } else {
             $action = $condition->addChild('action');
             $action->addAttribute('application', 'playback');
-            $action->addAttribute('data', 'intro_prompt');
+            $action->addAttribute('data', 'local_stream://intro_prompt');
         }
 
         APILogger::log($xml->asXML(), 'XML API Response');
