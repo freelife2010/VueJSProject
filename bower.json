@@ -79,7 +79,8 @@
     "jquery-knob": "~1.2.11",
     "cropper": "~0.11.0",
     "bootstrap-fileinput": "~4.2.7",
-    "datatables.net-buttons": "^1.1.2"
+    "datatables.net-buttons": "^1.1.2",
+    "bootstrap-validator": "^0.10.2"
   },
   "resolutions": {
     "jquery-ui": "1.11.3",

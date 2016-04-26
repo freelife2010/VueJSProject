@@ -33,15 +33,15 @@ class StoreDeveloperToBillingDB extends Job implements SelfHandling, ShouldQueue
     public function handle()
     {
         $currencyId = $this->getCurrencyIdFromBillingDB();
-        $cliendId   = $this->insertGetIdToBillingDB("
+        $clientId   = $this->insertGetIdToBillingDB("
                             insert into client
                             (name,currency_id,unlimited_credit,mode,enough_balance)
                             values (?,?,?,?,?) RETURNING client_id",
             [$this->user->email, $currencyId, true, 2, true], 'client_id');
         $this->insertToBillingDB("
-                    insert into client_balance (client_id,balance,ingress_balance)
+                    insert into c4_client_balance (client_id,balance,ingress_balance)
                     values (?,?,?)",
-            [$cliendId, 0, 0]);
+            [$clientId, 0, 0]);
 
         $this->createSMSAccount($this->user);
     }

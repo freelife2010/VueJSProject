@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Helpers\BillingTrait;
 
 use App\Http\Requests;
+use App\Models\Payment;
+use Auth;
+use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 
 class PaymentController extends Controller
 {
     use BillingTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -25,19 +29,46 @@ class PaymentController extends Controller
 
     public function getData()
     {
-        $fields   = [
-            'client_id',
-            'invoice_id',
-            'country',
-            'city',
-            'address1',
-            'chargetotal',
-            'confirmed',
-            'created_time'
-        ];
-        $payments = $this->getFluentBilling('payline_history')->select($fields);
+        $payments = Payment::whereAccountId(Auth::user()->id);
 
-        return Datatables::of($payments)->make(true);
+        return Datatables::of($payments)
+            ->edit_column('amount', function($payment) {
+                return round($payment->amount/100);
+            })
+            ->make(true);
+    }
+
+    public function getAddCredit()
+    {
+        return view('payments.add_credit_stripe');
+    }
+
+    public function postCreateStripe(Request $request)
+    {
+        $this->validate($request, [
+            'amount'      => 'required',
+            'stripeToken' => 'required'
+        ]);
+
+        $result = $this->getResult(true, 'Could not add credit');
+        $user     = Auth::user();
+        if (!$user->stripe_id)
+            $user->createStripeId($request->stripeToken);
+
+        $charged = $user->charge($request->amount*100, [
+            'receipt_email' => $user->email,
+            'source'        => $request->stripeToken,
+            'currency'      => 'usd',
+            'description'   => 'Opentact credit'
+        ]);
+
+        if ($charged) {
+            $result = $this->getResult(false, 'Credit added');
+            Payment::createStripePayment($charged);
+            $user->addCredit($charged->amount);
+        }
+
+        return $result;
     }
 
 }

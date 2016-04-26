@@ -58,7 +58,7 @@
                     <?= Former::select('app_user')
                             ->addOption('Select APP user')
                             ->options($appUsers, 0)
-                            ->label('')?>
+                            ->label('')->raw()?>
                     <?= Former::close()?>
                 </div>
                 <div class="col-md-2">

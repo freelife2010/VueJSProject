@@ -6,17 +6,18 @@ use App\Models\BaseModel;
 use Cache;
 use Hash;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Bican\Roles\Traits\HasRoleAndPermission;
 use Bican\Roles\Contracts\HasRoleAndPermission as HasRoleAndPermissionContract;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Cashier\Billable;
+use Laravel\Cashier\Contracts\Billable as BillableContract;
 
-class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract, HasRoleAndPermissionContract {
+class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract, HasRoleAndPermissionContract, BillableContract {
 
-	use Authenticatable, CanResetPassword, HasRoleAndPermission, BillingTrait, SoftDeletes;
+	use Authenticatable, CanResetPassword, HasRoleAndPermission, BillingTrait, SoftDeletes, Billable;
 
 	/**
 	 * The database table used by the model.
@@ -30,7 +31,15 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'email', 'phone', 'password', 'active', 'resent'];
+	protected $fillable = [
+		'name',
+		'email',
+		'phone',
+		'password',
+		'active',
+		'resent',
+		'stripe_customer_id'
+	];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -84,9 +93,23 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 		if (!$this->clientBalance) {
 			$this->clientId      = $this->getCurrentUserIdFromBillingDB($this);
 			$this->clientBalance = $this->getClientBalanceFromBillingDB($this->clientId);
+			if ($this->clientBalance === false)
+				$this->createClientBalance();
 		}
 
-		return $this->clientBalance;
+		$balance = round($this->clientBalance, 2);
+
+		Cache::add('balance_'.$this->id, $balance, 10);
+
+		return $balance;
+	}
+
+	public function createClientBalance()
+	{
+		$this->insertToBillingDB("
+                    insert into c4_client_balance (client_id,balance,ingress_balance)
+                    values (?,?,?)",
+			[$this->clientId, 0, 0]);
 	}
 
 	public function deductSMSCost($totalSent)
@@ -96,6 +119,27 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 			$totalDeduct += $data['cost'];
 		}
 		$this->deductClientBalanceInBillingDB($totalDeduct);
+		$this->clearBalanceCache();
+	}
+
+	public function addCredit($amount)
+	{
+		$clientId 		= $this->getCurrentUserIdFromBillingDB($this);
+		$currentBalance = $this->getClientBalanceFromBillingDB($clientId) * 100;
+		$newSum         = $currentBalance + $amount;
+		$newSum         = $newSum ? $newSum / 100 : 0;
+		$newSum         = money_format('%i', $newSum);
+
+		$db = $this->getFluentBilling('c4_client_balance');
+
+
+
+		return $db->whereClientId($clientId)->update(['balance' => $newSum]);
+	}
+
+	public function clearBalanceCache()
+	{
+		Cache::forget('balance_'.$this->id);
 	}
 
 	public function getBalance()
@@ -115,6 +159,15 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 		}
 
 		return $balance. ' USD';
+	}
+
+	public function createStripeId($token)
+	{
+		$customer = $this->subscription()->createStripeCustomer($token, [
+			'email' => $this->email
+		]);
+		$this->setStripeId($customer->id);
+		$this->save();
 	}
 
 

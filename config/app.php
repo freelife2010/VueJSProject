@@ -160,7 +160,9 @@ return [
         Barryvdh\Queue\AsyncServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 		Anouar\Paypalpayment\PaypalpaymentServiceProvider::class,
-		Collective\Remote\RemoteServiceProvider::class
+		Collective\Remote\RemoteServiceProvider::class,
+		Laravel\Cashier\CashierServiceProvider::class,
+		Collective\Html\HtmlServiceProvider::class,
 
 
 	],
@@ -194,6 +196,8 @@ return [
 		'File'          => 'Illuminate\Support\Facades\File',
 		'Flash'         => 'Laracasts\Flash\Flash',
 		'Former'        => 'Former\Facades\Former',
+		'Form' 			=> Collective\Html\FormFacade::class,
+		'Html' 			=> Collective\Html\HtmlFacade::class,
 		'Hash'          => 'Illuminate\Support\Facades\Hash',
 		'Input'         => 'Illuminate\Support\Facades\Input',
 		'Inspiring'     => 'Illuminate\Foundation\Inspiring',

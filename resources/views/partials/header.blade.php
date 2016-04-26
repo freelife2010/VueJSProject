@@ -47,8 +47,13 @@
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Search icon-->
                     <li>
-                        <a href="javascript:void(0)">
-                            Balance: {{ Auth::user()->getBalance() }}
+                        <a href="javascript:void(0)">Balance:
+                        <?php
+                            $balance = Cache::get('balance_'.Auth::user()->id);
+                            if ($balance === null)
+                                $balance = Auth::user()->getClientBalance();
+                            echo $balance.'$';
+                        ?>
                         </a>
                     </li>
                     <!-- Fullscreen (only desktops)-->

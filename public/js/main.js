@@ -64,7 +64,7 @@ function postForm($this, form, url) {
         callback = $this.data('callback');
         param = $this.data('callbackParam');
     }
-    $.ajax({
+    return $.ajax({
         type: 'POST',
         dataType: 'json',
         url: url,

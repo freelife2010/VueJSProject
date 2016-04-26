@@ -31,7 +31,7 @@ return [
 
 	'stripe' => [
 		'model'  => 'App\User',
-		'secret' => '',
+		'secret' => 'sk_test_6NsmEgKTGRxYeeY2PWUCiteC',
 	],
 
 ];

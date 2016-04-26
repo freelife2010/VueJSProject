@@ -194,6 +194,7 @@ trait BillingTrait {
         return $this->fetchField($result, $balanceField);
     }
 
+
     protected function getClientPaymentsFromBillingDB($clientId, $paymentType = 5)
     {
         $db = $this->getFluentBilling('client_payment');
