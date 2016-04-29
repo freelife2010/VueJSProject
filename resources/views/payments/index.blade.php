@@ -15,7 +15,7 @@
                 "bPaginate": true,
                 "processing": true,
                 "serverSide": true,
-                "order": [[ 2, "desc" ]],
+                "order": [[ 0, "desc" ]],
                 "ajax": "{{ URL::to('payments/data/') }}",
                 "columns": [
                     {data: 'created_at', name: 'created_at'},
@@ -31,6 +31,11 @@
 @section('subtitle') {{ $subtitle }} @stop
 @section('content')
     <div class="row">
+        <div class="col-md-5">
+            @include('flash::message')
+        </div>
+    </div>
+    <div class="row">
         <div class="col-lg-12">
             <div class="row">
                 <div class="col-md-1 manage-btn">
@@ -40,7 +45,7 @@
                        class="btn btn-labeled btn-info">
                         <span class="btn-label">
                                <i class="fa fa-dollar"></i>
-                           </span>Add credit (Stripe)
+                           </span>Add credit
                     </a>
                 </div>
             </div>

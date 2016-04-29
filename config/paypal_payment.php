@@ -3,8 +3,8 @@
 return array(
 	# Account credentials from developer portal
 	'Account' => array(
-		'ClientId' => 'AbHqvuoHsRWzMOVvaMSwL10wsdmTJGV3K7IVAG_PfP44U8hjHgonkhEhJyjOiSAvbwQOIX0CcSlLMkJq',
-		'ClientSecret' => 'EEZ2UD4USeakfVucaY-xhJKFoAvgpiTaz-prEo7w81oSZcgvXjtrhlj7jp_ub2Qg8JpJaD85tQDKp7jU',
+		'ClientId' => 'AQG-Mp4b7Igcclb9qzrD5zbTVgaCQ4MSFbc3gWAso4A6K03XJMk7smG68W0-s53HolUzEgS-ysqVu6xC',
+		'ClientSecret' => 'ECbkWvlDRaFeiq8XGmQQInIwXsYfg4v34QiASSwVeBBt6FLU-Mbv_hcSDPyaEmQ6wtpcAG7cROWgHxIt',
 	),
 
 	# Connection Information

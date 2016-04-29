@@ -4,10 +4,16 @@
     <script src="{{asset('vendor/jquery.inputmask/dist/jquery.inputmask.bundle.min.js')}}"></script>
     <script>
         $(function () {
+            var stripeDetails = $('#stripe_details');
             setModalWidth(350);
-            $('#credit_card').inputmask({"mask" : "9999 9999 9999 9999"});
+            $('#credit_card').inputmask({"mask": "9999 9999 9999 9999"});
             $('#cvc').inputmask("9{3,4}");
             $('#amount').inputmask('9{0,4}');
+            $('#vendor').change(function () {
+                if ($(this).val() == 'stripe')
+                    stripeDetails.show();
+                else stripeDetails.hide();
+            });
         })
     </script>
 
@@ -15,16 +21,24 @@
         // This identifies your website in the createToken call below
         Stripe.setPublishableKey('{!! env('STRIPE_PK') !!}');
 
-        jQuery(function($) {
-            $('#submitBtn').click(function(event) {
+        jQuery(function ($) {
+            $('#submitBtn').click(function (event) {
                 var $form = $(this).parents('form');
+                var vendor = $('#vendor').val();
+                if (vendor == 'stripe')
+                    $form.attr('action', '{{url('payments/create-stripe')}}');
+                else $form.attr('action', '{{url('payments/create-paypal')}}');
 
                 $form.validator('validate');
                 var isValid = !$form.find('.has-error').length;
                 if (isValid) {
-                    $form.find('#submitBtn').prop('disabled', true);
 
-                    Stripe.card.createToken($form, stripeResponseHandler);
+                    $('#submitBtn').prop('disabled', true);
+
+                    $form.find('#submitBtn').prop('disabled', true);
+                    if (vendor == 'stripe')
+                        Stripe.card.createToken($form, stripeResponseHandler);
+                    else  $form.submit();
                 }
 
 
@@ -52,7 +66,7 @@
                 // and submit
                 postForm($('#submitBtn'), $form, $form.attr('action'));
             }
-        };
+        }
     </script>
 @stop
 @section('modal_body')
@@ -70,43 +84,54 @@
             </div>
 
             <div class="form-group">
-                {!! Form::label(null, 'Credit card number:') !!}
-                {!! Form::text(null, null, [
+                {!! Form::label(null, 'Vendor:') !!}
+                {!! Form::select('vendor', ['paypal' => 'PayPal', 'stripe' => 'Stripe'],[], [
                 'class' => 'form-control',
-                'data-stripe' => 'number',
-                'id' => 'credit_card',
+                'id' => 'vendor',
                 'required' => 'required',]) !!}
             </div>
 
-            <div class="form-group">
-                {!! Form::label(null, 'Card Validation Code (3 or 4 digit number):') !!}
-                {!! Form::text(null, null, ['class' => 'form-control',
-                'id' => 'cvc',
-                'required' => 'required',
-                'data-stripe' => 'cvc']) !!}
-            </div>
+            <div id="stripe_details" style="display: none">
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label(null, 'Ex. Month') !!}
-                        {!! Form::selectMonth(null, null, [
-                        'class' => 'form-control',
-                        'data-stripe' => 'exp-month'
-                        ], '%m') !!}
+                <div class="form-group">
+                    {!! Form::label(null, 'Credit card number:') !!}
+                    {!! Form::text(null, null, [
+                    'class' => 'form-control',
+                    'data-stripe' => 'number',
+                    'id' => 'credit_card',
+                    'required' => 'required',]) !!}
+                </div>
+
+                <div class="form-group">
+                    {!! Form::label(null, 'Card Validation Code (3 or 4 digit number):') !!}
+                    {!! Form::text(null, null, ['class' => 'form-control',
+                    'id' => 'cvc',
+                    'required' => 'required',
+                    'data-stripe' => 'cvc']) !!}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label(null, 'Ex. Month') !!}
+                            {!! Form::selectMonth(null, null, [
+                            'class' => 'form-control',
+                            'data-stripe' => 'exp-month'
+                            ], '%m') !!}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label(null, 'Ex. Year') !!}
+                            {!! Form::selectYear(null, date('Y'), date('Y') + 10, null,
+                            ['class' => 'form-control',
+                             'data-stripe' => 'exp-year']) !!}
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label(null, 'Ex. Year') !!}
-                        {!! Form::selectYear(null, date('Y'), date('Y') + 10, null,
-                        ['class' => 'form-control',
-                         'data-stripe' => 'exp-year']) !!}
-                    </div>
-                </div>
+                <?= Form::hidden('stripeToken') ?>
             </div>
             <br/>
-            <?= Form::hidden('stripeToken') ?>
             <div class="form-group text-right">
                 {!! Form::button('Add credit', [
                 'class'       => 'btn btn-info btn-lg btn-order',
