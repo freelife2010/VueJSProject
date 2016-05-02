@@ -275,10 +275,11 @@ class UserController extends Controller
         $entities = [];
         if ($resource) {
             $entities = $this->getFluentBilling('resource_ip')
+                        ->select(['username', 'password'])
                         ->whereResourceId($resource->resource_id)->get();
         }
 
-        return $this->defaultResponse(['entities' => $entities]);
+        return $this->response->array($entities);
     }
 
 
