@@ -10,6 +10,7 @@ use App\Jobs\StoreAPPToBillingDB;
 use App\Jobs\StoreAPPToChatServer;
 use App\Models\App;
 use App\Http\Requests;
+use App\Models\AppUser;
 use Illuminate\Http\Request;
 use URL;
 use Yajra\Datatables\Datatables;
@@ -61,28 +62,31 @@ class AppController extends AppBaseController
             'id',
             'tech_prefix',
             'name',
-            'presence']);
+            'presence'
+        ]);
 
         return Datatables::of($apps)
             ->add_column('users', function ($app) {
                 $users = $app->users;
+
                 return count($users->all());
             })
-            ->add_column('actions', function($app) {
-                return $app->getDefaultActionButtons('app');
+            ->add_column('actions', function ($app) {
+                return $app->getDefaultActionButtons('app', [], ['delete']);
             })
-            ->add_column('daily_active', function($app) {
+            ->add_column('daily_active', function ($app) {
                 return '';
             })
-            ->add_column('weekly_active', function($app) {
+            ->add_column('weekly_active', function ($app) {
                 return '';
             })
-            ->add_column('monthly_active', function($app) {
+            ->add_column('monthly_active', function ($app) {
                 return '';
             })
-            ->edit_column('presence', function($app) {
+            ->edit_column('presence', function ($app) {
                 $icon = $app->presence ? 'fa fa-check' : 'fa fa-remove';
-                return '<em class="'.$icon.'"></em>';
+
+                return '<em class="' . $icon . '"></em>';
             })
             ->setRowId('id')
             ->make(true);
@@ -99,15 +103,17 @@ class AppController extends AppBaseController
 
     public function getCreate()
     {
-        $title = 'Create new APP';
+        $title    = 'Create new APP';
+        $statuses = AppUser::getUserStatuses();
 
-        return view('app/create_edit', compact('title'));
+        return view('app/create_edit', compact('title', 'statuses'));
     }
 
     public function getCheckBilling()
     {
         $currencyId = $this->getCurrencyIdFromBillingDB();
         $clientId   = $this->getCurrentUserIdFromBillingDB();
+
         return ['currencyId' => $currencyId, 'currentClientId' => $clientId];
     }
 
@@ -128,9 +134,12 @@ class AppController extends AppBaseController
 
     public function getEdit($id)
     {
-        $title = 'Edit APP';
-        $model = App::find($id);
-        return view('app/create_edit', compact('title', 'model'));
+        $title           = 'Edit APP';
+        $model           = App::find($id);
+        $statuses        = AppUser::getUserStatuses();
+        $model->presence = (int)$model->presence;
+
+        return view('app/create_edit', compact('title', 'model', 'statuses'));
     }
 
     public function postEdit(AppRequest $request, $id)
@@ -149,15 +158,16 @@ class AppController extends AppBaseController
     {
         $title = 'Delete APP ?';
         $model = App::find($id);
-        $url   = Url::to('app/delete/'.$model->id);
+        $url   = Url::to('app/delete/' . $model->id);
+
         return view('app.delete', compact('title', 'model', 'url'));
     }
 
     public function postDelete(DeleteRequest $request, $id)
     {
-        $result   = $this->getResult(true, 'Could not delete APP');
-        $model    = App::find($id);
-        $users    = $model->users;
+        $result = $this->getResult(true, 'Could not delete APP');
+        $model  = App::find($id);
+        $users  = $model->users;
 
         if ($users->count())
             $result = $this->getResult(true, 'Could not delete APP: It has users');
@@ -172,7 +182,7 @@ class AppController extends AppBaseController
     public function getDailyUsage()
     {
         $APP      = $this->app;
-        $title    = $APP->name.': Daily usage';
+        $title    = $APP->name . ': Daily usage';
         $subtitle = 'View daily usage';
 
         return view('app.daily_usage', compact('title', 'subtitle', 'APP'));
@@ -193,8 +203,8 @@ class AppController extends AppBaseController
             $this->dispatch(new StoreAPPToChatServer($app));
         } catch (\Exception $e) {
             $message = $e->getMessage();
-            $error = "Error: $message";
-            $result = $this->getResult(true, $error);
+            $error   = "Error: $message";
+            $result  = $this->getResult(true, $error);
         }
 
         return $result;

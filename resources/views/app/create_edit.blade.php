@@ -21,6 +21,7 @@
         <?= Former::hidden('id');?>
         <?= Former::text('name')->label('Name');?>
         <?= Former::text('alias')->label('Alias');?>
+        <?= Former::select('presence')->options($statuses)->label('Status');?>
     </div>
     <div style="clear: both"></div>
     <br/>

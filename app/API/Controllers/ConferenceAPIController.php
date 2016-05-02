@@ -154,8 +154,8 @@ class ConferenceAPIController extends FileAPIController
     {
         $this->setValidator([
             'name'            => 'required|string',
-            'host_pin'        => 'required|integer|size:4',
-            'guest_pin'       => 'required|integer|size:4',
+            'host_pin'        => 'required|string|size:4',
+            'guest_pin'       => 'required|string|size:4',
             'greeting_prompt' => 'required'
         ]);
 

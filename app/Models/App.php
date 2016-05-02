@@ -23,6 +23,7 @@ class App extends BaseModel
         'email',
         'password',
         'account_id',
+        'presence',
         'tech_prefix'
     ];
 
