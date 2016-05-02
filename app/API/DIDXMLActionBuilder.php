@@ -38,7 +38,7 @@ class DIDXMLActionBuilder
                     'auto-record=/mnt/gdrive/conference/%s/%s.wav',
                         $actionParameter,
                         strftime("%Y-%m-%d-%H-%M-%S"));
-                $actionSet->addAttribute('value', $value);
+                $actionSet->addAttribute('data', $value);
                 break;
             case 'Forward to user':
                 $opensips_ip = env('OPENSIPS_IP', '158.69.203.191');
