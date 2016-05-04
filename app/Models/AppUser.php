@@ -110,7 +110,7 @@ class AppUser extends BaseModel
         $username = Misc::filterNumbers($alias) . rand(100, 999);
         $inserted = false;
         if ($resource) {
-            $inserted = $this->getFluentBilling('resource_ip')
+            $inserted      = $this->getFluentBilling('resource_ip')
                 ->insert([
                     'resource_id' => $resource->resource_id,
                     'username'    => $username,
@@ -120,6 +120,15 @@ class AppUser extends BaseModel
                     'reg_status'  => 1,
                     'direction'   => 0
                 ]);
+            $sipResourceId = $this->insertGetIdToBillingDB("
+                                    insert into resource ( alias, egress )
+                                    values (?, 't') RETURNING resource_id",
+                [$username], 'resource_id');
+            $this->getFluentBilling('resource_ip')->insert([
+                'resource_id' => $sipResourceId,
+                'ip'          => '158.69.203.191',
+                'port'        => 5060
+            ]);
         }
 
         return $inserted;

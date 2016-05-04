@@ -67,11 +67,11 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
     private function addUserData($clientName, $rateTableId, $resourceId)
     {
         $productId = $this->insertGetIdToBillingDB("insert into product (name,code_type)
-                                  values (?,0)",
+                                  values (?,0) RETURNING product_id",
             [$clientName], 'product_id');
 
         $routeStrategyId = $this->insertGetIdToBillingDB("insert into route_strategy (name)
-                                  values (?)",
+                                  values (?) RETURNING route_strategy_id",
             [$clientName], 'route_strategy_id');
 
         $this->insertToBillingDB("insert into route_record (static_route_id, route_type, route_strategy_id)
