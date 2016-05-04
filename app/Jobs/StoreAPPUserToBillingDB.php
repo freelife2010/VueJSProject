@@ -80,7 +80,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
 
         $this->insertToBillingDB("insert into resource_prefix (resource_id , tech_prefix ,
                                               route_strategy_id, rate_table_id)
-                                  values (?,NULL,?,2212)",
+                                  values (?,'',?,2212)",
             [$resourceId, $routeStrategyId]);
 
         $this->insertToBillingDB("insert into resource_prefix (resource_id , tech_prefix ,
