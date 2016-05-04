@@ -124,6 +124,16 @@ class AppUser extends BaseModel
                                     insert into resource ( alias, egress )
                                     values (?, 't') RETURNING resource_id",
                 [$username], 'resource_id');
+            $userProduct   = $this->getUserProductId();
+            $productItemId = $this->insertGetIdToBillingDB("
+                                    insert into product_items ( product_id, digits )
+                                    values (?, ?) RETURNING item_id",
+                [$userProduct, $username], 'item_id');
+
+            $this->getFluentBilling('product_items_resource')->insert([
+                'item_id'     => $productItemId,
+                'resource_id' => $sipResourceId
+            ]);
             $this->getFluentBilling('resource_ip')->insert([
                 'resource_id' => $sipResourceId,
                 'ip'          => '158.69.203.191',
@@ -132,6 +142,22 @@ class AppUser extends BaseModel
         }
 
         return $inserted;
+    }
+
+    public function getUserProductId()
+    {
+        $clientName = Misc::filterNumbers($this->getUserAlias());
+
+        $userProduct = $this->getFluentBilling('product')->whereName($clientName)->first();
+
+        if (!$userProduct)
+            $userProduct = $this->insertGetIdToBillingDB("insert into product (name,code_type)
+                                  values (?,0) RETURNING product_id",
+                [$clientName], 'product_id');
+        else $userProduct = $userProduct->product_id;
+
+        return $userProduct;
+
     }
 
     public function getDefaultSipAccount()

@@ -87,6 +87,40 @@ class AppCDRController extends AppBaseController
         return $cdr;
     }
 
+    public function getOverallCdrData(Request $request)
+    {
+        $fields = [
+            'session_id',
+            'time',
+            'release_tod',
+            'ani_code_id',
+            'dnis_code_id',
+            'call_duration',
+            'agent_rate',
+            'agent_cost',
+            'origination_source_number',
+            'origination_destination_number'
+        ];
+
+        $fromDate = date('Y-m-d H:i:s', strtotime($request->from_date));
+        $toDate   = date('Y-m-d H:i:s', strtotime($request->to_date));
+        $resource = $this->getResourceByAliasFromBillingDB($this->app->alias);
+        $cdr      = new Collection();
+        $apps     = \Auth::user()->apps;
+        if ($resource)
+            foreach ($apps as $app) {
+
+            }
+            $cdr = $this->getFluentBilling('client_cdr')->select($fields)
+                ->whereEgressClientId($resource->resource_id)
+                ->whereBetween('time', [$fromDate, $toDate])->get();
+
+
+        $cdr = $this->formatCDRData($cdr);
+
+        return $cdr;
+    }
+
     public function getChartDailyUsageData(Request $request)
     {
         $fields     =
