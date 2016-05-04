@@ -39,7 +39,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                               insert into client
                               (name,currency_id,unlimited_credit,mode,enough_balance)
                               values (?,?,'t',2,'t') RETURNING client_id",
-                              [$clientName, $currencyId], 'client_id');
+            [$clientName, $currencyId], 'client_id');
         $this->insertToBillingDB("
                   insert into c4_client_balance (client_id,balance,ingress_balance)
                   values (?,0,0) ", [$clientId]);
@@ -47,7 +47,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
         $this->insertToBillingDB("
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
                           values (?,?,'f','t','t',2)",
-                          ["{$clientName}_DID", $clientId]);
+            ["{$clientName}_DID", $clientId]);
         $resourceId = $this->insertGetIdToBillingDB("
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
                           values (?,?,'t','f','t',2)  RETURNING resource_id ",
@@ -56,24 +56,39 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
         $this->insertToBillingDB("
                           insert into resource_ip (username, password, direction,resource_id)
                           values (?,?,0,?)",
-            [ $clientName, $this->user->raw_password, $resourceId]);
-        $routeStrategyId = $this->getRouteStrategyId();
-        $rateTableId     = $this->getRateTableId();
+            [$clientName, $this->user->raw_password, $resourceId]);
+        $rateTableId = $this->getRateTableId();
 
-        $this->insertToBillingDB("insert into resource_prefix (resource_id,route_strategy_id,rate_table_id)
-                                  values (?,?,?)",
-                                  [$resourceId, $routeStrategyId, $rateTableId]);
+
+        $this->addUserData($clientName, $rateTableId, $resourceId);
 
     }
 
-    private function getRouteStrategyId()
+    private function addUserData($clientName, $rateTableId, $resourceId)
     {
-        $routeStrategyId = $this->selectFromBillingDB("
-                                select route_strategy_id from route_strategy
-                                where name = ?", [$this->app->name]);
+        $productId = $this->insertGetIdToBillingDB("insert into product (name,code_type)
+                                  values (?,0)",
+            [$clientName], 'product_id');
 
-        return $this->fetchField($routeStrategyId, 'route_strategy_id');
+        $routeStrategyId = $this->insertGetIdToBillingDB("insert into route_strategy (name)
+                                  values (?)",
+            [$clientName], 'route_strategy_id');
+
+        $this->insertToBillingDB("insert into route_record (static_route_id, route_type, route_strategy_id)
+                                  values (?, 2, ?)",
+            [$productId, $routeStrategyId]);
+
+        $this->insertToBillingDB("insert into resource_prefix (resource _id , tech_prefix ,
+                                              route_strategy_id, rate_table_id)
+                                  values (?,NULL,?,2212)",
+            [$resourceId, $routeStrategyId]);
+
+        $this->insertToBillingDB("insert into resource_prefix (resource _id , tech_prefix ,
+                                              route_strategy_id, rate_table_id)
+                                  values (?,9,?,?)",
+            [$resourceId, $routeStrategyId, $rateTableId]);
     }
+
 
     private function getRateTableId()
     {
