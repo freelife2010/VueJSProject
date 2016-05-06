@@ -53,12 +53,8 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                           values (?,?,'t','f','t',2)  RETURNING resource_id ",
             [$clientName, $clientId], 'resource_id');
         $clientName = Misc::filterNumbers($clientName);
-        $this->insertToBillingDB("
-                          insert into resource_ip (username, password, direction,resource_id)
-                          values (?,?,0,?)",
-            [$clientName, $this->user->raw_password, $resourceId]);
-        $rateTableId = $this->getRateTableId();
 
+        $rateTableId = $this->getRateTableId();
 
         $this->addUserData($clientName, $rateTableId, $resourceId);
 
@@ -69,6 +65,8 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
         $productId = $this->insertGetIdToBillingDB("insert into product (name,code_type)
                                   values (?,0) RETURNING product_id",
             [$clientName], 'product_id');
+
+        $this->createDefaultSipUser($clientName, $resourceId, $productId);
 
         $routeStrategyId = $this->insertGetIdToBillingDB("insert into route_strategy (name)
                                   values (?) RETURNING route_strategy_id",
@@ -85,8 +83,36 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
 
         $this->insertToBillingDB("insert into resource_prefix (resource_id , tech_prefix ,
                                               route_strategy_id, rate_table_id)
-                                  values (?,'',?,?)",
-            [$resourceId, $routeStrategyId, $rateTableId]);
+                                  values (?,'9',59,?)",
+            [$resourceId, $rateTableId]);
+    }
+
+    private function createDefaultSipUser($clientName, $resourceId, $productId)
+    {
+        $this->insertToBillingDB("
+                          insert into resource_ip (username, password, direction,resource_id)
+                          values (?,?,0,?)",
+            [$clientName, $this->user->raw_password, $resourceId]);
+
+        $sipResourceId = $this->insertGetIdToBillingDB("
+                                    insert into resource ( alias, egress )
+                                    values (?, 't') RETURNING resource_id",
+            [$clientName], 'resource_id');
+
+        $productItemId = $this->insertGetIdToBillingDB("
+                                    insert into product_items ( product_id, digits )
+                                    values (?, ?) RETURNING item_id",
+            [$productId, $clientName], 'item_id');
+
+        $this->getFluentBilling('product_items_resource')->insert([
+            'item_id'     => $productItemId,
+            'resource_id' => $sipResourceId
+        ]);
+        $this->getFluentBilling('resource_ip')->insert([
+            'resource_id' => $sipResourceId,
+            'ip'          => '158.69.203.191',
+            'port'        => 5060
+        ]);
     }
 
 
@@ -94,7 +120,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
     {
         $rateTableId = $this->selectFromBillingDB("
                                 select rate_table_id from rate_table
-                                where name = ?", [$this->app->name]);
+                                where name = ?", ["{$this->app->tech_prefix}_IDD"]);
 
         return $this->fetchField($rateTableId, 'rate_table_id');
     }
