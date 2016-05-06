@@ -72,7 +72,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                                   values (?) RETURNING route_strategy_id",
             [$clientName], 'route_strategy_id');
 
-        $this->insertToBillingDB("insert into route_record (static_route_id, route_type, route_strategy_id)
+        $this->insertToBillingDB("insert into route (static_route_id, route_type, route_strategy_id)
                                   values (?, 2, ?)",
             [$productId, $routeStrategyId]);
 
