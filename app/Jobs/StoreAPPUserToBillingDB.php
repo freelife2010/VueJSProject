@@ -92,8 +92,8 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
 
         $this->insertToBillingDB("insert into resource_prefix (resource_id , tech_prefix ,
                                               route_strategy_id, rate_table_id)
-                                  values (?,'9',59,?)",
-            [$resourceId, $rateTableId]);
+                                  values (?,'9',?,?)",
+            [$resourceId, $routeStrategyId, $rateTableId]);
     }
 
     private function createDefaultSipUser($clientName, $resourceId, $productId)
