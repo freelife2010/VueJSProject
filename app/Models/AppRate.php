@@ -36,16 +36,17 @@ class AppRate extends BaseModel
 
     }
 
-    public function getGlobalRates()
+    public function getGlobalRates($withAppRate = true)
     {
+        $appRateFields = $withAppRate ?
+            ', app_rate.rate as app_rate,
+            app_rate.rate_id AS app_rate_id' : '';
         return $this->selectFromBillingDB('
                                 SELECT MAX (rate.rate) AS rate,
                                     rate.code_name AS destination,
                                     rate.country,
                                     rate.code,
-                                    rate.rate_id,
-                                    app_rate.rate as app_rate,
-                                    app_rate.rate_id AS app_rate_id
+                                    rate.rate_id'.$appRateFields.'
                                 FROM  rate
                                 LEFT JOIN rate AS app_rate
                                   ON app_rate.rate_table_id = ?

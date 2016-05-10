@@ -23,14 +23,10 @@
                 dom: 'Bfrtip',
                 buttons: [
                     {
-                        extend: 'csv',
                         text: 'Export to CSV',
-                        filename: 'rates',
                         className: 'btn btn-primary',
-                        exportOptions: {
-                            modifier: {
-                                search: 'none'
-                            }
+                        action: function ( e, dt, node, config ) {
+                            window.location.href='/rates/csv';
                         }
                     }
                 ],

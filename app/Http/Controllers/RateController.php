@@ -46,6 +46,19 @@ class RateController extends Controller
             ->make(true);
     }
 
+    public function getCsv()
+    {
+        $appRate = new AppRate();
+        $rates   = new Collection($appRate->getGlobalRates(false));
+        $csv     = \League\Csv\Writer::createFromFileObject(new \SplTempFileObject());
+        $csv->insertOne(array_keys((array)$rates[0]));
+        foreach ($rates as $rate) {
+            $csv->insertOne((array)$rate);
+        }
+
+        $csv->output('opentactSellRates.csv');
+    }
+
     public function postEditRate($rateId, Request $request)
     {
         $this->validate($request, [
