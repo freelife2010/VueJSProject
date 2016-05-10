@@ -57,9 +57,11 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
 
         $resourceId      = $this->createResource($rateTableId);
         $routeStrategyId = $this->createRouteStrategy();
-//        $staticRouteId = $this->createStaticRoute();
-//        $this->createRoute($routeStrategyId, $staticRouteId);
         $this->createProducts($resourceId, $routeStrategyId);
+
+        $this->insertToBillingDB("
+                  INSERT INTO resource_ip(ip, resource_id)
+                  VALUES('69.27.168.50', ?)", [$resourceId]);
     }
 
     private function createRates($rateTableId)
