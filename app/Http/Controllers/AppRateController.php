@@ -119,4 +119,17 @@ class AppRateController extends AppBaseController
         return $result;
     }
 
+    public function getCsv()
+    {
+        $appRate = new AppRate($this->app);
+        $rates   = new Collection($appRate->getGlobalRates(false));
+        $csv     = \League\Csv\Writer::createFromFileObject(new \SplTempFileObject());
+        $csv->insertOne(array_keys((array)$rates[0]));
+        foreach ($rates as $rate) {
+            $csv->insertOne((array)$rate);
+        }
+
+        $csv->output($this->app->name . ' - sellRates.csv');
+    }
+
 }

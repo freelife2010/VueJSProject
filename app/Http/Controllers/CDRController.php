@@ -11,6 +11,7 @@ use Yajra\Datatables\Datatables;
 class CDRController extends Controller
 {
     use BillingTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -27,6 +28,14 @@ class CDRController extends Controller
 
     public function getData(Request $request)
     {
+        $callType = $request->input('call_type');
+        $cdr      = $this->queryCdr($callType);
+
+        return Datatables::of($cdr)->make(true);
+    }
+
+    protected function queryCdr($callType)
+    {
         $fields = [
             'time',
             'trunk_id_origination',
@@ -40,14 +49,11 @@ class CDRController extends Controller
             'origination_destination_number',
         ];
 
-        $callType = $request->input('call_type');
 
-        $cdr = $this->getFluentBilling('client_cdr')
-                    ->select($fields)
-                    ->whereCallType($callType)
-                    ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
-
-        return Datatables::of($cdr)->make(true);
+        return $this->getFluentBilling('client_cdr')
+            ->select($fields)
+            ->whereCallType($callType)
+            ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
     }
 
     public function getChartData(Request $request)
@@ -75,6 +81,18 @@ class CDRController extends Controller
         $cdr = $this->formatCDRData($cdr);
 
         return $cdr;
+    }
+
+    public function getCsv(Request $request)
+    {
+        $cdr = $this->queryCdr($request->call_type)->get();
+        $csv = \League\Csv\Writer::createFromFileObject(new \SplTempFileObject());
+        $csv->insertOne(array_keys((array)$cdr[0]));
+        foreach ($cdr as $entry) {
+            $csv->insertOne((array)$entry);
+        }
+
+        $csv->output('opentactCDR.csv');
     }
 
 

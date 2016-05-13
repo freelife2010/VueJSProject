@@ -5,6 +5,9 @@
 @include('styles.datatables')
 @section('scripts')
    @include('scripts.datatables')
+   <script src="{{ asset('bower_components/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+   <script src="{{ asset('bower_components/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+   <script src="{{ asset('bower_components/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
     <script>
         var oTable;
         var $table = $('#table');
@@ -21,6 +24,17 @@
                         d.call_type = $('#call_type').val();
                     }
                 },
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        text: 'Export to CSV',
+                        className: 'btn btn-primary',
+                        action: function ( e, dt, node, config ) {
+                            var callType = $('#call_type').val();
+                            window.location.href='/cdr/csv?call_type=' + callType;
+                        }
+                    }
+                ],
                 "columns": [
                     {data: 'time', name: 'time'},
                     {data: 'trunk_id_origination', name: 'trunk_id_origination'},
