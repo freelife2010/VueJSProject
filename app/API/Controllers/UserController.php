@@ -199,11 +199,9 @@ class UserController extends Controller
     public function getUserInfo($username)
     {
         $user = $this->getUserData()->whereEmail($username)->first();
-        $response = $this->response->errorNotFound();
         if ($user)
-            $response = $this->defaultResponse($user->toArray());
-
-        return $response;
+            return $this->defaultResponse($user->toArray());
+       else return $this->response->errorNotFound();
     }
 
     /**
