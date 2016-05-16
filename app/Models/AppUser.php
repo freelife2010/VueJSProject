@@ -109,17 +109,18 @@ class AppUser extends BaseModel
         $resource = $this->getResourceByAliasFromBillingDB($alias);
         $username = Misc::filterNumbers($alias) . rand(100, 999);
         $inserted = false;
+        $sipUser = [
+            'resource_id' => $resource->resource_id,
+            'username'    => $username,
+            'password'    => $password,
+            'reg_srv_ip'  => '158.69.203.191',
+            'reg_type'    => 1,
+            'reg_status'  => 1,
+            'direction'   => 0
+        ];
         if ($resource) {
             $inserted      = $this->getFluentBilling('resource_ip')
-                ->insert([
-                    'resource_id' => $resource->resource_id,
-                    'username'    => $username,
-                    'password'    => $password,
-                    'reg_srv_ip'  => '158.69.203.191',
-                    'reg_type'    => 1,
-                    'reg_status'  => 1,
-                    'direction'   => 0
-                ]);
+                ->insert($sipUser);
             $sipResourceId = $this->insertGetIdToBillingDB("
                                     insert into resource ( alias, egress )
                                     values (?, 't') RETURNING resource_id",
@@ -141,7 +142,7 @@ class AppUser extends BaseModel
             ]);
         }
 
-        return $inserted;
+        return $sipUser;
     }
 
     public function getUserProductId()
