@@ -228,7 +228,7 @@ trait BillingTrait {
 
     protected function deductClientBalanceInBillingDB($deductSum)
     {
-        $clientId       = $this->getCurrentUserIdFromBillingDB();
+        $clientId       = $this->getCurrentUserIdFromBillingDB($this);
         $currentBalance = $this->getClientBalanceFromBillingDB($clientId) * 100;
         $newSum         = $currentBalance - $deductSum;
         $newSum         = $newSum ? $newSum / 100 : 0;
