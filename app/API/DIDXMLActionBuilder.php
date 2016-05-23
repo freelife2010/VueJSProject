@@ -95,6 +95,7 @@ class DIDXMLActionBuilder
                 break;
             case 'Playback URL':
                 $actionName = 'playback';
+                $this->appendAction('answer');
                 break;
             case 'Playback File':
                 $actionName = 'playback';
@@ -109,11 +110,12 @@ class DIDXMLActionBuilder
         $this->appendAction($actionName, $actionParameter);
     }
 
-    private function appendAction($applicationName, $parameter)
+    private function appendAction($applicationName, $parameter = null)
     {
         $action = $this->condition->addChild('action');
         $action->addAttribute('application', $applicationName);
-        $action->addAttribute('data', $parameter);
+        if ($parameter)
+            $action->addAttribute('data', $parameter);
     }
 
 
