@@ -10,6 +10,7 @@ namespace App\API;
 
 
 use App\Models\AppUser;
+use App\Models\Conference;
 
 class DIDXMLActionBuilder
 {
@@ -34,6 +35,9 @@ class DIDXMLActionBuilder
                 $actionName = 'conference';
                 $actionSet = $this->condition->addChild('action');
                 $actionSet->addAttribute('application', 'set');
+                $conference = Conference::find($actionParameter);
+                if ($conference)
+                    $actionParameter = "$conference->name+$conference->guest_pin";
                 $value = sprintf(
                     'auto-record=/mnt/gdrive/conference/%s/%s.wav',
                         $actionParameter,

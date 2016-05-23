@@ -70,6 +70,11 @@ class DIDActionParameters extends BaseModel
                     ->value($IVROptions)->raw();
                 $html .= '<span class="help-block">Options in JSON</span>';
                 break;
+            case 'Conference Alias':
+                $conferences = Conference::whereAppId($app->id)->lists('name', 'id');
+                $html  = Former::select($selectName)->options($conferences)
+                    ->placeholder($parameter->name)->label('')->required();
+                break;
             default:
                 $html = Former::text($selectName)->required()
                         ->placeholder($parameter->name)->raw() . '<br/>';
