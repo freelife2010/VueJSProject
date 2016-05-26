@@ -18,7 +18,7 @@
                 "processing": true,
                 "order": [[ 3, "desc" ]],
                 "ajax": {
-                    url : '{{ url("/app-rates/data?app=".$APP->id) }}'
+                    url : '{{ url("/app-rates/csv?app=".$APP->id) }}'
                 },
                 dom: 'Bfrtip',
                 buttons: [
