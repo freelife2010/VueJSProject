@@ -44,10 +44,14 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                   insert into c4_client_balance (client_id,balance,ingress_balance)
                   values (?,0,0) ", [$clientId]);
 
-        $this->insertToBillingDB("
+        $resourceIdDID = $this->insertGetIdToBillingDB("
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
-                          values (?,?,'f','t','t',2)",
-            ["{$clientName}_DID", $clientId]);
+                          values (?,?,'f','t','t',2) RETURNING resource_id",
+            ["{$clientName}_DID", $clientId], 'resource_id');
+        $resourceIdP2P = $this->insertGetIdToBillingDB("
+                          insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
+                          values (?,?,'f','t','t',2) RETURNING resource_id",
+            ["{$clientName}_P2P", $clientId], 'resource_id');
         $resourceId = $this->insertGetIdToBillingDB("
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
                           values (?,?,'t','f','t',2)  RETURNING resource_id ",
@@ -56,11 +60,11 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
 
         $rateTableId = $this->getRateTableId();
 
-        $this->addUserData($clientName, $rateTableId, $resourceId);
+        $this->addUserData($clientName, $rateTableId, $resourceId, $resourceIdP2P, $resourceIdDID);
 
     }
 
-    private function addUserData($clientName, $rateTableId, $resourceId)
+    private function addUserData($clientName, $rateTableId, $resourceId, $resourceIdP2P, $resourceIdDID)
     {
         $productId = $this->insertGetIdToBillingDB("insert into product (name,code_type)
                                   values (?,0) RETURNING product_id",
@@ -98,6 +102,14 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
         $this->insertToBillingDB("
                   INSERT INTO resource_ip(ip, resource_id)
                   VALUES('158.69.203.191', ?)", [$resourceId]);
+
+        $this->insertToBillingDB("
+                  INSERT INTO resource_ip(ip, resource_id)
+                  VALUES('158.69.203.191', ?)", [$resourceIdDID]);
+
+        $this->insertToBillingDB("
+                  INSERT INTO resource_ip(ip, resource_id)
+                  VALUES('158.69.203.191', ?)", [$resourceIdP2P]);
     }
 
     private function createDefaultSipUser($clientName, $resourceId, $productId)
