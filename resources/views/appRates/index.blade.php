@@ -18,7 +18,7 @@
                 "processing": true,
                 "order": [[ 3, "desc" ]],
                 "ajax": {
-                    url : '{{ url("/app-rates/csv?app=".$APP->id) }}'
+                    url : '{{ url("/app-rates/data?app=".$APP->id) }}'
                 },
                 dom: 'Bfrtip',
                 buttons: [
@@ -26,7 +26,7 @@
                         text: 'Export to CSV',
                         className: 'btn btn-primary',
                         action: function ( e, dt, node, config ) {
-                            window.location.href='{{ url("/app-rates/data?app=".$APP->id) }}';
+                            window.location.href='{{ url("/app-rates/csv?app=".$APP->id) }}';
                         }
                     }
                 ],
