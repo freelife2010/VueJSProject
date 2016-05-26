@@ -99,13 +99,10 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                                   values (?,'9',?,?)",
             [$resourceId, $routeStrategyId, $rateTableId]);
 
-        $this->insertToBillingDB("
-                  INSERT INTO resource_ip(ip, resource_id)
-                  VALUES('158.69.203.191', ?)", [$resourceId]);
 
         $this->insertToBillingDB("
                   INSERT INTO resource_ip(ip, resource_id)
-                  VALUES('158.69.203.191', ?)", [$resourceIdDID]);
+                  VALUES('108.165.2.110', ?)", [$resourceIdDID]);
 
         $this->insertToBillingDB("
                   INSERT INTO resource_ip(ip, resource_id)
