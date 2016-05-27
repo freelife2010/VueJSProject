@@ -95,6 +95,7 @@ class DIDXMLActionBuilder
                 break;
             case 'Playback TTS':
                 $actionName = 'playback';
+                $this->appendAction('answer');
                 $actionParameter = url('/voice/'.$actionParameter);
                 break;
             case 'Playback URL':
@@ -102,6 +103,7 @@ class DIDXMLActionBuilder
                 $this->appendAction('answer');
                 break;
             case 'Playback File':
+                $this->appendAction('answer');
                 $actionName = 'playback';
                 break;
             case 'Hang Up':
