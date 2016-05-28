@@ -62,6 +62,9 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
         $this->insertToBillingDB("
                   INSERT INTO resource_ip(ip, resource_id)
                   VALUES('69.27.168.50', ?)", [$resourceId]);
+
+        $this->createRouting($rateTableId);
+
     }
 
     private function createRates($rateTableId)
@@ -151,6 +154,24 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
     public function failed()
     {
         $this->delete();
+    }
+
+    public function createRouting($rateTableId)
+    {
+        $didResourceId = $this->insertGetIdToBillingDB("
+                              insert into resource
+                              (alias,ingress,active)
+                              values (?,'t','t')
+                              RETURNING resource_id",
+            ["{$this->app->alias}_DID"],
+            'resource_id');
+        $iddResourceId = $this->insertGetIdToBillingDB("
+                              insert into resource
+                              (alias,egress,active, rate_table_id)
+                              values (?,'t','t', ?)
+                              RETURNING resource_id",
+            ["{$this->app->alias}_IDD", $rateTableId],
+            'resource_id');
     }
 
     /**
