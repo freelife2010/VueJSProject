@@ -47,7 +47,7 @@ class DIDXMLActionBuilder
             case 'Forward to user':
                 $opensips_ip = env('OPENSIPS_IP', '158.69.203.191');
                 $actionName   = 'bridge';
-                $actionParameter = "sofia/internal/$actionParameter@$opensips_ip:5060";
+                $actionParameter = "sofia/internal/$actionParameter@$opensips_ip";
                 break;
             case 'Forward to number':
                 $actionName = 'bridge';
