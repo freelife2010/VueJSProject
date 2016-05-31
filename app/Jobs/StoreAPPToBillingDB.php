@@ -115,8 +115,9 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
                   insert into product_items_resource(item_id, resource_id)
                   VALUES (?, ?)", [$itemId, $resourceId]);
         $this->insertToBillingDB("
-                  INSERT INTO route(digits, static_route_id, route_type, route_strategy_id)
-                  VALUES('', ?, 2, ?)", [$productId, $routeStrategyId]);
+                  INSERT INTO route(digits, static_route_id, route_type, route_strategy_id,
+                                    digits_min_length, digits_max_length)
+                  VALUES('', ?, 2, ?, 0, 16)", [$productId, $routeStrategyId]);
     }
 
     public function createStaticRoute()

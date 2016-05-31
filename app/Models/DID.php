@@ -218,7 +218,8 @@ class DID extends BaseModel
     public function createBillingDBData()
     {
         $appUser        = AppUser::find($this->owned_by);
-        $resource       = $this->getResourceByAliasFromBillingDB($appUser->getUserAlias());
+        $clientName     = $appUser->getUserAlias();
+        $resource       = $this->getResourceByAliasFromBillingDB("{$clientName}_DID");
         $itemId         = $this->insertGetIdToBillingDB('
                         insert into product_items
                         (product_id, digits, strategy, min_len, max_len, update_at)
