@@ -28,13 +28,18 @@ class CDRController extends Controller
 
     public function getData(Request $request)
     {
+//        DB::enableQueryLog();
+        $startDate = '1971-01-01';
+        if ($request->input('from_date')){
+            $startDate = $request->input('from_date');
+        }
         $callType = $request->input('call_type');
-        $cdr      = $this->queryCdr($callType);
-
+        $cdr      = $this->queryCdr($callType,$startDate);
+//        dd(DB::getQueryLog());
         return Datatables::of($cdr)->make(true);
     }
 
-    protected function queryCdr($callType)
+    protected function queryCdr($callType='0',$startDate)
     {
         $fields = [
             'time',
@@ -53,6 +58,7 @@ class CDRController extends Controller
         return $this->getFluentBilling('client_cdr')
             ->select($fields)
             ->whereCallType($callType)
+            ->where('time', '>', $startDate)
             ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
     }
 

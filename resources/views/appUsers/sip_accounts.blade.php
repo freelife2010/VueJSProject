@@ -55,11 +55,13 @@
             <div class="row">
                 <div class="col-md-3">
                     <?= Former::horizontal_open() ?>
+                            <!--email_off-->
                     <?= Former::select('app_user')
                             ->addOption('Select APP user')
                             ->options($appUsers, 0)
                             ->label('')->raw()?>
                     <?= Former::close()?>
+                            <!--/email_off-->
                 </div>
                 <div class="col-md-2">
                     <a href="{{{ URL::to('app-users/create-sip-account/?app='.$APP->id) }}}"

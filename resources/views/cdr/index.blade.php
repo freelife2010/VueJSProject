@@ -50,6 +50,28 @@
                     setCallTypeEvents();
                 }
             });
+
+            $("#table_filter").append('<div class="row col-md-6"><div class="col-md-5"><div class="form-group"><div class="input-group date" id="datetimepicker6"><input type="text" id="from_date" class="form-control" />' +
+            '<span class="input-group-addon"><span class="fa fa-calendar"></span></span></div></div></div><div class="col-md-5"><div class="form-group"><div class="input-group date" id="datetimepicker7">' +
+                    '<input type="text" id="to_date" class="form-control" /><span class="input-group-addon"><span class="fa fa-calendar"></span></span></div></div></div><div class="ol-md-2">' +
+                    '<button type="button" id="search_date" class="dt-button btn btn-primary">Search</button></div></div>'
+            );
+        });
+        $(document).on("click","#search_date",function() {
+            var from_date = $("#from_date").val();
+            var to_date = $("#to_date").val();
+            var dataString = 'from_date='+from_date;
+            var CSRF_TOKEN = '<?=csrf_token()?>';
+            if(from_date != ''){
+                $.ajax({
+                    type: "get",
+                    url: 'cdr/data',
+                    data: {'from_date':from_date,'to_date':to_date,_token: CSRF_TOKEN},
+                    success: function(data){
+//                        $('input[type=search]').keyup();
+                    }
+                });
+            }
         });
 
         function setCallTypeEvents()
@@ -58,9 +80,32 @@
                 oTable.ajax.reload();
             });
         }
-
-
     </script>
+
+   <script type="text/javascript">
+
+       $(function () {
+           $('#datetimepicker6').datetimepicker({
+               format: 'YYYY-MM-DD',
+           });
+           $('#datetimepicker7').datetimepicker({
+               format: 'YYYY-MM-DD',
+               useCurrent: false //Important! See issue #1075
+           });
+
+           $("#datetimepicker6").on("dp.change", function (e) {
+               $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+           });
+           $("#datetimepicker7").on("dp.change", function (e) {
+               $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+           });
+       });
+
+
+   </script>
+
+   <link rel="stylesheet" href="http://portal.opentact.org/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
+   <script src="http://portal.opentact.org/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 @endsection
 @section('subtitle') {{ $subtitle }} @stop
 @section('content')

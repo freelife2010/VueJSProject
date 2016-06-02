@@ -34,8 +34,8 @@ class AppUsersController extends AppBaseController
      */
     public function getIndex()
     {
-        $APP      = $this->app;
-        $title    = $APP->name . ': Users';
+        $APP = $this->app;
+        $title = $APP->name . ': Users';
         $subtitle = 'Manage users';
 
         return view('appUsers.index', compact('APP', 'title', 'subtitle'));
@@ -43,8 +43,8 @@ class AppUsersController extends AppBaseController
 
     public function getCreate()
     {
-        $APP      = $this->app;
-        $title    = 'Create new user';
+        $APP = $this->app;
+        $title = 'Create new user';
         $statuses = AppUser::getUserStatuses();
 
         return view('appUsers.create_edit', compact('title', 'APP', 'statuses'));
@@ -56,7 +56,7 @@ class AppUsersController extends AppBaseController
         $params = $request->input();
 
         if ($user = AppUser::createUser($params)) {
-            $result             = $this->getResult(false, 'User created successfully');
+            $result = $this->getResult(false, 'User created successfully');
             $user->raw_password = $request->password;
             $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
             $this->dispatch(new StoreAPPUserToChatServer($user));
@@ -67,9 +67,9 @@ class AppUsersController extends AppBaseController
 
     public function getEdit($id)
     {
-        $title    = 'Edit User';
-        $model    = AppUser::find($id);
-        $APP      = $this->app;
+        $title = 'Edit User';
+        $model = AppUser::find($id);
+        $APP = $this->app;
         $statuses = AppUser::getUserStatuses();
         unset($model->password);
 
@@ -78,10 +78,10 @@ class AppUsersController extends AppBaseController
 
     public function postEdit(AppUserRequest $request, $id)
     {
-        $result                        = $this->getResult(true, 'Could not edit user');
-        $model                         = AppUser::find($id);
-        $params                        = $request->input();
-        $params['phone']               = str_replace('_', '', $params['phone']);
+        $result = $this->getResult(true, 'Could not edit user');
+        $model = AppUser::find($id);
+        $params = $request->input();
+        $params['phone'] = str_replace('_', '', $params['phone']);
         $params['allow_outgoing_call'] = $request->has('allow_outgoing_call') ?: null;
         if ($model->fill($params)
             and $model->save()
@@ -95,8 +95,8 @@ class AppUsersController extends AppBaseController
     {
         $title = 'Delete user ?';
         $model = AppUser::find($id);
-        $APP   = $this->app;
-        $url   = Url::to('app-users/delete/' . $model->id);
+        $APP = $this->app;
+        $url = Url::to('app-users/delete/' . $model->id);
 
         return view('appUsers.delete', compact('title', 'model', 'APP', 'url'));
     }
@@ -105,7 +105,7 @@ class AppUsersController extends AppBaseController
     {
         return '';
         $result = $this->getResult(true, 'Could not delete user');
-        $model  = AppUser::find($id);
+        $model = AppUser::find($id);
         if ($model->delete()) {
             $this->dispatch(new DeleteAPPUserFromBillingDB($model));
             $this->dispatch(new DeleteAPPUserFromChatServer($model));
@@ -137,13 +137,13 @@ class AppUsersController extends AppBaseController
             })
             ->add_column('actions', function ($user) {
                 $options = [
-                    'url'   => 'app-users/daily-usage/' . $user->id . '?app=' . $this->app->id,
-                    'name'  => '',
+                    'url' => 'app-users/daily-usage/' . $user->id . '?app=' . $this->app->id,
+                    'name' => '',
                     'title' => 'View daily usage',
-                    'icon'  => 'icon-calculator',
+                    'icon' => 'icon-calculator',
                     'class' => 'btn-default'
                 ];
-                $html    = $user->generateButton($options);
+                $html = $user->generateButton($options);
                 $html .= $user->getActionButtonsWithAPP('app-users', $this->app, ['delete']);
 
                 return $html;
@@ -163,7 +163,7 @@ class AppUsersController extends AppBaseController
 
     public function getImport()
     {
-        $APP   = $this->app;
+        $APP = $this->app;
         $title = 'Import users';
 
         return view('appUsers.import', compact('title', 'APP'));
@@ -171,23 +171,23 @@ class AppUsersController extends AppBaseController
 
     public function postImport(UploadUsersRequest $request)
     {
-        $model  = new AppUser();
+        $model = new AppUser();
         $result = $this->getResult(true, 'Could not import users');
-        $APP    = App::find($request->input('app_id'));
+        $APP = App::find($request->input('app_id'));
         if ($request->hasFile('sheet_file')
             and $APP
         ) {
-            $columns    = [
-                'email'    => $request->input('email'),
+            $columns = [
+                'email' => $request->input('email'),
                 'username' => $request->input('username'),
                 'password' => $request->input('password'),
-                'phone'    => $request->input('phone') ?: 'phone',
+                'phone' => $request->input('phone') ?: 'phone',
             ];
             $pathToFile = $model->saveFile($request->file('sheet_file'));
-            $parser     = new ExcelParser($model, $APP);
+            $parser = new ExcelParser($model, $APP);
             $parser->run($pathToFile, $columns);
             $totalSaved = $parser->getTotalSaved();
-            $errors     = $parser->getErrors();
+            $errors = $parser->getErrors();
             if ($errors) {
                 $errors = implode('<br/>', $errors);
                 $result = $this->getResult(true, $errors);
@@ -199,11 +199,11 @@ class AppUsersController extends AppBaseController
 
     public function getDailyUsage($id)
     {
-        $APP   = $this->app;
+        $APP = $this->app;
         $model = AppUser::find($id);
         if (!$model)
             return redirect()->back();
-        $title    = $model->name . ': Daily usage';
+        $title = $model->name . ': Daily usage';
         $subtitle = 'View daily usage';
 
         return view('appUsers.daily_usage', compact('title', 'subtitle', 'APP', 'model'));
@@ -217,10 +217,10 @@ class AppUsersController extends AppBaseController
              sum(ingress_bill_time)/60 as min,
              sum(ingress_call_cost+lnp_cost) as cost';
 
-        $model       = AppUser::find($id);
+        $model = AppUser::find($id);
         $clientAlias = $model->getUserAlias();
-        $dailyUsage  = new Collection();
-        $resource    = $this->getResourceByAliasFromBillingDB($clientAlias);
+        $dailyUsage = new Collection();
+        $resource = $this->getResourceByAliasFromBillingDB($clientAlias);
         if ($resource)
             $dailyUsage = $this->getFluentBilling('cdr_report')->selectRaw($fields)
                 ->whereIngressClientId($resource->resource_id)->groupBy('report_time', 'duration');
@@ -242,8 +242,8 @@ class AppUsersController extends AppBaseController
 
     public function getSip()
     {
-        $APP      = $this->app;
-        $title    = $APP->name . ': SIP Accounts';
+        $APP = $this->app;
+        $title = $APP->name . ': SIP Accounts';
         $appUsers = $APP->users()->lists('email', 'id');
         $subtitle = 'Manage SIP Accounts';
 
@@ -259,8 +259,8 @@ class AppUsersController extends AppBaseController
             'reg_status'
         ];
 
-        $appUser     = AppUser::find($request->app_user_id);
-        $resource    = $this->getResourceByAliasFromBillingDB($appUser->getUserAlias());
+        $appUser = AppUser::find($request->app_user_id);
+        $resource = $this->getResourceByAliasFromBillingDB($appUser->getUserAlias());
         $sipAccounts = [];
         if ($resource) {
             $sipAccounts = $this->getFluentBilling('resource_ip')
@@ -280,20 +280,20 @@ class AppUsersController extends AppBaseController
     {
         $datatables->add_column('actions', function ($sip) use ($appUser) {
             $options = [
-                'url'   => 'app-users/edit-sip-account/' . $sip->resource_ip_id . '?app=' . $this->app->id,
-                'name'  => '',
+                'url' => 'app-users/edit-sip-account/' . $sip->resource_ip_id . '?app=' . $this->app->id,
+                'name' => '',
                 'title' => 'Edit',
-                'icon'  => 'fa fa-pencil',
+                'icon' => 'fa fa-pencil',
                 'class' => 'btn-success',
                 'modal' => true
             ];
-            $html    = $appUser->generateButton($options);
+            $html = $appUser->generateButton($options);
 
             $options = [
-                'url'   => 'app-users/delete-sip-account/' . $sip->resource_ip_id . '?app=' . $this->app->id,
-                'name'  => '',
+                'url' => 'app-users/delete-sip-account/' . $sip->resource_ip_id . '?app=' . $this->app->id,
+                'name' => '',
                 'title' => 'Delete',
-                'icon'  => 'fa fa-remove',
+                'icon' => 'fa fa-remove',
                 'class' => 'btn-danger',
                 'modal' => true
             ];
@@ -307,8 +307,8 @@ class AppUsersController extends AppBaseController
 
     public function getCreateSipAccount()
     {
-        $APP      = $this->app;
-        $title    = 'Create new SIP account';
+        $APP = $this->app;
+        $title = 'Create new SIP account';
         $appUsers = $APP->users()->lists('email', 'id');
 
         return view('appUsers.create_edit_sip_account', compact('title', 'APP', 'appUsers'));
@@ -318,9 +318,9 @@ class AppUsersController extends AppBaseController
     {
         $this->validate($request, [
             'app_user_id' => 'required',
-            'password'    => 'required'
+            'password' => 'required'
         ]);
-        $result  = $this->getResult(true, 'Could not create SIP account');
+        $result = $this->getResult(true, 'Could not create SIP account');
         $appUser = AppUser::find($request->app_user_id);
         if ($appUser->createSipAccount($request->password))
             $result = $this->getResult(false, 'Sip account has been created');
@@ -330,12 +330,12 @@ class AppUsersController extends AppBaseController
 
     public function getEditSipAccount($id)
     {
-        $APP       = $this->app;
-        $title     = 'Edit SIP account';
-        $model     = $this->getFluentBilling('resource_ip')
+        $APP = $this->app;
+        $title = 'Edit SIP account';
+        $model = $this->getFluentBilling('resource_ip')
             ->whereResourceIpId($id)->first();
         $model->id = $model->resource_ip_id;
-        $appUsers  = $APP->users()->lists('email', 'id');
+        $appUsers = $APP->users()->lists('email', 'id');
 
         return view('appUsers.create_edit_sip_account',
             compact('title', 'APP', 'appUsers', 'model'));
@@ -359,12 +359,12 @@ class AppUsersController extends AppBaseController
 
     public function getDeleteSipAccount($id)
     {
-        $APP       = $this->app;
-        $title     = 'Delete SIP account';
-        $model     = $this->getFluentBilling('resource_ip')
+        $APP = $this->app;
+        $title = 'Delete SIP account';
+        $model = $this->getFluentBilling('resource_ip')
             ->whereResourceIpId($id)->first();
         $model->id = $model->resource_ip_id;
-        $url       = Url::to('app-users/delete-sip-account/' . $id);
+        $url = Url::to('app-users/delete-sip-account/' . $id);
 
         return view('appUsers.delete', compact('title', 'model', 'APP', 'url'));
     }

@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Cashier\Billable;
 use Laravel\Cashier\Contracts\Billable as BillableContract;
 
+
 class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract, HasRoleAndPermissionContract, BillableContract {
 
 	use Authenticatable, CanResetPassword, HasRoleAndPermission, BillingTrait, SoftDeletes, Billable;
@@ -25,7 +26,6 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 * @var string
 	 */
 	protected $table = 'accounts';
-
 	/**
 	 * The attributes that are mass assignable.
 	 *
@@ -54,7 +54,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
     public function apps() {
         return $this->hasMany('App\Models\App', 'account_id');
     }
-	public function accountIsActive($code) {
+    public function accountIsActive($code) {
 		$user = User::where('activation_code', '=', $code)->first();
 		if ($user) {
 			$user->active = 1;
