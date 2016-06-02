@@ -44,12 +44,12 @@ class DIDXMLActionBuilder
                         strftime("%Y-%m-%d-%H-%M-%S"));
                 $actionSet->addAttribute('data', $value);
                 break;
-            case 'Forward to user':
+            case 'Forward To User':
                 $opensips_ip = env('OPENSIPS_IP', '158.69.203.191');
                 $actionName   = 'bridge';
                 $actionParameter = "sofia/internal/$actionParameter@$opensips_ip";
                 break;
-            case 'Forward to number':
+            case 'Forward To Number':
                 $actionName = 'bridge';
                 $user = $this->did->appUser;
                 $techPrefix = $user ? $user->tech_prefix : '';
