@@ -2,6 +2,8 @@
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler {
 
@@ -36,12 +38,21 @@ class Handler extends ExceptionHandler {
 	 */
 	public function render($request, Exception $e)
 	{
+		if($e instanceof MethodNotAllowedHttpException){
+			return response()->json(['code'=>404, 'type'=>'not supported', 'message'=>sprintf('Method `%s` Is Not Supported', $request->getMethod())], 404);
+		}
+
+		if($e instanceof NotFoundHttpException){
+			return response()->json(['code'=>404, 'type'=>'not found', 'message'=>$e->getMessage() ? $e->getMessage() : sprintf('The requested url `%s` is not found in this server', $request->fullUrl())], 404);
+		}
+
 		if ($e instanceof \Bican\Roles\Exceptions\RoleDeniedException) {
 			\Auth::logout();
 			return redirect('/');
 		}
 
-		return parent::render($request, $e);
+		return response()->json(['code'=>404, 'type'=>'unknown', 'message'=>$e->getMessage() ? $e->getMessage() : 'Unknown error'], 404);
+//		return parent::render($request, $e);
 	}
 
 }
