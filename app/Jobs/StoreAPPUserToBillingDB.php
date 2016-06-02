@@ -121,7 +121,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
     {
         $this->insertToBillingDB("
                           insert into resource_ip (username, password, resource_id)
-                          values (?,?,0,?)",
+                          values (?,?,?)",
             [$clientName, $this->user->raw_password, $resourceId]);
 
         $sipResourceId = $this->insertGetIdToBillingDB("
