@@ -53,8 +53,7 @@ class DIDXMLActionBuilder
                 $actionName = 'bridge';
                 $user = $this->did->appUser;
                 $techPrefix = $user ? $user->tech_prefix : '';
-                $callerId = "[effective_caller_id_number=$user->caller_id]";
-                $actionParameter = "{$callerId}sofia/internal/$techPrefix$actionParameter@69.27.168.11";
+                $actionParameter = "sofia/internal/$techPrefix$actionParameter@69.27.168.11";
                 break;
             case 'Voicemail':
                 $actionName = 'voicemail';
