@@ -126,15 +126,16 @@ class AppUser extends BaseModel
                                     values (?, 't') RETURNING resource_id",
                 [$username], 'resource_id');
             $userProduct   = $this->getUserProductId();
-            $productItemId = $this->insertGetIdToBillingDB("
-                                    insert into product_items ( product_id, digits )
-                                    values (?, ?) RETURNING item_id",
-                [$userProduct, $username], 'item_id');
+//            $productItemId = $this->insertGetIdToBillingDB("
+//                                    insert into product_items ( product_id, digits )
+//                                    values (?, ?) RETURNING item_id",
+//                [$userProduct, $username], 'item_id');
+//
+//            $this->getFluentBilling('product_items_resource')->insert([
+//                'item_id'     => $productItemId,
+//                'resource_id' => $sipResourceId
+//            ]);
 
-            $this->getFluentBilling('product_items_resource')->insert([
-                'item_id'     => $productItemId,
-                'resource_id' => $sipResourceId
-            ]);
             $this->getFluentBilling('resource_ip')->insert([
                 'resource_id' => $sipResourceId,
                 'ip'          => '158.69.203.191',

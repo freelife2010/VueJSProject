@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="panel-body">
-        <p class="text-center pv">SIGN IN TO CONTINUE.</p>
+        <p class="text-center pv">SIGN IN TO CONTINUE!</p>
         @if (count($errors) > 0)
             <div class="alert alert-danger">
                 <strong>{{ Lang::get('auth.whoops') }}</strong>{{ Lang::get('auth.someProblems') }}<br><br>
