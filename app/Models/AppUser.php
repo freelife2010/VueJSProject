@@ -135,6 +135,7 @@ class AppUser extends BaseModel
 //                'item_id'     => $productItemId,
 //                'resource_id' => $sipResourceId
 //            ]);
+
             $this->getFluentBilling('resource_ip')->insert([
                 'resource_id' => $sipResourceId,
                 'ip'          => '158.69.203.191',
