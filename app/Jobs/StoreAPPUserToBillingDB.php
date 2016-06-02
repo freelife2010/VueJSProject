@@ -108,10 +108,10 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                   INSERT INTO resource_ip(ip, resource_id)
                   VALUES('158.69.203.191', ?)", [$resourceIdP2P]);
 
-        $appDidResourceId = $this->getResourceByAliasFromBillingDB("{$this->app->alias}_DID");
+        $appDidResource = $this->getResourceByAliasFromBillingDB("{$this->app->alias}_DID");
 
         $this->getFluentBilling('resource_ip')->insert([
-            'resource_id' => $appDidResourceId ?: $resourceIdDID,
+            'resource_id' => $appDidResource ? $appDidResource->resource_id: $resourceIdDID,
             'ip'          => '66.226.76.70',
             'port'        => 5060
         ]);
