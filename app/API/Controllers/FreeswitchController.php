@@ -515,8 +515,8 @@ class FreeswitchController extends Controller
         $client           = new Client();
         $request          = $client->request('GET', $actionParameter);
         $stringXML        = (string) $request->getBody();
-        echo($stringXML); die();
-        $this->parseResponseXML($stringXML, $condition);
+        if ($stringXML)
+            $this->parseResponseXML($stringXML, $condition);
 
         APILogger::log($xml->asXML(), 'XML API Response');
 
