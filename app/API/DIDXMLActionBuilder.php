@@ -9,6 +9,7 @@
 namespace App\API;
 
 
+use App\Helpers\Misc;
 use App\Models\AppUser;
 use App\Models\Conference;
 
@@ -51,8 +52,8 @@ class DIDXMLActionBuilder
             case 'Forward To Number':
                 $actionName = 'bridge';
                 $user = $this->did->appUser;
-                $techPrefix = $user ? $user->tech_prefix : '';
-                $actionParameter = "sofia/internal/$techPrefix$actionParameter@69.27.168.11";
+                $userId = $user ? Misc::filterNumbers($user->getUserAlias()) : '';
+                $actionParameter = "sofia/internal/$userId$actionParameter@69.27.168.11";
                 break;
             case 'Voicemail':
                 $actionName = 'voicemail';
