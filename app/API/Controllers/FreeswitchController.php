@@ -488,14 +488,19 @@ class FreeswitchController extends Controller
                 return $this->makeXMLForHTTPRequestAction($did, $condition, $xml);
             $this->makeXMLActionNode($did, $condition);
         } else {
-            $action = $condition->addChild('action');
-            $action->addAttribute('application', 'playback');
-            $action->addAttribute('data', 'local_stream://intro_prompt');
+            $this->setDefaultPlayback($condition);
         }
 
         APILogger::log($xml->asXML(), 'XML API Response');
 
         return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
+    }
+
+    private function setDefaultPlayback($condition)
+    {
+        $action = $condition->addChild('action');
+        $action->addAttribute('application', 'playback');
+        $action->addAttribute('data', 'local_stream://intro_prompt');
     }
 
     protected function makeXMLActionNode($did, $condition)
@@ -517,6 +522,7 @@ class FreeswitchController extends Controller
         $stringXML        = (string) $request->getBody();
         if ($stringXML)
             $this->parseResponseXML($stringXML, $condition);
+        else $this->setDefaultPlayback($condition);
 
         APILogger::log($xml->asXML(), 'XML API Response');
 
