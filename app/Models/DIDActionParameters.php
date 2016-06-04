@@ -51,7 +51,7 @@ class DIDActionParameters extends BaseModel
         return $data;
     }
 
-    public static function getActionParameterHtml($parameter, $app)
+    public static function getActionParameterHtml($parameter, $app, $action)
     {
         $selectName = "parameters[$parameter->id]";
         $paramName  = (strpos($parameter->name, 'APP user id') !== false ) ?
@@ -75,11 +75,28 @@ class DIDActionParameters extends BaseModel
                 $html  = Former::select($selectName)->options($conferences)
                     ->placeholder($parameter->name)->label('')->required();
                 break;
+
             default:
                 $html = Former::text($selectName)->required()
                         ->placeholder($parameter->name)->raw() . '<br/>';
 
         }
+
+        if ($paramName == 'APP user id'
+            and $action
+            and $action->name == 'Forward To User')
+            $html = self::getForwardToUserParameterHtml($action, $parameter, $app);
+
+        return $html;
+    }
+
+    public static function getForwardToUserParameterHtml($action, $parameter, $app)
+    {
+        $users = AppUser::whereAppId($app->id)->lists('name', 'id');
+        $html = Former::label('App User');
+        $html .= Former::select('app_user_select')->options($users)
+            ->placeholder('APP User')->label('')->required();
+        $html .= '<div id="sip_users"></div>';
 
         return $html;
     }

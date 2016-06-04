@@ -7,6 +7,7 @@ use App\Helpers\Misc;
 use Auth;
 use File;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Validator;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Webpatser\Uuid\Uuid;
@@ -176,6 +177,26 @@ class AppUser extends BaseModel
         asort($statuses);
 
         return $statuses;
+    }
+
+    public function getSipAccounts()
+    {
+        $fields = [
+            'resource_ip_id',
+            'username',
+            'password',
+            'reg_status'
+        ];
+
+        $resource = $this->getResourceByAliasFromBillingDB($this->getUserAlias());
+        $sipAccounts = [];
+        if ($resource) {
+            $sipAccounts = $this->getFluentBilling('resource_ip')
+                ->select($fields)
+                ->whereResourceId($resource->resource_id)->get();
+        }
+
+        return new Collection($sipAccounts);
     }
 
 

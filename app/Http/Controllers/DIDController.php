@@ -209,8 +209,11 @@ class DIDController extends AppBaseController
             ->whereActionId($request->did_action)->get();
         if ($parameters)
             $html = Former::label('Action parameter(s)');
+        $action = DB::table('did_action')->find($request->did_action);
+        if ($action and $action->name == 'Forward To User')
+            $html = DIDActionParameters::getForwardToUserParameterHtml($action, array_pop($parameters), $this->app);
         foreach ($parameters as $parameter) {
-            $html .= DIDActionParameters::getActionParameterHtml($parameter, $this->app);
+            $html .= DIDActionParameters::getActionParameterHtml($parameter, $this->app, $action);
         }
 
         return $html;

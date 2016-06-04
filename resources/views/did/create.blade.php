@@ -38,6 +38,7 @@
         function bindActionSelectEvent($did_action) {
             $did_action.change(function() {
                 getParameters($did_action);
+                setTimeout(bindAppUserSelectEvent, 500);
             });
         }
 
@@ -83,6 +84,19 @@
             };
             ajaxGetData('{{ url('did/parameters?app='.$APP->id) }}', params, ajaxCallback)
 
+        }
+
+        function bindAppUserSelectEvent() {
+            var appUserSelect = $('#app_user_select');
+            var sipUsersDiv = $('#sip_users');
+            var ajaxCallback = function(data) {
+                sipUsersDiv.html(data);
+            };
+            appUserSelect.change(function() {
+                sipUsersDiv.html('Loading SIP Users...');
+                var userId = appUserSelect.val();
+                ajaxGetData('/app-users/sip-accounts-html/'+userId + '?app={{$APP->id}}', {}, ajaxCallback)
+            });
         }
 
         function ajaxGetData(url, params, success) {

@@ -4,19 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Helpers\BillingTrait;
 use App\Helpers\ExcelParser;
-use App\Helpers\Misc;
 use App\Http\Requests;
 use App\Http\Requests\AppUserRequest;
 use App\Http\Requests\DeleteRequest;
 use App\Http\Requests\UploadUsersRequest;
 use App\Jobs\DeleteAPPUserFromBillingDB;
 use App\Jobs\DeleteAPPUserFromChatServer;
-use App\Jobs\DeleteAPPUserToChatServer;
 use App\Jobs\StoreAPPUserToBillingDB;
 use App\Jobs\StoreAPPUserToChatServer;
 use App\Models\App;
 use App\Models\AppUser;
 use App\Models\DID;
+use DB;
 use Former\Facades\Former;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -252,23 +251,8 @@ class AppUsersController extends AppBaseController
 
     public function getSipAccountsData(Request $request)
     {
-        $fields = [
-            'resource_ip_id',
-            'username',
-            'password',
-            'reg_status'
-        ];
-
         $appUser = AppUser::find($request->app_user_id);
-        $resource = $this->getResourceByAliasFromBillingDB($appUser->getUserAlias());
-        $sipAccounts = [];
-        if ($resource) {
-            $sipAccounts = $this->getFluentBilling('resource_ip')
-                ->select($fields)
-                ->whereResourceId($resource->resource_id)->get();
-        }
-
-        $sipAccounts = new Collection($sipAccounts);
+        $sipAccounts = $appUser->getSipAccounts();
 
         $datatables = Datatables::of($sipAccounts);
         $this->addSipActionButtons($datatables, $appUser);
@@ -378,6 +362,20 @@ class AppUsersController extends AppBaseController
             $result = $this->getResult(false, 'SIP account deleted successfully');
 
         return $result;
+    }
+
+    public function getSipAccountsHtml($userId)
+    {
+        $appUser = AppUser::find($userId);
+
+        $options   = $appUser->getSipAccounts()->pluck('username', 'username');
+        $parameter = DB::table('did_action_parameters')
+            ->select(['name', 'id'])->whereName('APP user id')->first();
+        $html      = Former::label('SIP User');
+        $html .= Former::select("parameters[$parameter->id]")->options($options)
+            ->placeholder('SIP User')->label('')->required();
+
+        return $html;
     }
 
 }

@@ -6,12 +6,28 @@
             var $did_action = $('#did_action');
             setModalWidth(400);
             bindActionSelectEvent($did_action);
+            bindAppUserSelectEvent();
         });
 
 
         function bindActionSelectEvent($did_action) {
             $did_action.change(function() {
                 getParameters($did_action);
+                setTimeout(bindAppUserSelectEvent, 500);
+            });
+        }
+
+
+        function bindAppUserSelectEvent() {
+            var appUserSelect = $('#app_user_select');
+            var sipUsersDiv = $('#sip_users');
+            var ajaxCallback = function(data) {
+                sipUsersDiv.html(data);
+            };
+            appUserSelect.change(function() {
+                sipUsersDiv.html('Loading SIP Users...');
+                var userId = appUserSelect.val();
+                ajaxGetData('/app-users/sip-accounts-html/'+userId + '?app={{$APP->id}}', {}, ajaxCallback)
             });
         }
 
@@ -63,10 +79,11 @@
                         if ($param->name == 'Key-Action')
                             $method = 'textarea';
                         if (strpos($param->name, 'APP user id') !== false) {
+                            $selectName = $model->action_id == 3 ? 'app_user_select' : $selectName;
                             $users = AppUser::whereAppId($APP->id)->lists('name', 'id');
                             echo Former::select($selectName)->options($users, $model->owned_by)
                                     ->placeholder($param->name)->label('');
-
+                            echo $model->action_id == 3 ? '<div id="sip_users"></div>' : '';
                         } elseif (strpos($param->name, 'Conference') !== false) {
                             $conferences = \App\Models\Conference::whereAppId($APP->id)->lists('name', 'id');
                             echo Former::select($selectName)->options($conferences, $param->parameter_value)
