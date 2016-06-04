@@ -116,6 +116,17 @@ class App extends BaseModel
 
     }
 
+    public function createDidResource()
+    {
+        return $this->insertGetIdToBillingDB("
+                              insert into resource
+                              (alias,ingress,active)
+                              values (?,'t','t')
+                              RETURNING resource_id",
+            ["{$this->app->alias}_DID"],
+            'resource_id');
+    }
+
     /**
      * App menu config
      * @return array

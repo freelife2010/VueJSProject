@@ -227,8 +227,10 @@ class DID extends BaseModel
             [$this->did, date('Y-m-d H:i:s')], 'item_id');
 
         $appDidResource = $this->getResourceByAliasFromBillingDB("{$appUser->app->alias}_DID");
+        if (!$appDidResource)
+            $appDidResource = $appUser->app->createDidResource();
         $this->getFluentBilling('resource_prefix')->insert([
-            'resource_id'       => $appDidResource ? $appDidResource->resource_id : 0,
+            'resource_id'       => $appDidResource->resource_id,
             'route_strategy_id' => 138,
             'rate_table_id'     => 2262,
             'code'              => $this->did,
