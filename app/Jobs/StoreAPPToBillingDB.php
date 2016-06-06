@@ -44,6 +44,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
                             (name,currency_id)
                             values (?,?)  RETURNING rate_table_id',
             ["{$this->app->tech_prefix}_IDD", $currencyId], 'rate_table_id');
+        $clientId   = $this->getCurrentUserIdFromBillingDB($this->user);
 
         $this->createRates($rateTableId);
 
@@ -55,7 +56,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
 
         $this->createRates($rateTableDIDId);
 
-        $resourceId      = $this->createResource($rateTableId);
+        $resourceId      = $this->createResource($rateTableId, $clientId);
         $routeStrategyId = $this->createRouteStrategy();
         $this->createProducts($resourceId, $routeStrategyId);
 
@@ -63,7 +64,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
                   INSERT INTO resource_ip(ip, resource_id)
                   VALUES('69.27.168.50', ?)", [$resourceId]);
 
-        $this->createRouting($rateTableId);
+        $this->createRouting($rateTableId, $clientId);
 
     }
 
@@ -77,9 +78,8 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
         }
     }
 
-    private function createResource($rateTableId)
+    private function createResource($rateTableId, $clientId)
     {
-        $clientId   = $this->getCurrentUserIdFromBillingDB($this->user);
         $resourceId = $this->insertGetIdToBillingDB("
                               insert into resource
                               (alias,client_id,rate_table_id,ingress,egress,enough_balance,media_type)
@@ -157,21 +157,21 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
         $this->delete();
     }
 
-    public function createRouting($rateTableId)
+    public function createRouting($rateTableId, $clientId)
     {
         $didResourceId = $this->insertGetIdToBillingDB("
                               insert into resource
-                              (alias,ingress,active)
-                              values (?,'t','t')
+                              (alias,ingress,active, client_id)
+                              values (?,'t','t', ?)
                               RETURNING resource_id",
-            ["{$this->app->getAppAlias()}_DID"],
+            ["{$this->app->getAppAlias()}_DID", $clientId],
             'resource_id');
         $iddResourceId = $this->insertGetIdToBillingDB("
                               insert into resource
-                              (alias,egress,active, rate_table_id)
+                              (alias,egress,active, rate_table_id, client_id)
                               values (?,'t','t', ?)
                               RETURNING resource_id",
-            ["{$this->app->getAppAlias()}_IDD", $rateTableId],
+            ["{$this->app->getAppAlias()}_IDD", $rateTableId, $clientId],
             'resource_id');
     }
 
