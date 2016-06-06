@@ -61,7 +61,7 @@ class Misc
 
     public static function testXml($request)
     {
-        $xml     = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');
+        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');
         $xml->addAttribute('type', 'freeswitch/xml');
         $section = $xml->addChild('section');
         $section->addAttribute('name', 'dialplan');
@@ -105,6 +105,16 @@ class Misc
         foreach ($attributes as $attribute) {
             if (!isset($attr[$attribute->getName()]))
                 $parent->addAttribute($attribute->getName(), (string)$attribute);
+        }
+    }
+
+    static function isValidXML($xml)
+    {
+        $doc = @simplexml_load_string($xml);
+        if ($doc) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

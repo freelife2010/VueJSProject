@@ -5,6 +5,7 @@ namespace App\API\Controllers;
 use App\API\APIHelperTrait;
 use App\API\DIDXMLActionBuilder;
 use App\Helpers\APILogger;
+use App\Helpers\Misc;
 use App\Models\AppUser;
 use App\Models\ConferenceLog;
 use App\Models\DID;
@@ -520,9 +521,8 @@ class FreeswitchController extends Controller
         $client           = new Client();
         $request          = $client->request('GET', $actionParameter);
         $stringXML        = (string) $request->getBody();
-        if ($stringXML)
+        if (Misc::isValidXML($stringXML))
             $this->parseResponseXML($stringXML, $condition);
-        else $this->setDefaultPlayback($condition);
 
         APILogger::log($xml->asXML(), 'XML API Response');
 
@@ -544,9 +544,9 @@ class FreeswitchController extends Controller
         foreach ($children as $child) {
             $appendedChild = $parent->addChild($child->getName(), (string) $child);
             if ($child->attributes())
-                appendAttributes($child->attributes(), $appendedChild);
+                Misc::appendAttributes($child->attributes(), $appendedChild);
             if ($child->children())
-                appendChildren($child, $appendedChild);
+                Misc::appendChildren($child, $appendedChild);
         }
     }
 
