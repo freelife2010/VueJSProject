@@ -84,9 +84,8 @@ class DIDXMLActionBuilder
                 $transferAction->addAttribute('data', 'ivr_handling XML default');
                 break;
             case 'Queue':
-                $actionName = 'fifo';
-                $appId      = $this->did->appUser->app_id;
-                $actionParameter .= $this->did->id."-$appId".' in';
+                $this->makeQueueXmlResponse();
+                return;
                 break;
             case 'Dequeue':
                 $actionName = 'fifo';
@@ -121,6 +120,32 @@ class DIDXMLActionBuilder
         $action->addAttribute('application', $applicationName);
         if ($parameter)
             $action->addAttribute('data', $parameter);
+    }
+
+    private function makeQueueXmlResponse()
+    {
+        $actionName    = 'fifo';
+        $appId         = $this->did->appUser->app_id;
+        $parameters    = $this->did->actionParameters()->joinParamTable()->get();
+        $alias         = '';
+        $goodbyePrompt = '';
+        $this->appendAction('answer');
+        foreach ($parameters as $parameter) {
+            if ($parameter->name == 'Alias of the queue')
+                $alias = $parameter->parameter_value;
+            if ($parameter->name == 'Welcome Prompt' and $parameter->parameter_value)
+                $this->appendAction('playback', $parameter->parameter_value);
+            if ($parameter->name == 'Background Music' and $parameter->parameter_value)
+                $this->appendAction('set', "fifo_music=$parameter->parameter_value");
+            if ($parameter->name == 'Goodbye Prompt')
+                $goodbyePrompt = $parameter->parameter_value;
+
+        }
+        $alias .= $this->did->id . "-$appId" . ' in';
+        $this->appendAction($actionName, $alias);
+
+        if ($goodbyePrompt)
+            $this->appendAction('playback', $goodbyePrompt);
     }
 
 
