@@ -123,7 +123,7 @@ class App extends BaseModel
                               (alias,ingress,active)
                               values (?,'t','t')
                               RETURNING resource_id",
-            ["{$this->alias}_DID"],
+            ["{$this->getAppAlias()}_DID"],
             'resource_id');
     }
 
