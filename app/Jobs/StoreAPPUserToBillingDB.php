@@ -108,7 +108,7 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                   INSERT INTO resource_ip(ip, resource_id)
                   VALUES('158.69.203.191', ?)", [$resourceIdP2P]);
 
-        $appDidResource = $this->getResourceByAliasFromBillingDB("{$this->app->alias}_DID");
+        $appDidResource = $this->getResourceByAliasFromBillingDB("{$this->app->getAppAlias()}_DID");
 
         $this->getFluentBilling('resource_ip')->insert([
             'resource_id' => $appDidResource ? $appDidResource->resource_id: $resourceIdDID,
@@ -120,8 +120,8 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
     private function createDefaultSipUser($clientName, $resourceId, $productId)
     {
         $this->insertToBillingDB("
-                          insert into resource_ip (username, password, resource_id)
-                          values (?,?,?)",
+                          insert into resource_ip (username, password, resource_id, reg_type)
+                          values (?,?,?, 1)",
             [$clientName, $this->user->raw_password, $resourceId]);
 
         $sipResourceId = $this->insertGetIdToBillingDB("

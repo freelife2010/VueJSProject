@@ -223,7 +223,7 @@ class InfoAPIController extends Controller
     {
         if ($this->request->has('app_id')) {
             $app   = App::find($this->request->app_id);
-            $alias = $app->alias;
+            $alias = $app->getAppAlias();
         } else {
             $user  = AppUser::find($this->request->user_id);
             $alias = $user->getUserAlias();

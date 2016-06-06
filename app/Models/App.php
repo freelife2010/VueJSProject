@@ -107,7 +107,7 @@ class App extends BaseModel
     public function getDailyUsage()
     {
 
-        $resource   = $this->getResourceByAliasFromBillingDB($this->alias);
+        $resource   = $this->getResourceByAliasFromBillingDB($this->getAppAlias());
         $dailyUsage = new Collection();
         if ($resource)
             $dailyUsage = $this->getDailyUsageFromBillingDB($resource->resource_id);
@@ -230,10 +230,15 @@ class App extends BaseModel
 
     public function deleteAppFromBilling()
     {
-        $resource = $this->getResourceByAliasFromBillingDB($this->alias);
+        $resource = $this->getResourceByAliasFromBillingDB($this->getAppAlias());
         if ($resource) {
             $this->getFluentBilling('resource')->whereAlias($this->alias)->delete();
             $this->getFluentBilling('route_strategy')->whereName($this->name)->delete();
         }
+    }
+
+    public function getAppAlias()
+    {
+        return $this->tech_prefix;
     }
 }

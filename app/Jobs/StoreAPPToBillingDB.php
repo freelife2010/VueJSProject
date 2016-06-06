@@ -85,7 +85,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
                               (alias,client_id,rate_table_id,ingress,egress,enough_balance,media_type)
                               values (?,?,?,'f','t','t',2)
                               RETURNING resource_id",
-                                [$this->app->alias, $clientId, $rateTableId],
+                                [$this->app->getAppAlias(), $clientId, $rateTableId],
                                 'resource_id');
 
         return $resourceId;
@@ -96,7 +96,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
         $routeStrategyId = $this->insertGetIdToBillingDB("
                                     insert into route_strategy (name)
                                     values (?) RETURNING route_strategy_id",
-                                    [$this->app->name], 'route_strategy_id');
+                                    [$this->app->getAppAlias()], 'route_strategy_id');
 
         return $routeStrategyId;
     }
@@ -164,14 +164,14 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
                               (alias,ingress,active)
                               values (?,'t','t')
                               RETURNING resource_id",
-            ["{$this->app->alias}_DID"],
+            ["{$this->app->getAppAlias()}_DID"],
             'resource_id');
         $iddResourceId = $this->insertGetIdToBillingDB("
                               insert into resource
                               (alias,egress,active, rate_table_id)
                               values (?,'t','t', ?)
                               RETURNING resource_id",
-            ["{$this->app->alias}_IDD", $rateTableId],
+            ["{$this->app->getAppAlias()}_IDD", $rateTableId],
             'resource_id');
     }
 
@@ -180,7 +180,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
      */
     private function checkAliasExistence()
     {
-        $exists = $this->getResourceByAliasFromBillingDB($this->app->alias);
+        $exists = $this->getResourceByAliasFromBillingDB($this->app->getAppAlias());
 
         if ($exists) throw new \Exception('Unique violation. App alias already exists');
     }

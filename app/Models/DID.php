@@ -226,7 +226,7 @@ class DID extends BaseModel
                         values (1,?,1,0,32, ?) RETURNING item_id',
             [$this->did, date('Y-m-d H:i:s')], 'item_id');
 
-        $appDidResource = $this->getResourceByAliasFromBillingDB("{$appUser->app->alias}_DID");
+        $appDidResource = $this->getResourceByAliasFromBillingDB("{$appUser->app->getAppAlias()}_DID");
         if (!$appDidResource)
             $appDidResource = $appUser->app->createDidResource();
         $this->getFluentBilling('resource_prefix')->insert([

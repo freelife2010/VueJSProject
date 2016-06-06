@@ -46,7 +46,7 @@ class AppCDRController extends AppBaseController
             'resource.alias'
         ];
 
-        $resource = $this->getResourceByAliasFromBillingDB($this->app->alias);
+        $resource = $this->getResourceByAliasFromBillingDB($this->app->getAppAlias());
         $cdr      = new Collection();
         if ($resource)
             $cdr = $this->getFluentBilling('client_cdr')->select($fields)
@@ -74,7 +74,7 @@ class AppCDRController extends AppBaseController
 
         $fromDate = date('Y-m-d H:i:s', strtotime($request->from_date));
         $toDate   = date('Y-m-d H:i:s', strtotime($request->to_date));
-        $resource = $this->getResourceByAliasFromBillingDB($this->app->alias);
+        $resource = $this->getResourceByAliasFromBillingDB($this->app->getAppAlias());
         $cdr      = new Collection();
         if ($resource)
             $cdr = $this->getFluentBilling('client_cdr')->select($fields)
@@ -104,7 +104,7 @@ class AppCDRController extends AppBaseController
 
         $fromDate = date('Y-m-d H:i:s', strtotime($request->from_date));
         $toDate   = date('Y-m-d H:i:s', strtotime($request->to_date));
-        $resource = $this->getResourceByAliasFromBillingDB($this->app->alias);
+        $resource = $this->getResourceByAliasFromBillingDB($this->app->getAppAlias());
         $cdr      = new Collection();
         $apps     = \Auth::user()->apps;
         if ($resource)
@@ -132,7 +132,7 @@ class AppCDRController extends AppBaseController
         $fromDate   = date('Y-m-d H:i:s', strtotime($request->from_date));
         $toDate     = date('Y-m-d H:i:s', strtotime($request->to_date));
 
-        $resource   = $this->getResourceByAliasFromBillingDB($this->app->alias);
+        $resource   = $this->getResourceByAliasFromBillingDB($this->app->getAppAlias());
         $dailyUsage = new Collection();
         if ($resource)
             $dailyUsage = $this->getFluentBilling('cdr_report')->selectRaw($fields)
