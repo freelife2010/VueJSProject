@@ -64,7 +64,7 @@ class CDRController extends Controller
 
     public function getChartData(Request $request)
     {
-        $fields = [
+        $fields       = [
             'session_id',
             'time',
             'start_time_of_date',
@@ -77,12 +77,14 @@ class CDRController extends Controller
             'origination_source_number',
             'origination_destination_number'
         ];
-
-        $fromDate = date('Y-m-d H:i:s', strtotime($request->from_date));
-        $toDate   = date('Y-m-d H:i:s', strtotime($request->to_date));
+        $appEgressIds = \Auth::user()->getAllAppsEgressIds();
+        $fromDate     = date('Y-m-d H:i:s', strtotime($request->from_date));
+        $toDate       = date('Y-m-d H:i:s', strtotime($request->to_date));
 
         $cdr = $this->getFluentBilling('client_cdr')
-            ->select($fields)->whereBetween('time', [$fromDate, $toDate])->get();
+            ->select($fields)
+            ->whereIn('egress_client_id', $appEgressIds)
+            ->whereBetween('time', [$fromDate, $toDate])->get();
 
         $cdr = $this->formatCDRData($cdr);
 

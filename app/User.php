@@ -169,7 +169,17 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 		$this->setStripeId($customer->id);
 	}
 
+	public function getAllAppsEgressIds()
+	{
+		$appAliases   = $this->apps->pluck('tech_prefix');
+		$appResources = $this->getFluentBilling('resource')->whereIn('alias', $appAliases->all())->get();
+		$appEgressIds = [];
+		array_walk($appResources, function($resource) use (&$appEgressIds) {
+			$appEgressIds[] = $resource->resource_id;
+		});
 
+		return $appEgressIds;
+	}
 
 
 }
