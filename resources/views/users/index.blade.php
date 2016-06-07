@@ -21,6 +21,7 @@
                     {data: 'name'},
                     {data: 'email'},
                     {data: 'app_count'},
+                    {data: 'balance'},
                     {data: 'created_at'},
                     {data: 'actions'}
                 ]
@@ -59,6 +60,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Total APPs</th>
+                            <th>Balance</th>
                             <th>Registered at</th>
                             <th>Actions</th>
                         </tr>

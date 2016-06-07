@@ -47,6 +47,9 @@ class UserController extends Controller
                 return sprintf('<a href="%s" class="btn btn-sm btn-default">%s</a>',
                     url('users/app-list/' . $user->id), $totalApps);
             })
+            ->add_column('balance', function ($user) {
+                return $user->getClientBalance().'$';
+            })
             ->add_column('actions', function ($user) {
                 return $user->getDefaultActionButtons('users');
             })
