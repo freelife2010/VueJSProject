@@ -5,6 +5,7 @@ namespace App\API\Controllers;
 use App\API\APIHelperTrait;
 use App\API\DIDXMLActionBuilder;
 use App\Helpers\APILogger;
+use App\Helpers\BillingTrait;
 use App\Helpers\Misc;
 use App\Models\AppUser;
 use App\Models\ConferenceLog;
@@ -23,7 +24,7 @@ use Webpatser\Uuid\Uuid;
 
 class FreeswitchController extends Controller
 {
-    use Helpers, APIHelperTrait;
+    use Helpers, APIHelperTrait, BillingTrait;
 
 
     /**
@@ -588,16 +589,17 @@ class FreeswitchController extends Controller
             return $this->validationFailed($validator);
         }
 
-        $user = AppUser::whereEmail($request->user)->first();
+        $sipUser = $this->selectFromBillingDB('SELECT * from resource_ip WHERE username = ?', [$request->user]);
 
-        if (!$user)
+        if (!$sipUser)
             return new Response('User not found', 404, []);
-        else return $this->getFreeswitchUserXmlResponse($user);
+        else return $this->getFreeswitchUserXmlResponse($sipUser[0]);
 
     }
 
     protected function getFreeswitchUserXmlResponse($user)
     {
+        $appId  = substr($user->username, 0, 5 );
         $opensips_ip = env('OPENSIPS_IP', '158.69.203.191');
         $xml         = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><document></document>');
         $xml->addAttribute('type', 'freeswitch/xml');
@@ -606,11 +608,11 @@ class FreeswitchController extends Controller
         $domain = $section->addChild('domain');
         $domain->addAttribute('name', 'default');
         $param = $domain->addChild('params')->addChild('param');
-        $param->addAttribute('dial-string', "$user->id@$opensips_ip");
+        $param->addAttribute('dial-string', "$user->username@$opensips_ip");
         $group = $domain->addChild('groups')->addChild('group');
         $group->addAttribute('name', '18');
         $userNode = $group->addChild('users')->addChild('user');
-        $userNode->addAttribute('id', "$user->app_id");
+        $userNode->addAttribute('id', "$appId");
         $params = $userNode->addChild('params');
         $param  = $params->addChild('param');
         $param->addAttribute('name', 'password');
