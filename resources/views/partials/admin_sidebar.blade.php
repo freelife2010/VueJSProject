@@ -71,6 +71,12 @@
                         <span>Rates</span>
                     </a>
                 </li>
+                <li class=" {{ $helper->isActive('payments') }}">
+                    <a href=" {{ url('payments/admin') }}" title="Payments">
+                        <em class="fa fa-credit-card"></em>
+                        <span>Payments</span>
+                    </a>
+                </li>
             </ul>
             <!-- END sidebar nav-->
         </nav>

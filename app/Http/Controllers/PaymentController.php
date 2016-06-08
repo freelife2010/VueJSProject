@@ -34,11 +34,33 @@ class PaymentController extends Controller
         return view('payments.index', compact('title', 'subtitle'));
     }
 
+    public function getAdmin()
+    {
+        $title    = 'Payment history';
+        $subtitle = 'View payment history';
+
+        return view('payments.admin', compact('title', 'subtitle'));
+    }
+
     public function getData()
     {
         $payments = Payment::whereAccountId(Auth::user()->id);
 
         return Datatables::of($payments)
+            ->edit_column('amount', function ($payment) {
+                return round($payment->amount / 100);
+            })
+            ->make(true);
+    }
+
+    public function getAdminData()
+    {
+        $payments = Payment::all();
+
+        return Datatables::of($payments)
+            ->edit_column('account_id', function($payment) {
+                return $payment->developer ? $payment->developer->email : '';
+            })
             ->edit_column('amount', function ($payment) {
                 return round($payment->amount / 100);
             })

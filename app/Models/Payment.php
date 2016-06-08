@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Auth;
 use Config;
-use Illuminate\Database\Eloquent\Model;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Api\Amount;
@@ -14,15 +13,19 @@ use PayPal\Api\ItemList;
 use PayPal\Api\Payer;
 use PayPal\Api\Payment as PaypalPayment;
 use PayPal\Api\RedirectUrls;
-use PayPal\Api\ExecutePayment;
 use PayPal\Api\PaymentExecution;
 use PayPal\Api\Transaction;
 
-class Payment extends Model
+class Payment extends BaseModel
 {
     private $_paypal_api_context;
 
     protected $fillable = ['account_id', 'amount', 'stripe_transaction_id'];
+
+    public function developer()
+    {
+        return $this->belongsTo('App\User', 'account_id');
+    }
 
     public static function createStripePayment($charge)
     {
