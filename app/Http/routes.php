@@ -125,6 +125,7 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->controller('queue', 'App\API\Controllers\QueueAPIController');
     $api->controller('info', 'App\API\Controllers\InfoAPIController');
     $api->controller('ivr', 'App\API\Controllers\IVRAPIController');
+    $api->controller('developer', 'App\API\Controllers\DeveloperAPIController');
 
     //File api routes
     $api->get('voicemail/list/{id}', 'App\API\Controllers\FileAPIController@getVoicemailList');

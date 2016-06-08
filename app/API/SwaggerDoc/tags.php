@@ -49,4 +49,8 @@
  *   name="ivr",
  *   description="IVR API"
  * )
+ * @SWG\Tag(
+ *   name="developer",
+ *   description="Developer API"
+ * )
  */
