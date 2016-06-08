@@ -60,7 +60,7 @@ class DeveloperAPIController extends Controller
     /**
      * @SWG\Get(
      *     path="/api/developer/app-status",
-     *     summary="Return App's status'",
+     *     summary="Return current app's status'",
      *     tags={"developer"},
      *     @SWG\Response(response="200", description="App status"),
      *     @SWG\Response(response="400", description="Bad request"),
