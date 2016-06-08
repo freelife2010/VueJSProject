@@ -46,7 +46,6 @@ Route::controller('did', 'DIDController');
 
 Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function() {
     Route::controller('home', 'HomeController');
-    Route::controller('payments', 'PaymentController');
     Route::controller('app-users', 'AppUsersController');
     Route::controller('app-keys', 'AppKeysController');
     Route::controller('app-rates', 'AppRateController');
@@ -57,6 +56,15 @@ Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function() {
     Route::controller('pbx', 'PBXController');
     Route::controller('sms', 'SMSController');
     Route::controller('conferences', 'ConferenceController');
+
+    Route::group(['prefix' => 'payments'], function() {
+        Route::get('/', 'PaymentController@getIndex');
+        Route::get('data', 'PaymentController@getData');
+        Route::get('add-credit', 'PaymentController@getAddCredit');
+        Route::get('paypal-status', 'PaymentController@getPaypalStatus');
+        Route::post('create-stripe', 'PaymentController@postCreateStripe');
+        Route::post('create-paypal', 'PaymentController@postCreatePaypal');
+    });
 });
 
 Route::group(['middleware' => ['auth', 'csrf']], function() {
@@ -77,6 +85,9 @@ Route::group(['middleware' => ['auth','admin', 'csrf']], function() {
     Route::controller('rates', 'RateController');
 
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+
+    Route::get('payments/admin', 'PaymentController@getAdmin');
+    Route::get('payments/admin-data', 'PaymentController@getAdminData');
 });
 
 
