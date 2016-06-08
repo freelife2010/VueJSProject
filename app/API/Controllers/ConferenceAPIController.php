@@ -16,6 +16,56 @@ class ConferenceAPIController extends FileAPIController
         parent::__construct();
     }
 
+
+    /**
+     * @SWG\Get(
+     *     path="/api/conference/conference-list",
+     *     summary="Get list of conferences",
+     *     tags={"conferences"},
+     *     @SWG\Response(response="200", description="List of conferences"),
+     *     @SWG\Response(response="400", description="Bad request"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
+    public function getConferenceList()
+    {
+        $appId = $this->getAPPIdByAuthHeader();
+        $app   = App::findOrFail($appId);
+
+        return $this->defaultResponse(['conferences' => $app->conferences->pluck('name')]);
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/api/conference/show/{conferenceName}",
+     *     summary="Get list of conferences",
+     *     tags={"conferences"},
+     *     @SWG\Parameter(
+     *         description="Conference name",
+     *         name="conferenceName",
+     *         in="path",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Conference"),
+     *     @SWG\Response(response="400", description="Bad request"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @return bool|mixed
+     */
+    public function getShow($conferenceName)
+    {
+        $appId      = $this->getAPPIdByAuthHeader();
+        $app        = App::findOrFail($appId);
+        $conference = $app->conferences()->whereName($conferenceName)->first();
+        if ($conference)
+            return $this->defaultResponse(['conference' => $conference]);
+        else return $this->response->errorNotFound('Conference not found');
+    }
+
     /**
      * @SWG\Get(
      *     path="/api/conference/list/{user_id}",
