@@ -517,13 +517,14 @@ class FreeswitchController extends Controller
         $request          = Request::capture();
         $actionParameter  = $did->actionParameters()->joinParamTable()->first();
         $actionParameter  = $actionParameter ? $actionParameter->parameter_value : '';
-        $actionParameter .= '?callerid='.$request->input('Caller-ANI');
+        $actionParameter .= '&callerid='.$request->input('Caller-ANI');
         $actionParameter .= '&call-to='.$request->input('Caller-Destination-Number');
         $client           = new Client();
         $request          = $client->request('GET', $actionParameter);
         $stringXML        = (string) $request->getBody();
         if (Misc::isValidXML($stringXML))
             $this->parseResponseXML($stringXML, $condition);
+        else $this->setDefaultPlayback($condition);
 
         APILogger::log($xml->asXML(), 'XML API Response');
 
