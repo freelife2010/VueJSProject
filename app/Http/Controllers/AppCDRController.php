@@ -21,9 +21,9 @@ class AppCDRController extends AppBaseController
      */
     public function getIndex()
     {
-        $APP      = $this->app;
-        $title    = $APP->name . ': View CDR';
-        $subtitle = '';
+        $APP       = $this->app;
+        $title     = $APP->name . ': View CDR';
+        $subtitle  = '';
         $callTypes = ['Outgoing calls', 'Incoming calls'];
 
         return view('appCDR.index', compact('APP', 'title', 'subtitle', 'callTypes'));
@@ -32,27 +32,7 @@ class AppCDRController extends AppBaseController
     public function getData(Request $request)
     {
         $callType = $request->input('call_type');
-        $fields = [
-            'session_id',
-            'start_time_of_date',
-            'release_tod',
-            'ani_code_id',
-            'dnis_code_id',
-            'call_duration',
-            'agent_rate',
-            'agent_cost',
-            'origination_source_number',
-            'origination_destination_number',
-            'resource.alias'
-        ];
-
-        $resource = $this->getResourceByAliasFromBillingDB($this->app->getAppAlias());
-        $cdr      = new Collection();
-        if ($resource)
-            $cdr = $this->getFluentBilling('client_cdr')->select($fields)
-                    ->whereEgressClientId($resource->resource_id)
-                    ->whereCallType($callType)
-                    ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
+        $cdr      = $this->app->getCDR()->whereCallType($callType);
 
         return Datatables::of($cdr)->make(true);
     }
@@ -78,8 +58,8 @@ class AppCDRController extends AppBaseController
         $cdr      = new Collection();
         if ($resource)
             $cdr = $this->getFluentBilling('client_cdr')->select($fields)
-                    ->whereEgressClientId($resource->resource_id)
-                    ->whereBetween('time', [$fromDate, $toDate])->get();
+                ->whereEgressClientId($resource->resource_id)
+                ->whereBetween('time', [$fromDate, $toDate])->get();
 
 
         $cdr = $this->formatCDRData($cdr);
@@ -111,9 +91,9 @@ class AppCDRController extends AppBaseController
             foreach ($apps as $app) {
 
             }
-            $cdr = $this->getFluentBilling('client_cdr')->select($fields)
-                ->whereEgressClientId($resource->resource_id)
-                ->whereBetween('time', [$fromDate, $toDate])->get();
+        $cdr = $this->getFluentBilling('client_cdr')->select($fields)
+            ->whereEgressClientId($resource->resource_id)
+            ->whereBetween('time', [$fromDate, $toDate])->get();
 
 
         $cdr = $this->formatCDRData($cdr);
@@ -123,14 +103,14 @@ class AppCDRController extends AppBaseController
 
     public function getChartDailyUsageData(Request $request)
     {
-        $fields     =
+        $fields =
             'report_time,
              duration,
              sum(ingress_bill_time)/60 as min,
              sum(ingress_call_cost+lnp_cost) as cost';
 
-        $fromDate   = date('Y-m-d H:i:s', strtotime($request->from_date));
-        $toDate     = date('Y-m-d H:i:s', strtotime($request->to_date));
+        $fromDate = date('Y-m-d H:i:s', strtotime($request->from_date));
+        $toDate   = date('Y-m-d H:i:s', strtotime($request->to_date));
 
         $resource   = $this->getResourceByAliasFromBillingDB($this->app->getAppAlias());
         $dailyUsage = new Collection();

@@ -7,6 +7,7 @@ use App\Helpers\Misc;
 use Auth;
 use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -81,6 +82,7 @@ class App extends BaseModel
         $apps = App::whereAccountId($user->id);
         if ($fields)
             $apps->select($fields);
+
         return $apps;
     }
 
@@ -95,9 +97,9 @@ class App extends BaseModel
                 <a href=\"%1\$s\" title=\"%2\$s\">
                     <span>%2\$s</span>
                 </a>
-            </li>", url('app/dashboard/?app='.$app->id),
-                    $app->name,
-                    $app->id == $activeApp ? "active" : '');
+            </li>", url('app/dashboard/?app=' . $app->id),
+                $app->name,
+                $app->id == $activeApp ? "active" : '');
         }
 
         return $html;
@@ -135,9 +137,9 @@ class App extends BaseModel
     {
         return [
             [
-                'name' => 'APP Info',
-                'icon' => 'icon-drawer',
-                'url'  => 'app-data',
+                'name'    => 'APP Info',
+                'icon'    => 'icon-drawer',
+                'url'     => 'app-data',
                 'subMenu' => [
                     [
                         'name' => 'View APP CDR',
@@ -152,9 +154,9 @@ class App extends BaseModel
                 ]
             ],
             [
-                'name'       => 'Finance',
-                'icon'       => 'fa fa-money',
-                'url'        => 'app-rates',
+                'name'    => 'Finance',
+                'icon'    => 'fa fa-money',
+                'url'     => 'app-rates',
                 'subMenu' => [
                     [
                         'name' => 'Sell rates',
@@ -164,9 +166,9 @@ class App extends BaseModel
                 ]
             ],
             [
-                'name'       => 'PBX',
-                'icon'       => 'fa fa-phone',
-                'url'        => 'app-pbx',
+                'name'    => 'PBX',
+                'icon'    => 'fa fa-phone',
+                'url'     => 'app-pbx',
                 'subMenu' => [
                     [
                         'name' => 'Conference log',
@@ -186,14 +188,14 @@ class App extends BaseModel
                 ]
             ],
             [
-                'name'       => 'SMS',
-                'icon'       => 'icon-speech',
-                'url'        => 'sms/inbox'
+                'name' => 'SMS',
+                'icon' => 'icon-speech',
+                'url'  => 'sms/inbox'
             ],
             [
-                'name'       => 'SIP Accounts',
-                'icon'       => 'icon-earphones',
-                'url'        => 'app-users/sip'
+                'name' => 'SIP Accounts',
+                'icon' => 'icon-earphones',
+                'url'  => 'app-users/sip'
             ],
             [
                 'name'       => 'API keys',
@@ -240,5 +242,29 @@ class App extends BaseModel
     public function getAppAlias()
     {
         return $this->tech_prefix;
+    }
+
+    public function getCDR()
+    {
+        $fields = [
+            'session_id',
+            'start_time_of_date',
+            'release_tod',
+            'ani_code_id',
+            'dnis_code_id',
+            'call_duration',
+            'agent_rate',
+            'agent_cost',
+            'origination_source_number',
+            'origination_destination_number',
+            'resource.alias'
+        ];
+
+        $resource = $this->getResourceByAliasFromBillingDB($this->getAppAlias());
+        $cdr      = $this->getFluentBilling('client_cdr')->select($fields)
+            ->whereEgressClientId($resource->resource_id)
+            ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
+
+        return $cdr;
     }
 }
