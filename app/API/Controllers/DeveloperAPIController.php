@@ -78,6 +78,35 @@ class DeveloperAPIController extends Controller
         return $this->defaultResponse(['app_status' => $appStatus]);
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/developer/change-password",
+     *     summary="Create new APP",
+     *     tags={"developer"},
+     *     @SWG\Parameter(
+     *         description="New password",
+     *         in="formData",
+     *         name="password",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param $password
+     */
+    public function postChangePassword()
+    {
+        $developer = $this->getDeveloper();
+
+        $developer->password = $this->request->password;
+
+        if ($developer->save())
+            return $this->defaultResponse(['result' => 'Password changed']);
+        else $this->response->errorInternal('Could not change password');
+    }
+
     private function getDeveloper()
     {
         $appId = $this->getAPPIdByAuthHeader();
@@ -92,8 +121,8 @@ class DeveloperAPIController extends Controller
     private function makeAppStatus($app)
     {
         return [
-            'status' => $app->status ? 'Active' : 'Inactive',
-            'users' => $app->users->pluck('email'),
+            'status'       => $app->status ? 'Active' : 'Inactive',
+            'users'        => $app->users->pluck('email'),
             'active_users' => $app->users()->where('users.last_status', 1)->get()->pluck('email')
         ];
     }
