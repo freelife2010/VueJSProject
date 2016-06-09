@@ -53,4 +53,8 @@
  *   name="developer",
  *   description="Developer API"
  * )
+ *  * @SWG\Tag(
+ *   name="app",
+ *   description="APP API"
+ * )
  */

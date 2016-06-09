@@ -28,19 +28,49 @@ class PublicAPIController extends Controller{
         $this->initAPI();
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/app/create",
+     *     summary="Create new APP",
+     *     tags={"app"},
+     *     @SWG\Parameter(
+     *         description="App name",
+     *         in="formData",
+     *         name="name",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Developer Account ID",
+     *         in="formData",
+     *         name="account_id",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *      @SWG\Parameter(
+     *         description="Auth sign",
+     *         in="formData",
+     *         name="sign",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return
+     */
     public function createAPP(Request $request)
     {
-        $validator = $this->makeValidator($request, [
+        $this->setValidator([
             'name'       => 'required|unique:app',
             'account_id' => 'required',
             'sign'       => 'required'
         ]);
-        if ($validator->fails()) {
-            return $this->validationFailed($validator);
-        }
         $sign      = $this->getSign($request);
         if ($sign != $request->input('sign'))
-            return $this->makeErrorResponse('Incorrect sign');
+             $this->response->errorUnauthorized('Incorrect sign, access denied');
         else return $this->makeApp($request);
     }
 
@@ -56,9 +86,10 @@ class PublicAPIController extends Controller{
         if ($user and $app->createApp($attributes, $user)) {
             $this->dispatch(new StoreAPPToBillingDB($app, $user));
             $this->dispatch(new StoreAPPToChatServer($app, $user));
+            $key = $app->keys->pop();
             $response = [
-                'app_uuid'   => $app->key->id,
-                'app_secret' => $app->key->secret,
+                'app_uuid'   => $key->id,
+                'app_secret' => $key->secret,
                 'duration'   => App::APP_KEYS_EXPIRE_DAYS,
             ];
 

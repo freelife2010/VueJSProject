@@ -169,7 +169,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
         $iddResourceId = $this->insertGetIdToBillingDB("
                               insert into resource
                               (alias,egress,active, rate_table_id, client_id)
-                              values (?,'t','t', ?)
+                              values (?,'t','t', ?, ?)
                               RETURNING resource_id",
             ["{$this->app->getAppAlias()}_IDD", $rateTableId, $clientId],
             'resource_id');

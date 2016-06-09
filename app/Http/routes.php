@@ -96,7 +96,7 @@ Route::group(['middleware' => ['auth','admin', 'csrf']], function() {
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function ($api) {
-    $api->post('apps', 'App\API\Controllers\PublicAPIController@CreateAPP');
+    $api->post('app/create', 'App\API\Controllers\PublicAPIController@CreateAPP');
 
     //Grants access token
     $api->post('token', function() {
