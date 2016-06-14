@@ -135,6 +135,15 @@ class AppUsersController extends AppBaseController
                 return $user->last_status ? 'Active' : 'Inactive';
             })
             ->add_column('actions', function ($user) {
+                $html = $user->getActionButtonsWithAPP('app-users', $this->app, ['delete']);
+                $options = [
+                    'url' => "app-user-payments/$user->id?app={$this->app->id}",
+                    'name' => '',
+                    'title' => 'View user payment history',
+                    'icon' => 'fa fa-usd',
+                    'class' => 'btn-info'
+                ];
+                $html .= $user->generateButton($options);
                 $options = [
                     'url' => 'app-users/daily-usage/' . $user->id . '?app=' . $this->app->id,
                     'name' => '',
@@ -142,8 +151,7 @@ class AppUsersController extends AppBaseController
                     'icon' => 'icon-calculator',
                     'class' => 'btn-default'
                 ];
-                $html = $user->generateButton($options);
-                $html .= $user->getActionButtonsWithAPP('app-users', $this->app, ['delete']);
+                $html .= $user->generateButton($options);
 
                 return $html;
             })
@@ -156,6 +164,9 @@ class AppUsersController extends AppBaseController
 
                 return $html;
 
+            })
+            ->add_column('balance', function ($user) {
+                return $user->getClientBalance().'$';
             })
             ->make(true);
     }

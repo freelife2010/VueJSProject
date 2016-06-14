@@ -22,6 +22,7 @@
                     {data: 'email'},
                     {data: 'phone'},
                     {data: 'did'},
+                    {data: 'balance'},
                     {data: 'last_status'},
                     {data: 'actions'}
                 ],
@@ -68,6 +69,7 @@
                             <th>E-mail</th>
                             <th>Phone</th>
                             <th>DID</th>
+                            <th>Balance</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>

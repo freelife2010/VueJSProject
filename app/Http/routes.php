@@ -14,8 +14,7 @@
 
 use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 
-Response::macro('xml', function(array $vars, $status = 200, array $header = [], $xml = null)
-{
+Response::macro('xml', function (array $vars, $status = 200, array $header = [], $xml = null) {
     if (is_null($xml)) {
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><response/>');
     }
@@ -29,13 +28,14 @@ Response::macro('xml', function(array $vars, $status = 200, array $header = [], 
     if (empty($header)) {
         $header['Content-Type'] = 'application/xml';
     }
+
     return Response::make($xml->asXML(), $status, $header);
 });
 
 Route::pattern('id', '[0-9]+');
 
 Route::controllers([
-    'auth' => 'Auth\AuthController',
+    'auth'     => 'Auth\AuthController',
     'password' => 'Auth\PasswordController'
 ]);
 
@@ -44,7 +44,7 @@ Route::get('/voice/{filename}', 'HomeController@getVoiceMail');
 Route::controller('app', 'AppController');
 Route::controller('did', 'DIDController');
 
-Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function() {
+Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function () {
     Route::controller('home', 'HomeController');
     Route::controller('app-users', 'AppUsersController');
     Route::controller('app-keys', 'AppKeysController');
@@ -57,7 +57,7 @@ Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function() {
     Route::controller('sms', 'SMSController');
     Route::controller('conferences', 'ConferenceController');
 
-    Route::group(['prefix' => 'payments'], function() {
+    Route::group(['prefix' => 'payments'], function () {
         Route::get('/', 'PaymentController@getIndex');
         Route::get('data', 'PaymentController@getData');
         Route::get('add-credit', 'PaymentController@getAddCredit');
@@ -65,9 +65,18 @@ Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function() {
         Route::post('create-stripe', 'PaymentController@postCreateStripe');
         Route::post('create-paypal', 'PaymentController@postCreatePaypal');
     });
+
+    Route::group(['prefix' => 'app-user-payments'], function () {
+        Route::get('/{id}', 'AppUserPaymentController@getIndex')->name('user_payments.index');
+        Route::get('/data/{id}', 'AppUserPaymentController@getData')->name('user_payments.data');
+        Route::get('/add-credit/{id}', 'AppUserPaymentController@getAddCredit')->name('user_payments.add_credit');
+        Route::post('create-stripe/{id}', 'AppUserPaymentController@postCreateStripe')->name('user_payments.create_stripe');
+        Route::post('create-paypal/{id}', 'AppUserPaymentController@postCreatePaypal')->name('user_payments.create_paypal');
+        Route::get('/paypal-status/{id}', 'AppUserPaymentController@getPaypalStatus')->name('user_payments.paypal_status');
+    });
 });
 
-Route::group(['middleware' => ['auth', 'csrf']], function() {
+Route::group(['middleware' => ['auth', 'csrf']], function () {
     Route::get('/edit-profile/{id}', 'UserController@getEditProfile');
     Route::post('/users/edit/{id}', 'UserController@postEdit');
 });
@@ -77,7 +86,7 @@ Route::get('/resendEmail', 'Auth\AuthController@resendEmail');
 Route::get('/activate/{code}', 'Auth\AuthController@activateAccount');
 
 //Admin routes
-Route::group(['middleware' => ['auth','admin', 'csrf']], function() {
+Route::group(['middleware' => ['auth', 'admin', 'csrf']], function () {
     Route::controller('emails', 'EmailController');
     Route::controller('costs', 'CostController');
     Route::controller('revisions', 'RevisionsController');
@@ -99,7 +108,7 @@ $api->version('v1', function ($api) {
     $api->post('app/create', 'App\API\Controllers\PublicAPIController@CreateAPP');
 
     //Grants access token
-    $api->post('token', function() {
+    $api->post('token', function () {
         return Response::json(Authorizer::issueAccessToken());
     });
 });
@@ -156,7 +165,8 @@ Route::post('user', '\App\API\Controllers\FreeswitchController@getFreeswitchUser
 
 
 //test xml conversion method
-Route::post('testxml', function() {
+Route::post('testxml', function () {
     $request = \Illuminate\Http\Request::capture();
+
     return \App\Helpers\Misc::testXml($request);
 });

@@ -94,7 +94,6 @@ class DeveloperAPIController extends Controller
      *     @SWG\Response(response="401", description="Auth required"),
      *     @SWG\Response(response="500", description="Internal server error")
      * )
-     * @param $password
      */
     public function postChangePassword()
     {

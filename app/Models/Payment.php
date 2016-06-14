@@ -55,8 +55,10 @@ class Payment extends BaseModel
         $this->_paypal_api_context->setConfig($paypal_conf['settings']);
     }
 
-    public function makePayPalPayment($price)
+    public function makePayPalPayment($price, $user = null, $returnUrl = '')
     {
+        $user = $user ?: Auth::user();
+        $returnUrl = $returnUrl ?: url('payments/paypal-status');
         $this->preparePayPalAPI();
 
         $payer = new Payer();
@@ -78,11 +80,11 @@ class Payment extends BaseModel
         $transaction = new Transaction();
         $transaction->setAmount($amount)
             ->setItemList($item_list)
-            ->setDescription('Opentact credit supplement by developer: '.Auth::user()->email);
+            ->setDescription('Opentact credit supplement by developer: '.$user->email);
 
         $redirect_urls = new RedirectUrls();
-        $redirect_urls->setReturnUrl(url('payments/paypal-status'))
-            ->setCancelUrl(url('payments/paypal-status'));
+        $redirect_urls->setReturnUrl($returnUrl)
+            ->setCancelUrl($returnUrl);
 
         $payment = new PaypalPayment();
         $payment->setIntent('Sale')

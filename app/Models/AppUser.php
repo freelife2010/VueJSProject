@@ -5,16 +5,20 @@ namespace App\Models;
 use App\Helpers\BillingTrait;
 use App\Helpers\Misc;
 use Auth;
-use File;
+use Cache;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Validator;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Webpatser\Uuid\Uuid;
+use Laravel\Cashier\Billable;
+use Laravel\Cashier\Contracts\Billable as BillableContract;
 
-class AppUser extends BaseModel
+class AppUser extends BaseModel implements BillableContract
 {
-    use SoftDeletes, RevisionableTrait, BillingTrait;
+    use SoftDeletes, RevisionableTrait, BillingTrait, Billable;
+
+    protected $clientId;
 
     public function app()
     {
@@ -110,7 +114,7 @@ class AppUser extends BaseModel
         $resource = $this->getResourceByAliasFromBillingDB($alias);
         $username = Misc::filterNumbers($alias) . rand(100, 999);
         $inserted = false;
-        $sipUser = [
+        $sipUser  = [
             'resource_id' => $resource->resource_id,
             'username'    => $username,
             'password'    => $password,
@@ -188,7 +192,7 @@ class AppUser extends BaseModel
             'reg_status'
         ];
 
-        $resource = $this->getResourceByAliasFromBillingDB($this->getUserAlias());
+        $resource    = $this->getResourceByAliasFromBillingDB($this->getUserAlias());
         $sipAccounts = [];
         if ($resource) {
             $sipAccounts = $this->getFluentBilling('resource_ip')
@@ -197,6 +201,51 @@ class AppUser extends BaseModel
         }
 
         return new Collection($sipAccounts);
+    }
+
+    public function getClientBalance()
+    {
+        $balance = Cache::get('balance_' . $this->id);
+        if ($balance === null) {
+            $this->clientId = $this->getClientIdByAliasFromBillingDB($this->getUserAlias());
+            $balance        = $this->getClientBalanceFromBillingDB($this->clientId);
+            if ($balance === false)
+                $this->createClientBalance();
+        }
+
+        $balance = round($balance, 2);
+
+        Cache::add('balance_' . $this->id, $balance, 10);
+
+        return $balance;
+    }
+
+    public function createClientBalance()
+    {
+        $this->insertToBillingDB("
+                    insert into c4_client_balance (client_id,balance,ingress_balance)
+                    values (?,?,?)",
+            [$this->clientId, 0, 0]);
+    }
+
+    public function addCredit($amount)
+    {
+        $clientId       = $this->getClientIdByAliasFromBillingDB($this->getUserAlias());
+        $currentBalance = $this->getClientBalanceFromBillingDB($clientId) * 100;
+        $newSum         = $currentBalance + $amount;
+        $newSum         = $newSum ? $newSum / 100 : 0;
+        $newSum         = money_format('%i', $newSum);
+
+        $db = $this->getFluentBilling('c4_client_balance');
+
+        $this->clearBalanceCache();
+
+        return $db->whereClientId($clientId)->update(['balance' => $newSum]);
+    }
+
+    public function clearBalanceCache()
+    {
+        Cache::forget('balance_'.$this->id);
     }
 
 

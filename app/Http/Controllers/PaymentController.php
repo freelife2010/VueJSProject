@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Helpers\BillingTrait;
 
 use App\Http\Requests;
+use App\Models\AppUser;
 use App\Models\Payment;
 use Auth;
 use Config;
+use DB;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Redirect;
@@ -58,7 +60,7 @@ class PaymentController extends Controller
         $payments = Payment::all();
 
         return Datatables::of($payments)
-            ->edit_column('account_id', function($payment) {
+            ->edit_column('account_id', function ($payment) {
                 return $payment->developer ? $payment->developer->email : '';
             })
             ->edit_column('amount', function ($payment) {
