@@ -76,18 +76,18 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                                   values (?) RETURNING route_strategy_id",
             [$clientName], 'route_strategy_id');
 
-        $this->insertToBillingDB("insert into route (static_route_id, route_type,
+        $this->insertToBillingDB("insert into route (digits, static_route_id, route_type,
                                     route_strategy_id, digits_min_length, digits_max_length)
-                                  values (?, 2, ?, 16, 32)",
-            [$productId, $routeStrategyId]);
+                                  values (?, ?, 2, ?, 16, 32)",
+            [$this->app->tech_prefix, $productId, $routeStrategyId]);
 
         $appProduct = $this->getFluentBilling('product')->whereName($this->app->tech_prefix)->first();
 
 
         $this->insertToBillingDB("insert into route (static_route_id, route_type,
-                                    route_strategy_id, digits_min_length, digits_max_length, digits)
+                                    route_strategy_id, digits_min_length, digits_max_length)
                                   values (?, 2, ?, 0, 15, ?)",
-            [$appProduct->product_id, $routeStrategyId, $this->app->tech_prefix]);
+            [$appProduct->product_id, $routeStrategyId]);
 
         $this->insertToBillingDB("insert into resource_prefix (resource_id , tech_prefix ,
                                               route_strategy_id, rate_table_id)

@@ -52,7 +52,7 @@
                         <tr>
                             <th>Country</th>
                             <th>Code</th>
-                            <th>Value (USD, cents)</th>
+                            <th>Value (USD, Cents)</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
