@@ -231,7 +231,7 @@ class DID extends BaseModel
             $appDidResource = $appUser->app->createDidResource();
         $this->getFluentBilling('resource_prefix')->insert([
             'resource_id'       => $appDidResource->resource_id,
-            'route_strategy_id' => 138,
+            'route_strategy_id' => 1,
             'rate_table_id'     => 2262,
             'code'              => $this->did,
             'product_id'        => 0
