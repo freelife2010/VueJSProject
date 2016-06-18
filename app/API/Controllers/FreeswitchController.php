@@ -534,9 +534,7 @@ class FreeswitchController extends Controller
     protected function parseResponseXML($stringXML, $condition)
     {
         $simpleXml = new SimpleXMLElement($stringXML);
-        $action    = $condition->addChild('action');
-        $this->appendXMLAttributes($simpleXml->attributes(), $action);
-        $this->appendXMLChildren($simpleXml, $action);
+        $this->appendXMLChildren($simpleXml, $condition);
     }
 
     protected function appendXMLChildren($element, $parent)
