@@ -31,7 +31,7 @@
 @section('subtitle') {{ $subtitle }} @stop
 @section('content')
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-2">
             @include('flash::message')
         </div>
     </div>
