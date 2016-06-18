@@ -194,6 +194,7 @@ class PaymentAPIController extends Controller
         $result = [];
         $data   = $this->selectFromBillingDB('
                     select country from rate where rate_table_id = ?
+                    AND country IS NOT NULL
                     AND ((now() BETWEEN effective_date AND end_date) OR end_date IS NULL )', [$rateTableId]);
         if ($data) {
             foreach ($data as $entry) {
