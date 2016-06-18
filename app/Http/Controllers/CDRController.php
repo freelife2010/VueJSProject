@@ -28,19 +28,18 @@ class CDRController extends Controller
 
     public function getData(Request $request)
     {
-//        DB::enableQueryLog();
         $startDate = '1971-01-01';
         if ($request->input('from_date')){
             $startDate = $request->input('from_date');
         }
         $callType = $request->input('call_type');
         $cdr      = $this->queryCdr($callType,$startDate);
-//        dd(DB::getQueryLog());
         return Datatables::of($cdr)->make(true);
     }
 
-    protected function queryCdr($callType='0',$startDate)
+    protected function queryCdr($callType='0',$startDate = '')
     {
+        $startDate = $startDate ?: '1971-01-01';
         $fields = [
             'time',
             'trunk_id_origination',
