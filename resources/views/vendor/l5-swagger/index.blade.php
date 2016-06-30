@@ -1,6 +1,6 @@
 <?php
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Methods: GET, POST, PUT');
 header("Access-Control-Allow-Headers: X-Requested-With");
 ?>
 <!DOCTYPE html>
@@ -36,6 +36,7 @@ header("Access-Control-Allow-Headers: X-Requested-With");
             } else {
                 url = "{{{ $urlToDocs }}}";
             }
+
             window.swaggerUi = new SwaggerUi({
                 url: url,
                 dom_id: "swagger-ui-container",
