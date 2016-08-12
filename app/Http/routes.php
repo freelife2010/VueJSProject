@@ -41,8 +41,11 @@ Route::controllers([
 
 Route::get('/', 'HomeController@getIndex');
 Route::get('/voice/{filename}', 'HomeController@getVoiceMail');
+Route::controller('app-config', 'AppConfigController');
+Route::controller('usage-history', 'UsageHistoryController');
 Route::controller('app', 'AppController');
 Route::controller('did', 'DIDController');
+Route::controller('did-admin', 'DIDAdminController');
 
 Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function () {
     Route::controller('home', 'HomeController');
@@ -119,6 +122,7 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
     $api->get('users', 'App\API\Controllers\UserController@getUsers');
     $api->post('users', 'App\API\Controllers\UserController@createUsers');
+    $api->post('users/change-password', 'App\API\Controllers\UserController@changePassword');
     $api->get('users/{username}', 'App\API\Controllers\UserController@getUserInfo');
 
     //SIP user routes
@@ -129,12 +133,16 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
     //Controllers
     $api->controller('did', 'App\API\Controllers\DIDController');
+    $api->post('did/searchUSTFdid', 'App\API\Controllers\DIDController@postSearchUSTFdid');
     $api->controller('sms', 'App\API\Controllers\SMSAPIController');
     $api->controller('conference', 'App\API\Controllers\ConferenceAPIController');
     $api->controller('queue', 'App\API\Controllers\QueueAPIController');
     $api->controller('info', 'App\API\Controllers\InfoAPIController');
     $api->controller('ivr', 'App\API\Controllers\IVRAPIController');
     $api->controller('developer', 'App\API\Controllers\DeveloperAPIController');
+    $api->controller('friend', 'App\API\Controllers\FriendAPIController');
+    $api->controller('mass-call', 'App\API\Controllers\MassCallAPIController');
+    $api->controller('rates', 'App\API\Controllers\RateController');
 
     //File api routes
     $api->get('voicemail/list/{id}', 'App\API\Controllers\FileAPIController@getVoicemailList');

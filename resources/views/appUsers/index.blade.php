@@ -56,6 +56,14 @@
                                <i class="fa fa-upload"></i>
                            </span>Import users
                     </a>
+                    <a href="{{{ URL::to('app-users/add-credit/?app='.$APP->id) }}}"
+                       data-target="#myModal"
+                       data-toggle="modal"
+                       class="btn btn-labeled btn-info">
+                        <span class="btn-label">
+                               <i class="fa fa-plus"></i>
+                           </span>Add Credit
+                    </a>
                 </div>
             </div>
             <br/>

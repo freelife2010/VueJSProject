@@ -362,5 +362,60 @@ class UserController extends Controller
 
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/users/change-password",
+     *     summary="Change Password",
+     *     tags={"users"},
+     *     @SWG\Parameter(
+     *         description="App user id",
+     *         in="formData",
+     *         name="user_id",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="App user password",
+     *         name="password",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="App user password repeat",
+     *         name="repeat_password",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="New App user password",
+     *         name="new_password",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Success result"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     * )
+     */
+    public function changePassword()
+    {
+        $user = AppUser::find($this->request->user_id);
+        $response = $this->makeErrorResponse('The password can not be empty');
+        if (!empty($this->request->password) && !empty($this->request->repeat_password) && !empty($this->request->new_password)) {
+            $response = $this->makeErrorResponse('Password and repeat password do not match');
+            if ($this->request->password == $this->request->repeat_password) {
+                $response = $this->makeErrorResponse('Password is incorrect');
+                if ($this->request->password == $user->password) {
+                    $user->update(['password' => $this->request->new_password]);
+                    $response = $this->defaultResponse(['message' => 'The password was successfully updated']);
+                }
+            }
+
+        }
+
+        return $response;
+    }
 
 }

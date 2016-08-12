@@ -35,6 +35,12 @@ class AppUser extends BaseModel implements BillableContract
         return $this->hasMany('App\Models\DID', 'owned_by')->whereNull('deleted_at');
     }
 
+    public function friendList()
+    {
+        return $this->hasMany('App\Models\UserFriendList', 'user_id');
+    }
+    
+
     protected $table = 'users';
 
     protected $fillable = [
@@ -124,22 +130,13 @@ class AppUser extends BaseModel implements BillableContract
             'direction'   => 0
         ];
         if ($resource) {
-            $inserted      = $this->getFluentBilling('resource_ip')
+            $inserted = $this->getFluentBilling('resource_ip')
                 ->insert($sipUser);
             $sipResourceId = $this->insertGetIdToBillingDB("
                                     insert into resource ( alias, egress )
                                     values (?, 't') RETURNING resource_id",
                 [$username], 'resource_id');
             $userProduct   = $this->getUserProductId();
-//            $productItemId = $this->insertGetIdToBillingDB("
-//                                    insert into product_items ( product_id, digits )
-//                                    values (?, ?) RETURNING item_id",
-//                [$userProduct, $username], 'item_id');
-//
-//            $this->getFluentBilling('product_items_resource')->insert([
-//                'item_id'     => $productItemId,
-//                'resource_id' => $sipResourceId
-//            ]);
 
             $this->getFluentBilling('resource_ip')->insert([
                 'resource_id' => $sipResourceId,

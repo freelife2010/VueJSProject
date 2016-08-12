@@ -100,11 +100,13 @@ class PublicAPIController extends Controller{
 
     public function getTokenInfo()
     {
+
         $response    = $this->makeErrorResponse('Failed to get access token info');
         $accessToken = $this->getAccessTokenFromHeader();
         $accessToken = DB::table('oauth_access_tokens')
                         ->select(['created_at as created', 'expire_time as expiration'])
                         ->whereId($accessToken)->first();
+
         if ($accessToken)
             $response = $this->defaultResponse(['entities' => (array) $accessToken]);
 

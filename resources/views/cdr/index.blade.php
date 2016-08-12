@@ -114,6 +114,12 @@
             <br/>
             <div style="width: 40%">
                 <?= Former::horizontal_open() ?>
+                <?= Former::select('filter')->options(['Peer to Peer', 'DID Calls', 'Toll Free Calls', 'Forwarded Callse', 'Diales Calls'], 0)->label('Filter')
+                        ->style('width: 150px')?>
+                <?= Former::close()?>
+            </div>
+            <div style="width: 40%">
+                <?= Former::horizontal_open() ?>
                 <?= Former::select('call_type')->options($callTypes, 0)->label('Call type')
                         ->style('width: 150px')?>
                 <?= Former::close()?>

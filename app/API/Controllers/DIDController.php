@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Models\App;
 use App\Models\DID;
+use App\Models\DIDCost;
 use Config;
 use DB;
 use Dingo\Api\Routing\Helpers;
@@ -145,10 +146,73 @@ class DIDController extends Controller
             return $this->response->errorNotFound('State not found');
 
         $numbers     = $did->getAvailableNumbers($state, $rateCenter);
+        $didCost = DIDCost::select('value')->where('state', $state)->first();
+        $stateRate = isset($didCost->value) ? $didCost->value : 0;
         if (!empty($numbers->Numbers)) {
             $numbers = $numbers->Numbers;
+            foreach ($numbers as &$n) {
+                $n->RatePerMinute = $stateRate;
+            } unset($n);
             $request->session()->put('dids', ($numbers));
         } else $numbers = ['Not found'];
+
+        return $numbers;
+    }
+
+    /**
+     * @SWG\Post(
+     *     path="/api/did/searchUSTFdid",
+     *     summary="Search DIDs by state",
+     *     tags={"did"},
+     *     @SWG\Parameter(
+     *         description="State",
+     *         name="state",
+     *         in="formData",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(response="200", description="Available DIDs"),
+     *     @SWG\Response(response="401", description="Auth required"),
+     *     @SWG\Response(response="404", description="Not found"),
+     *     @SWG\Response(response="500", description="Internal server error")
+     * )
+     * @param Request $request
+     * @return bool|mixed
+     */
+    public function postSearchUSTFdid(Request $request)
+    {
+        $this->setValidator([
+            'state' => 'required|string'
+        ]);
+
+        $state       = $request->state;
+        $rateCenter  = isset($request->rate_center) ? $request->rate_center : '';
+        $did         = new DID();
+        $states      = $did->getStates();
+
+        if ($states)
+            $states  = array_flip($states);
+        if (!isset($states[$state]))
+            return $this->response->errorNotFound('State not found');
+
+//        $numbers     = $did->getAvailableNumbers($state, $rateCenter);
+//        if (!empty($numbers->Numbers)) {
+//            $numbers = $numbers->Numbers;
+//            $request->session()->put('dids', ($numbers));
+//        } else $numbers = ['Not found'];
+        // dummy data while we didn't get response from vitcome support
+        $numbers = [];
+        for ($i = 0; $i <= 5; $i++) {
+            array_push($numbers, [
+                'TN' => '1800' .  mt_rand(100000,999999),
+                'LATA' => '',
+                'state' => '',
+                'locality' => '',
+                'OCN' => '',
+                'RateCenter' => '',
+                'category' => 'Toll Free'
+            ]);
+        }
 
         return $numbers;
     }

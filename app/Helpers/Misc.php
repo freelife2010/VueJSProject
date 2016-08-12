@@ -19,9 +19,10 @@ class Misc
     public static function generateUniqueId(
         $digits = 99999999,
         $field = 'tech_prefix',
-        $table = 'users'
+        $table = 'users',
+        $minDigit = 0
     ) {
-        $number = mt_rand(0, $digits);
+        $number = mt_rand($minDigit, $digits);
 
         // call the same function if the barcode exists already
         if (self::IdExists($number, $field, $table)) {

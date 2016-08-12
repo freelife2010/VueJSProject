@@ -95,7 +95,9 @@ class DID extends BaseModel
 
     public function getAvailableNumbers($state, $rateCenter = '')
     {
-        $data = $this->makeData(['state' => $state, 'ratecenter' => $rateCenter]);
+        $dataParams = ['state' => $state, 'ratecenter' => $rateCenter];
+
+        $data = $this->makeData($dataParams);
         $response = $this->sendPost('searchdid', $data);
 
         return $this->makeResponse($response);

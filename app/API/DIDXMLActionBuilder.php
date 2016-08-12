@@ -30,7 +30,6 @@ class DIDXMLActionBuilder
         $actionName      = $this->did->name;
         $actionParameter = $this->did->actionParameters()->joinParamTable()->first();
         $actionParameter = $actionParameter ? $actionParameter->parameter_value : '';
-
         switch($actionName) {
             case 'Conference':
                 $actionName = 'conference';
@@ -47,13 +46,15 @@ class DIDXMLActionBuilder
                 break;
             case 'Forward To User':
                 $actionName   = 'bridge';
-                $actionParameter = "sofia/internal/$actionParameter@69.27.168.11";
+                $user = $this->did->appUser;
+                $userId = $user ? Misc::filterNumbers($user->getUserAlias()) : '';
+                $actionParameter = "sofia/internal/$userId$actionParameter@69.27.168.11";
                 break;
             case 'Forward To Number':
                 $actionName = 'bridge';
                 $user = $this->did->appUser;
                 $userId = $user ? Misc::filterNumbers($user->getUserAlias()) : '';
-                $actionParameter = "sofia/internal/$userId$actionParameter@69.27.168.11";
+                $actionParameter = "sofia/internal/" . $userId . "9" . $actionParameter . "@69.27.168.11";
                 break;
             case 'Voicemail':
                 $actionName = 'voicemail';

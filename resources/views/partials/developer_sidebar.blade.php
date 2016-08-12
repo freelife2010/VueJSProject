@@ -42,6 +42,30 @@
                         <span>Payment history</span>
                     </a>
                 </li>
+                <li class=" {{ $helper->isActive('usage-history') }}">
+                    <a href="{{ url('usage-history') }}" title="Usage History">
+                        <em class="fa fa-history"></em>
+                        <span>Usage History</span>
+                    </a>
+                </li>
+                <li class=" {{ $helper->isActive('app-config') }}">
+                    <a href="#app_config" title="APP Config" data-toggle="collapse">
+                        <em class="fa fa-cog"></em>
+                        <span>Config</span>
+                    </a>
+                    <ul id="app_config" class="nav sidebar-subnav collapse">
+                        <li class="">
+                            <a href="{{ url('app-config/mass-call') }}" title="Enable Mass Call API">
+                                <span>Enable Mass Call API</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="{{ url('app-config/google-api') }}" title="Manage Google API">
+                                <span>Manage API</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 {!! $helper->generateManageAppMenu() !!}
             </ul>
             <!-- END sidebar nav-->

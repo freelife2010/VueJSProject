@@ -193,6 +193,23 @@ class App extends BaseModel
                 'url'  => 'sms/inbox'
             ],
             [
+                'name' => 'Friends',
+                'icon' => 'icon-user',
+                'url'  => '#',
+                'subMenu' => [
+                    [
+                        'name' => 'Friend List',
+                        'icon' => 'fa fa-paper-plane',
+                        'url' => 'app-users/friend-list'
+                    ],
+                    [
+                        'name' => 'Block List',
+                        'icon' => 'fa fa-file-text',
+                        'url' => 'app-users/friend-block-list'
+                    ],
+                ]
+            ],
+            [
                 'name' => 'SIP Accounts',
                 'icon' => 'icon-earphones',
                 'url'  => 'app-users/sip'

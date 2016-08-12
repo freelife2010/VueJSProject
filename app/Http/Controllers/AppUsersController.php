@@ -15,12 +15,17 @@ use App\Jobs\StoreAPPUserToChatServer;
 use App\Models\App;
 use App\Models\AppUser;
 use App\Models\DID;
+use App\Models\Email;
+use App\Models\UserBlockList;
+use App\Models\UserFriendList;
 use DB;
+use Mail;
 use Former\Facades\Former;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use URL;
 use Yajra\Datatables\Datatables;
+use App\Helpers\Misc;
 
 class AppUsersController extends AppBaseController
 {
@@ -58,6 +63,8 @@ class AppUsersController extends AppBaseController
             $result = $this->getResult(false, 'User created successfully');
             $user->raw_password = $request->password;
             $this->dispatch(new StoreAPPUserToBillingDB($user, $user->app));
+            $this->fillFriendToBillingDB($user->id, $user->id);
+
             $this->dispatch(new StoreAPPUserToChatServer($user));
         }
 
@@ -383,10 +390,377 @@ class AppUsersController extends AppBaseController
         $parameter = DB::table('did_action_parameters')
             ->select(['name', 'id'])->whereName('APP user id')->first();
         $html      = Former::label('SIP User');
-        $html .= Former::select("parameters[$parameter->id]")->options($options)
+        $html .= Former::select("parameters[$parameter->id]")->options($options, 2)
             ->placeholder('SIP User')->label('')->required();
 
         return $html;
     }
 
+    public function getFriendList()
+    {
+        $APP = $this->app;
+        $title = $APP->name . ': Friends List';
+        $appUsers = $APP->users()->lists('email', 'id');
+        $subtitle = 'Manage Friends';
+
+//        UserFriendList::truncate();
+//        UserBlockList::truncate();
+
+        return view('appUsers.friends', compact('APP', 'title', 'subtitle', 'appUsers'));
+    }
+
+    public function getFriendBlockList()
+    {
+        $APP = $this->app;
+        $title = $APP->name . ': Friends List';
+        $appUsers = $APP->users()->lists('email', 'id');
+        $subtitle = 'Manage Friends';
+
+        return view('appUsers.friends_block_list', compact('APP', 'title', 'subtitle', 'appUsers'));
+    }
+
+    public function getFriendBlockListData(Request $request)
+    {
+        $appUserId = $request->appUserId;
+        $users = AppUser::select([
+            'users.id',
+            'users.app_id',
+            'users.tech_prefix',
+            'users.country_id',
+            'users.name',
+            'users.email',
+            'users.phone',
+            'users.last_status',
+        ])->join('user_block_list', 'user_block_list.blocked_user_id', '=', 'users.id');
+
+        $users->where('user_block_list.user_id', '=', $appUserId);
+
+        return Datatables::of($users)
+            ->edit_column('id', function ($user) use ($appUserId) {
+                return $user->getUserAlias();
+            })
+            ->edit_column('name', function ($user) use ($appUserId) {
+                return $user->name;
+            })
+            ->edit_column('phone', function ($user) use ($appUserId) {
+                return $user->phone;
+            })
+            ->edit_column('email', function($user) use ($appUserId) {
+                return $user->email;
+            })
+            ->edit_column('last_status', function ($user) use ($appUserId) {
+                return 'Blocked';
+            })
+            ->make(true);
+    }
+
+    public function getFriendListData(Request $request)
+    {
+        $appUserId = $request->appUserId;
+        $users = AppUser::select([
+            'users.id',
+            'users.app_id',
+            'users.tech_prefix',
+            'users.country_id',
+            'users.name',
+            'users.email',
+            'users.phone',
+            'users.last_status',
+            'user_friend_list.user_sent_to_id',
+            'user_friend_list.user_id as friend_user_id',
+            'user_friend_list.accepted',
+        ]);
+//        if ($appUserId) {
+            $users->where('user_friend_list.user_id', '=', $appUserId)
+                ->orWhere('user_friend_list.user_sent_to_id', '=', $appUserId);
+            $users->join('user_friend_list', 'user_friend_list.user_sent_to_id', '=', 'users.id');
+//        }
+
+        return Datatables::of($users)
+            ->edit_column('id', function ($user) use ($appUserId) {
+                return $appUserId == $user->friend_user_id ? $user->getUserAlias() : AppUser::find($user->friend_user_id)->getUserAlias();
+            })
+            ->edit_column('name', function ($user) use ($appUserId) {
+                return $appUserId == $user->friend_user_id ? $user->name : AppUser::find($user->friend_user_id)->name;
+            })
+            ->edit_column('phone', function ($user) use ($appUserId) {
+                return $appUserId == $user->friend_user_id ? $user->phone : AppUser::find($user->friend_user_id)->phone;
+            })
+            ->edit_column('email', function($user) use ($appUserId) {
+                return $appUserId == $user->friend_user_id ? $user->email : AppUser::find($user->friend_user_id)->email;
+            })
+            ->edit_column('last_status', function ($user) use ($appUserId) {
+                return $appUserId == $user->friend_user_id
+                    ? ($user->accepted ? 'Accepted' : 'Pending')
+                    : ($user->accepted ? 'Accepted' : 'Waiting For Accept');
+            })
+            ->add_column('actions', function ($user) use ($appUserId) {
+                $html = '';
+                $classDisabled = $appUserId ? '' : 'disabled';
+                if ($appUserId == $user->friend_user_id) {
+                    // do something...
+                    if ($user->accepted) {
+                        $options = [
+                            'url' => "app-users/decline-friend-request/{$user->id}/{$appUserId}?app={$this->app->id}",
+                            'name' => '',
+                            'title' => 'Decline Friend Request',
+                            'icon' => 'fa fa-remove',
+                            'class' => "btn-warning $classDisabled",
+                            'modal' => true
+                        ];
+                        $html .= $user->generateButton($options);
+                        $options = [
+                            'url' => "app-users/block-user/{$user->id}/{$appUserId}?app={$this->app->id}",
+                            'name' => '',
+                            'title' => 'Block User',
+                            'icon' => 'fa fa-ban',
+                            'class' => "btn-danger $classDisabled",
+                            'modal' => true
+                        ];
+                        $html .= $user->generateButton($options);
+                    }
+                } else {
+                    //&& !$user->accepted
+                    if (!$user->accepted) {
+                        $options = [
+                            'url' => "app-users/accept-friend-request/{$appUserId}/{$user->friend_user_id}/?app={$this->app->id}",
+                            'name' => '',
+                            'title' => 'Accept Friend Request',
+                            'icon' => 'fa fa-check',
+                            'class' => "btn-info $classDisabled",
+                            'modal' => true
+                        ];
+                        $html .= $user->generateButton($options);
+                    }
+                        $options = [
+                            'url' => "app-users/decline-friend-request/{$appUserId}/{$user->friend_user_id}/?app={$this->app->id}",
+                            'name' => '',
+                            'title' => 'Decline Friend Request',
+                            'icon' => 'fa fa-remove',
+                            'class' => "btn-warning $classDisabled",
+                            'modal' => true
+                        ];
+                        $html .= $user->generateButton($options);
+                        $options = [
+                            'url' => 'app-users/block-user/' . $appUserId . '/' . $user->friend_user_id . '?app=' . $this->app->id,
+                            'name' => '',
+                            'title' => 'Block User',
+                            'icon' => 'fa fa-ban',
+                            'class' => "btn-danger $classDisabled",
+                            'modal' => true
+                        ];
+                        $html .= $user->generateButton($options);
+//                    }
+                }
+
+                return $html;
+            })
+            ->make(true);
+    }
+
+    public function getBlockUser($appUserId, $appRecipientUserId)
+    {
+        $APP = $this->app;
+        $title = 'Are you sure you want to block user?';
+        $model = [];
+        $actionUrl = Url::to('app-users/block-user/' . $appUserId . '/' . $appRecipientUserId);
+        $submitLabel = 'Block';
+
+        return view('appUsers.friend_action', compact('title', 'actionUrl', 'submitLabel', 'appUserId', 'appRecipientUserId'));
+    }
+
+    public function postBlockUser($appUserId, $appBlockUserId)
+    {
+        $result = $this->getResult(true, 'The User is already blocked');
+        if (!UserBlockList::isUserBlocked($appBlockUserId, $appUserId)) {
+            UserFriendList::declineFriendRequest($appBlockUserId, $appUserId);
+            UserFriendList::declineFriendRequest($appUserId,$appBlockUserId);
+            $this->removeFriendsFromBillingDB($appUserId, $appBlockUserId);
+            $this->removeFriendsFromBillingDB($appBlockUserId, $appUserId);
+            UserBlockList::blockUser($appUserId, $appBlockUserId);
+            $result = $this->getResult(false, 'The User is successfully blocked');
+        }
+        return $result;
+    }
+
+
+    public function getUnblockUser($appUserId, $appBlockUserId)
+    {
+        // todo...
+    }
+
+    public function getSendFriendRequest()
+    {
+        $APP = $this->app;
+        $title = 'Send New Friend Request';
+        $actionUrl = Url::to('app-users/send-friend-request/');
+        $showAppUserSelect = true;
+        $appUsers = $APP->users()->lists('email', 'id');
+        $submitLabel = 'Send';
+
+        return view('appUsers.friend_action', compact('title', 'APP', 'appUsers', 'actionUrl', 'submitLabel', 'showAppUserSelect'));
+    }
+
+    public function postSendFriendRequest(Request $request)
+    {
+        $appUserId = $request->get('app_user_id');
+        $appRecipientUserId = $request->get('app_recipient_user_id');
+
+        $result = $this->getResult(true, 'This User can not send request to himself');
+        if ($appUserId != $appRecipientUserId) {
+            $result = $this->getResult(true, 'This User was added to the block list');
+            if (!UserBlockList::isUserBlocked($appUserId,$appRecipientUserId)) {
+                $result = $this->getResult(true, 'Sorry. Your request is already sent');
+                if (!UserFriendList::isRequestAlreadySent($appUserId, $appRecipientUserId)) {
+                    $result = $this->getResult(true, 'Sorry. This User is already in your friend list');
+                    if (!UserFriendList::isFriend($appUserId, $appRecipientUserId)) {
+                        UserFriendList::sendFriendRequest($appUserId, $appRecipientUserId);
+                        $result = $this->getResult(false, 'Your friend request is successfully sent');
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public function getViewFriendRequest()
+    {
+        $APP = $this->app;
+        $title = $APP->name . ': Friends List';
+        $appUsers = $APP->users()->lists('email', 'id');
+        $subtitle = 'Manage Friends';
+
+        return view('appUsers.view_friends', compact('APP', 'title', 'subtitle', 'appUsers'));
+    }
+
+    public function getAcceptFriendRequest($appUserId, $appRecipientUserId)
+    {
+        $APP = $this->app;
+        $title = 'Are you sure you want to accept a friend request?';
+        $actionUrl = Url::to('app-users/accept-friend-request/' . $appUserId . '/' . $appRecipientUserId);
+        $submitLabel = 'Accept';
+
+        return view('appUsers.friend_action', compact('title', 'actionUrl', 'submitLabel', 'appUserId', 'appRecipientUserId'));
+    }
+
+    public function postAcceptFriendRequest(Request $request)
+    {
+        $appUserId = $request->get('app_user_id');
+        $appRecipientUserId = $request->get('app_recipient_user_id');
+
+        UserFriendList::acceptFriendRequest($appRecipientUserId,$appUserId);
+        $this->fillFriendToBillingDB($appUserId, $appRecipientUserId);
+        $this->fillFriendToBillingDB($appRecipientUserId, $appUserId);
+
+        $result = $this->getResult(false, 'The Friend request is successfully accepted');
+
+        return $result;
+    }
+
+    private function fillFriendToBillingDB($firstUserId, $secondUserId)
+    {
+        $firstUserAlias = AppUser::find($firstUserId)->getUserAlias();
+        $firstUserAlias = str_replace('-', '', $firstUserAlias);
+        $secondUserAlias = AppUser::find($secondUserId)->getUserAlias();
+
+        $productId = $this->selectFromBillingDB("
+                                select product_id from product
+                                where name = ?", [$firstUserAlias]);
+
+        $productId = $this->fetchField($productId, 'product_id');
+        $resourceId = $this->selectFromBillingDB("
+                                select resource_id from resource
+                                where alias = ?", ["{$secondUserAlias}_P2P"]);
+        $resourceId = $this->fetchField($resourceId, 'resource_id');
+        $secondUserAlias = str_replace('-', '', $secondUserAlias);
+        $productItemId = $this->insertGetIdToBillingDB("insert into product_items (product_id, digits)
+                                  values (?,?) RETURNING item_id",
+            [$productId, $secondUserAlias], 'item_id');
+        $this->insertToBillingDB("insert into product_items_resource (item_id, resource_id)
+                                  values (?,?) ",
+            [$productItemId, $resourceId]);
+
+    }
+
+    public function getDeclineFriendRequest($appUserId, $appRecipientUserId)
+    {
+        $APP = $this->app;
+        $title = 'Are you sure you want to decline a friend request?';
+        $actionUrl = Url::to('app-users/decline-friend-request/' . $appUserId . '/' . $appRecipientUserId);
+        $submitLabel = 'Decline';
+
+        return view('appUsers.friend_action', compact('title', 'actionUrl', 'submitLabel', 'appUserId', 'appRecipientUserId'));
+    }
+
+    public function postDeclineFriendRequest(Request $request)
+    {
+        $appUserId = $request->get('app_user_id');
+        $appRecipientUserId = $request->get('app_recipient_user_id');
+        UserFriendList::declineFriendRequest($appUserId,$appRecipientUserId);
+        UserFriendList::declineFriendRequest($appRecipientUserId, $appUserId);
+        $this->removeFriendsFromBillingDB($appUserId, $appRecipientUserId);
+        $this->removeFriendsFromBillingDB($appRecipientUserId, $appUserId);
+
+        $result = $this->getResult(false, 'The Friend request is successfully declined');
+
+        return $result;
+    }
+
+    private function removeFriendsFromBillingDB($firstUserId, $secondUserId)
+    {
+        $firstUserAlias = AppUser::find($firstUserId)->getUserAlias();
+        $firstUserAlias = str_replace('-', '', $firstUserAlias);
+        $secondUserAlias = AppUser::find($secondUserId)->getUserAlias();
+
+        $productId = $this->selectFromBillingDB("
+                                select product_id from product
+                                where name = ?", [$firstUserAlias]);
+
+        $productId = $this->fetchField($productId, 'product_id');
+        $resourceId = $this->selectFromBillingDB("
+                                select resource_id from resource
+                                where alias = ?", ["{$secondUserAlias}_P2P"]);
+        $resourceId = $this->fetchField($resourceId, 'resource_id');
+        $secondUserAlias = str_replace('-', '', $secondUserAlias);
+
+        $productItemId = $this->selectFromBillingDB("
+                                select item_id from product_items
+                                where product_id = ? and digits = ?", [$productId, $secondUserAlias]);
+        $productItemId = $this->fetchField($productItemId, 'item_id');
+
+        $this->getFluentBilling('product_items')->where('product_id', '=', $productId)->where('digits', '=', $secondUserAlias)->delete();
+        $this->getFluentBilling('product_items_resource')->where('item_id', '=', $productItemId)->where('resource_id', '=', $resourceId)->delete();
+
+    }
+
+    public function getAddCredit()
+    {
+        $APP = $this->app;
+        $title = $APP->name . ': Add Credit';
+        $appUsers = $APP->users()->lists('email', 'id');
+        $subtitle = 'Add Credit';
+
+        return view('appUsers.add_credit', compact('APP', 'title', 'subtitle', 'appUsers'));
+    }
+
+    public function postAddCredit(Request $request)
+    {
+        $this->validate($request, [
+            'app_user_id' => 'required',
+            'amount' => 'required|integer',
+            'remark' => 'required'
+        ]);
+
+        $user = AppUser::find($request->app_user_id);
+
+        $response = $this->getResult(false, 'Failed');
+        $clientId = $this->getClientIdByAliasFromBillingDB($user->getUserAlias());
+        if ($clientId) {
+            $this->storeClientPaymentInBillingDB($clientId, $request->amount, $request->remark);
+            $response = $this->getResult(false, 'Added');
+        }
+
+        return $response;
+    }
 }

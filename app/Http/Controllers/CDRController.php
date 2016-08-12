@@ -7,6 +7,8 @@ use App\Http\Requests;
 use DB;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
+use App\Models\App;
+use App\Models\AppUser;
 
 class CDRController extends Controller
 {
@@ -34,12 +36,46 @@ class CDRController extends Controller
         }
         $callType = $request->input('call_type');
         $cdr      = $this->queryCdr($callType,$startDate);
-        return Datatables::of($cdr)->make(true);
+
+        return Datatables::of($cdr)
+            ->edit_column('trunk_id_origination', function($user) use ($callType) {
+
+                $trunkId = $callType == 0 ? $user->trunk_id_origination : $user->trunk_id_termination;
+                if (empty($trunkId)) return '';
+                return $trunkId;
+                list($appTechPrefix, $userTechPrefix) = explode('-000-', str_ireplace(['_for', '_pbx'], '', $trunkId));
+                return AppUser::select(['app.name as app_name'])
+                    ->join('app', 'app.id', '=', 'users.app_id')
+                    ->where('users.tech_prefix', '=', $userTechPrefix)
+                    ->where('app.tech_prefix', '=', $appTechPrefix)
+                    ->first()
+                    ->app_name;
+            })
+            ->edit_column('alias', function($user) use ($callType) {
+                $trunkId = $callType == 0 ? $user->trunk_id_origination : $user->trunk_id_termination;
+                if (!$trunkId) return '';
+//                if (empty($trunkId) || is_null($trunkId)) return '';
+                return $trunkId;
+                try {
+                    list($appTechPrefix, $userTechPrefix) = explode('-000-', str_ireplace(['_for', '_pbx'], '', $trunkId));
+                    return AppUser::select(['users.name as app_user_name'])
+                        ->join('app', 'app.id', '=', 'users.app_id')
+                        ->where('users.tech_prefix', '=', $userTechPrefix)
+                        ->where('app.tech_prefix', '=', $appTechPrefix)
+                        ->first()
+                        ->app_user_name;
+                } catch (\Exception $e) {
+                    die(var_dump($trunkId));
+                }
+            })
+            ->make(true);
     }
 
     protected function queryCdr($callType='0',$startDate = '')
     {
         $startDate = $startDate ?: '1971-01-01';
+        $user = \Auth::user();
+
         $fields = [
             'time',
             'trunk_id_origination',
@@ -50,15 +86,31 @@ class CDRController extends Controller
             'agent_rate',
             'agent_cost',
             'origination_source_number',
-            'origination_destination_number',
+            'origination_destination_number'
         ];
 
+        $clientId = $this->getFluentBilling('client')
+            ->where('name', '=', $user->email)
+            ->first()
+            ->client_id;
 
-        return $this->getFluentBilling('client_cdr')
-            ->select($fields)
-            ->whereCallType($callType)
-            ->where('time', '>', $startDate)
+
+
+        $colName = $callType == 1 ? 'ingress_client_id' : 'egress_client_id';
+//        select origination_source_number, origination_destination_number, termination_source_number,
+//        termination_destination_number,  time ,call_duration, trunk_id_origination, trunk_id_termination
+//        from client_cdr20160803
+        $dailyTableName = 'client_cdr20160805';//'client_cdr' . date('Ymd', strtotime('-1 day'));
+        return $this->getFluentBilling($dailyTableName)
+//            ->select($fields)
+            ->where($colName, '=', $clientId)
             ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
+
+//        return $this->getFluentBilling('client_cdr')
+//            ->select($fields)
+//            ->whereCallType($callType)
+//            ->where('time', '>', $startDate)
+//            ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
     }
 
     public function getChartData(Request $request)

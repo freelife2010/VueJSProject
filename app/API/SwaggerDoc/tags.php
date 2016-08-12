@@ -53,8 +53,20 @@
  *   name="developer",
  *   description="Developer API"
  * )
- *  * @SWG\Tag(
+ * @SWG\Tag(
  *   name="app",
  *   description="APP API"
+ * )
+ * @SWG\Tag(
+ *   name="friends",
+ *   description="User Friends API"
+ * )
+ * @SWG\Tag(
+ *   name="mass-call",
+ *   description="Mass Call"
+ * )
+ * @SWG\Tag(
+ *   name="rates",
+ *   description="Rates"
  * )
  */

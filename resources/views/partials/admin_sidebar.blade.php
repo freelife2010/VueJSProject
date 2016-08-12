@@ -47,6 +47,12 @@
                         <span>Developers</span>
                     </a>
                 </li>
+                <li class=" {{ $helper->isActive('did') }}">
+                    <a href=" {{ url('did-admin') }}" title="View DID vendors">
+                        <em class="icon-users"></em>
+                        <span>DID vendors</span>
+                    </a>
+                </li>
                 <li class=" {{ $helper->isActive('costs') }}">
                     <a href="#costs" title="Manage costs" data-toggle="collapse">
                         <em class="fa fa-money"></em>
@@ -75,6 +81,12 @@
                     <a href=" {{ url('payments/admin') }}" title="Payments">
                         <em class="fa fa-credit-card"></em>
                         <span>Payments</span>
+                    </a>
+                </li>
+                <li class=" {{ $helper->isActive('app-config') }}">
+                    <a href=" {{ url('app-config') }}" title="Config">
+                        <em class="fa fa-cog"></em>
+                        <span>Config</span>
                     </a>
                 </li>
             </ul>

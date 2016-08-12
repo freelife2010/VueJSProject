@@ -67,6 +67,9 @@ return [
 
 	'fallback_locale' => 'en',
 
+	'api_masscall_host' => '127.0.0.1',
+	'api_masscall_port' => '8080',
+
 	/*
 	|--------------------------------------------------------------------------
 	| Encryption Key

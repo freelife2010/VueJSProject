@@ -36,7 +36,7 @@ class AppRate extends BaseModel
 
     }
 
-    public function getGlobalRates($withAppRate = true)
+    public function getGlobalRates($withAppRate = true, $whereCondition = '')
     {
         $appRateFields = $withAppRate ?
             ', app_rate.rate as app_rate,
@@ -51,7 +51,8 @@ class AppRate extends BaseModel
                                 LEFT JOIN rate AS app_rate
                                   ON app_rate.rate_table_id = ?
                                   AND app_rate.code = rate.code
-                                WHERE rate.rate_table_id = ?
+                                WHERE rate.rate_table_id = ? 
+                                ' . $whereCondition . '
                                 AND ((now() BETWEEN rate.effective_date AND rate.end_date)
                                     OR rate.end_date IS NULL)
                                 AND rate.country IS NOT NULL

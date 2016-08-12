@@ -20,7 +20,9 @@ trait PlaySMSTrait
 {
     protected $smsToken = '3722dffa6cdb07b06d8e7916cf25b07a';
     protected $smsUser = 'admin';
-    protected $smsResource = 'http://81.4.101.247/playsms/';
+//    protected $smsResource = 'http://81.4.101.247/playsms/';
+    protected $smsResource = 'http://149.56.103.119/playsms/';
+
 
     protected function createSMSAccount($developer)
     {
