@@ -21,6 +21,8 @@
                     {data: 'state'},
                     {data: 'rate_center'},
                     {data: 'value'},
+                    {data: 'one_time_value'},
+                    {data: 'per_month_value'},
                     {data: 'actions'}
                 ]
             });
@@ -59,7 +61,9 @@
                             <th>Country</th>
                             <th>State</th>
                             <th>Rate Center</th>
-                            <th>Value (USD)</th>
+                            <th>Value (USD) - Per Minute</th>
+                            <th>Value (USD) - One Time</th>
+                            <th>Value (USD) - Monthly</th>
                             <th>Actions</th>
                         </tr>
                         </thead>

@@ -24,6 +24,8 @@
     <div style="margin-left: 15px">
         <?= Former::hidden('id');?>
         <?= Former::text('value')->label('Value (USD)'); ?>
+        <?= Former::text('one_time_value')->label('Value (USD) - One Time'); ?>
+        <?= Former::text('per_month_value')->label('Value (USD) - Monthly'); ?>
     </div>
     <div style="clear: both"></div>
     <br/>

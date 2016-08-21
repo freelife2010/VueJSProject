@@ -6,7 +6,7 @@
         $(document).ready(function() {
             setModalWidth(400);
             var country = $('#country_id');
-            var $value = $('#value');
+            var $value = $('#value, #one_time_value, #per_month_value');
             var usStates = $('#us_states');
             var usRateCenterDiv = $('#us_rate_center');
             bindStateEvent();
@@ -94,7 +94,12 @@
         <br/>
         <?php
             $former = Former::text('value')->label('Value (USD)');
+            echo isset($model) ? $former : $former->disabled();
 
+            $former = Former::text('one_time_value')->label('Value (USD) - One Time');
+            echo isset($model) ? $former : $former->disabled();
+
+            $former = Former::text('per_month_value')->label('Value (USD) - Monthly');
             echo isset($model) ? $former : $former->disabled();
         ?>
     </div>

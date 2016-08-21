@@ -64,7 +64,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
                   INSERT INTO resource_ip(ip, resource_id)
                   VALUES('69.27.168.50', ?)", [$resourceId]);
 
-        $this->createRouting($rateTableId, $clientId);
+        $this->createRouting($rateTableId, $clientId, $resourceId, $routeStrategyId);
 
     }
 
@@ -114,10 +114,11 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
         $this->insertToBillingDB("
                   insert into product_items_resource(item_id, resource_id)
                   VALUES (?, ?)", [$itemId, $resourceId]);
-        $this->insertToBillingDB("
-                  INSERT INTO route(digits, static_route_id, route_type, route_strategy_id,
-                                    digits_min_length, digits_max_length)
-                  VALUES('', ?, 2, ?, 0, 16)", [$productId, $routeStrategyId]);
+
+//        $this->insertToBillingDB("
+//                  INSERT INTO route(digits, static_route_id, route_type, route_strategy_id,
+//                                    digits_min_length, digits_max_length)
+//                  VALUES('', ?, 2, ?, 0, 16)", [$productId, $routeStrategyId]);
     }
 
     public function createStaticRoute()
@@ -157,7 +158,7 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
         $this->delete();
     }
 
-    public function createRouting($rateTableId, $clientId)
+    public function createRouting($rateTableId, $clientId, $resourceId, $routeStrategyId)
     {
         $didResourceId = $this->insertGetIdToBillingDB("
                               insert into resource
@@ -173,6 +174,23 @@ class StoreAPPToBillingDB extends Job implements SelfHandling, ShouldQueue
                               RETURNING resource_id",
             ["{$this->app->getAppAlias()}_IDD", $rateTableId, $clientId],
             'resource_id');
+
+        // new 2016-08-19
+        $dynamicRouteId = $this->insertGetIdToBillingDB("
+                                insert into dynamic_route (name)
+                                values (?) RETURNING dynamic_route_id",
+            [$this->app->getAppAlias()], 'dynamic_route_id');
+
+        $this->insertToBillingDB("
+                          insert into dynamic_route_items (dynamic_route_id, resource_id)
+                          values (?,?)",
+            [$dynamicRouteId, $resourceId]);
+
+        $this->insertToBillingDB("
+                  INSERT INTO route(digits, static_route_id, dynamic_route_id, route_type, route_strategy_id,
+                                    digits_min_length, digits_max_length)
+                  VALUES('', 1, ?, 4, ?, 0, 16)", [$dynamicRouteId, $routeStrategyId]);
+        // new 2016-08-19
     }
 
     /**

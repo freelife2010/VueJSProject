@@ -24,8 +24,11 @@ class CDRController extends Controller
         $title     = 'CDR';
         $subtitle  = '';
         $callTypes = ['Outgoing calls', 'Incoming calls'];
+        $filterTypes = ['Peer to Peer', 'DID Calls', 'Toll Free Calls', 'Forwarded Calls', 'Dialed Calls', 'Mass Call'];
+        $user = \Auth::user();
+        $apps = App::whereAccountId($user->id)->lists('name', 'id')->toArray();
 
-        return view('cdr.index', compact('title', 'subtitle', 'callTypes'));
+        return view('cdr.index', compact('title', 'subtitle', 'callTypes', 'filterTypes', 'apps'));
     }
 
     public function getData(Request $request)
@@ -34,83 +37,99 @@ class CDRController extends Controller
         if ($request->input('from_date')){
             $startDate = $request->input('from_date');
         }
+        $filter = $request->input('filter');
+        $appId = $request->input('app');
         $callType = $request->input('call_type');
-        $cdr      = $this->queryCdr($callType,$startDate);
+        $cdr = $this->queryCdr($filter, $appId, $callType, $startDate);
 
         return Datatables::of($cdr)
             ->edit_column('trunk_id_origination', function($user) use ($callType) {
+                $trunk = $user->trunk_id_origination;
 
-                $trunkId = $callType == 0 ? $user->trunk_id_origination : $user->trunk_id_termination;
-                if (empty($trunkId)) return '';
-                return $trunkId;
-                list($appTechPrefix, $userTechPrefix) = explode('-000-', str_ireplace(['_for', '_pbx'], '', $trunkId));
-                return AppUser::select(['app.name as app_name'])
-                    ->join('app', 'app.id', '=', 'users.app_id')
-                    ->where('users.tech_prefix', '=', $userTechPrefix)
-                    ->where('app.tech_prefix', '=', $appTechPrefix)
-                    ->first()
-                    ->app_name;
+                $trunk = explode('_', $trunk)[0];
+                if ($trunk) {
+                    try {
+                        return App::where('tech_prefix', '=', $trunk)
+                            ->first()
+                            ->alias;
+                    } catch (\Exception $e) {
+                        return '';
+                        die(var_dump($e->getMessage()));
+                    }
+                }
             })
             ->edit_column('alias', function($user) use ($callType) {
-                $trunkId = $callType == 0 ? $user->trunk_id_origination : $user->trunk_id_termination;
-                if (!$trunkId) return '';
-//                if (empty($trunkId) || is_null($trunkId)) return '';
-                return $trunkId;
-                try {
-                    list($appTechPrefix, $userTechPrefix) = explode('-000-', str_ireplace(['_for', '_pbx'], '', $trunkId));
-                    return AppUser::select(['users.name as app_user_name'])
-                        ->join('app', 'app.id', '=', 'users.app_id')
-                        ->where('users.tech_prefix', '=', $userTechPrefix)
-                        ->where('app.tech_prefix', '=', $appTechPrefix)
-                        ->first()
-                        ->app_user_name;
-                } catch (\Exception $e) {
-                    die(var_dump($trunkId));
+                $trunk = $user->trunk_id_termination;
+
+                if ($trunk) {
+                    $trunk = explode('_', $trunk)[0];
+                    $parts = explode('-', $trunk);
+                    try {
+                        return AppUser::select(['users.name as app_user_name'])
+                            ->join('app', 'app.id', '=', 'users.app_id')
+                            ->where('app.tech_prefix', '=', $parts[0])
+                            ->where('users.tech_prefix', '=', $parts[2])
+                            ->first()
+                            ->app_user_name;
+                    } catch (\Exception $e) {
+                        return '';
+                        die(var_dump($e->getMessage()));
+                    }
                 }
             })
             ->make(true);
     }
 
-    protected function queryCdr($callType='0',$startDate = '')
+    protected function queryCdr($filter = 0, $appId = 0, $callType='0', $startDate = '')
     {
         $startDate = $startDate ?: '1971-01-01';
         $user = \Auth::user();
 
-        $fields = [
-            'time',
-            'trunk_id_origination',
-            'resource.alias',
-            'ani_code_id',
-            'dnis_code_id',
-            'call_duration',
-            'agent_rate',
-            'agent_cost',
-            'origination_source_number',
-            'origination_destination_number'
-        ];
-
-        $clientId = $this->getFluentBilling('client')
-            ->where('name', '=', $user->email)
-            ->first()
-            ->client_id;
-
-
-
-        $colName = $callType == 1 ? 'ingress_client_id' : 'egress_client_id';
-//        select origination_source_number, origination_destination_number, termination_source_number,
-//        termination_destination_number,  time ,call_duration, trunk_id_origination, trunk_id_termination
-//        from client_cdr20160803
-        $dailyTableName = 'client_cdr20160805';//'client_cdr' . date('Ymd', strtotime('-1 day'));
-        return $this->getFluentBilling($dailyTableName)
-//            ->select($fields)
-            ->where($colName, '=', $clientId)
+        $dailyTableName = 'client_cdr' . date('Ymd');//, strtotime('-1 day'));
+        $query = $this->getFluentBilling($dailyTableName)
             ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
 
-//        return $this->getFluentBilling('client_cdr')
-//            ->select($fields)
-//            ->whereCallType($callType)
-//            ->where('time', '>', $startDate)
-//            ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
+        switch ($filter) {
+            case 0:
+                $query->where('ingress_client_id', '=', 429)
+                    ->where('origination_source_host_name', '!=', '108.165.2.110');
+                break;
+            case 1:
+                $client = $this->getFluentBilling('client')->where('name', '=', $user->email)->first();
+                $clientId = $client->client_id;
+                $query->where('ingress_client_id', '=', $clientId);
+                break;
+            case 2:
+                $clientId = getClientIdByAliasFromBillingDB('Opentact_TF_Term');
+                $query->where('egress_client_id', '=', $clientId);
+                break;
+            case 3:
+                $query->where('origination_source_host_name', '=', '108.165.2.110');
+                if ($appId) {
+                    $alias = App::find($appId)->getAppAlias();
+                    $query->where('trunk_id_termination', '=', $alias);
+                }
+
+                break;
+            case 4:
+                $query->where('origination_source_host_name', '!=', '108.165.2.110');
+                if ($appId) {
+                    $alias = App::find($appId)->getAppAlias();
+                    $query->where('trunk_id_termination', '=', $alias);
+                }
+                break;
+            case 5:
+                if ($appId) {
+                    $alias = App::find($appId)->getAppAlias();
+                    $query->where('trunk_id_termination', '=', $alias . '_CC_term');
+                }
+                break;
+            default:
+                break;
+        }
+
+        return $query;
+
     }
 
     public function getChartData(Request $request)

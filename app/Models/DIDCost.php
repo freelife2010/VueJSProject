@@ -15,7 +15,9 @@ class DIDCost extends BaseModel
         'country_id',
         'state',
         'rate_center',
-        'value'
+        'value',
+        'one_time_value',
+        'per_month_value'
     ];
 
 }

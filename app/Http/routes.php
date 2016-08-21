@@ -43,6 +43,7 @@ Route::get('/', 'HomeController@getIndex');
 Route::get('/voice/{filename}', 'HomeController@getVoiceMail');
 Route::controller('app-config', 'AppConfigController');
 Route::controller('usage-history', 'UsageHistoryController');
+Route::controller('credit-history', 'AppCreditHistoryController');
 Route::controller('app', 'AppController');
 Route::controller('did', 'DIDController');
 Route::controller('did-admin', 'DIDAdminController');
@@ -50,8 +51,10 @@ Route::controller('did-admin', 'DIDAdminController');
 Route::group(['middleware' => ['auth', 'csrf', 'role:developer']], function () {
     Route::controller('home', 'HomeController');
     Route::controller('app-users', 'AppUsersController');
+    Route::controller('app-invoice', 'AppInvoiceController');
     Route::controller('app-keys', 'AppKeysController');
     Route::controller('app-rates', 'AppRateController');
+    Route::controller('app-mass-rates', 'AppMassRateController');
     Route::controller('app-cdr', 'AppCDRController');
     Route::controller('cdr', 'CDRController');
     Route::controller('conferences', 'ConferenceController');

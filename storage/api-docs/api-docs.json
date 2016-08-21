@@ -652,6 +652,62 @@
                 }
             }
         },
+        "/api/developer/cdr": {
+            "get": {
+                "tags": [
+                    "developer"
+                ],
+                "summary": "CDR",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "description": "Filter",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "app_id",
+                        "in": "query",
+                        "description": "App Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "Client Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "description": "Date From",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "description": "Date To",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success result"
+                    },
+                    "401": {
+                        "description": "Auth required"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
         "/api/voicemail/list/{user_id}": {
             "get": {
                 "tags": [
@@ -1440,13 +1496,7 @@
                     {
                         "name": "user_id",
                         "in": "query",
-                        "description": "APP User ID (if app_id not provided)",
-                        "type": "integer"
-                    },
-                    {
-                        "name": "app_id",
-                        "in": "query",
-                        "description": "APP ID (if user_id not provided)",
+                        "description": "APP User ID",
                         "type": "integer"
                     },
                     {
@@ -1469,14 +1519,12 @@
                         "name": "ani",
                         "in": "query",
                         "description": "ANI",
-                        "required": true,
                         "type": "integer"
                     },
                     {
                         "name": "dnis",
                         "in": "query",
                         "description": "DNIS",
-                        "required": true,
                         "type": "integer"
                     }
                 ],

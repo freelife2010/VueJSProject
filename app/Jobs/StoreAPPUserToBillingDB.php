@@ -53,10 +53,11 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                           values (?,?,'f','t','t',2) RETURNING resource_id",
             ["{$clientName}_DID", $clientId], 'resource_id');
 
+        // should be $clientId, but for some reason customers asked to hardcode 429 is client_id..
         $resourceIdP2P = $this->insertGetIdToBillingDB("
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
                           values (?,?,'f','t','t',2) RETURNING resource_id",
-            ["{$clientName}_P2P", $clientId], 'resource_id');
+            ["{$clientName}_P2P", 429], 'resource_id');
         $resourceId = $this->insertGetIdToBillingDB("
                           insert into resource (alias,client_id,ingress,egress,enough_balance,media_type)
                           values (?,?,'t','f','t',2)  RETURNING resource_id ",
@@ -170,12 +171,27 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
 
         $appProduct = $this->getFluentBilling('product')->whereName($this->app->tech_prefix)->first();
 
+// new 2016-08-20
+//        $this->insertToBillingDB("insert into route (static_route_id, route_type,
+//                                    route_strategy_id, digits_min_length, digits_max_length)
+//                                  values (?, 2, ?, 0, 15)",
+//            [$appProduct->product_id, $routeStrategyId]);
+        $dynamicRouteId = $this->selectFromBillingDB("
+                                select dynamic_route_id from dynamic_route
+                                where name = ?", [$this->app->tech_prefix]);
+        $dynamicRouteId = $this->fetchField($dynamicRouteId, 'dynamic_route_id');
+        if (!$dynamicRouteId) {
+            $dynamicRouteId = $this->insertGetIdToBillingDB("
+                                insert into dynamic_route (name)
+                                values (?) RETURNING dynamic_route_id",
+                [$this->app->tech_prefix], 'dynamic_route_id');
+        }
 
-        $this->insertToBillingDB("insert into route (static_route_id, route_type,
-                                    route_strategy_id, digits_min_length, digits_max_length)
-                                  values (?, 2, ?, 0, 15)",
-            [$appProduct->product_id, $routeStrategyId]);
-
+        $this->insertToBillingDB("insert into route (digits, static_route_id, dynamic_route_id, route_type, route_strategy_id,
+                                    digits_min_length, digits_max_length)
+                                  values ('', 1, ?, 4, ?, 0, 15)",
+            [$dynamicRouteId, $routeStrategyId]);
+// new 2016-08-20
         $this->insertToBillingDB("insert into resource_prefix (resource_id , tech_prefix ,
                                               route_strategy_id, rate_table_id)
                                   values (?,?,?,2212)",
@@ -210,6 +226,11 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
                           insert into resource_ip (username, password, resource_id, reg_type)
                           values (?,?,?,?)",
             [$clientName, $this->user->raw_password, $resourceId, $regType]);
+
+	    $sipResourceId = $this->insertGetIdToBillingDB("
+                                    insert into resource ( alias, egress )
+                                    values (?, 't') RETURNING resource_id",
+            [$clientName], 'resource_id');
 
 //        $sipResourceId = $this->insertGetIdToBillingDB("
 //                                    insert into resource ( alias, egress )

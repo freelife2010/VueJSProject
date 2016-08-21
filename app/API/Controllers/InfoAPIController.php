@@ -16,8 +16,8 @@ class InfoAPIController extends Controller
     use Helpers, APIHelperTrait, BillingTrait;
 
     protected $usageValidationRules = [
-        'user_id' => 'required_without:app_id|exists:users,id,deleted_at,NULL',
-        'app_id'  => 'required_without:user_id|exists:app,id,deleted_at,NULL',
+        'user_id' => 'required|exists:users,id,deleted_at,NULL',//required_without:app_id|
+//        'app_id'  => 'required_without:user_id|exists:app,id,deleted_at,NULL',
         'start'   => 'required|date_format:Y-m-d',
         'end'     => 'required|date_format:Y-m-d'
     ];
@@ -148,14 +148,8 @@ class InfoAPIController extends Controller
      *     summary="CDR",
      *     tags={"information"},
      *     @SWG\Parameter(
-     *         description="APP User ID (if app_id not provided)",
+     *         description="APP User ID",
      *         name="user_id",
-     *         in="query",
-     *         type="integer"
-     *     ),
-     *     @SWG\Parameter(
-     *         description="APP ID (if user_id not provided)",
-     *         name="app_id",
      *         in="query",
      *         type="integer"
      *     ),
@@ -179,14 +173,12 @@ class InfoAPIController extends Controller
      *         description="ANI",
      *         name="ani",
      *         in="query",
-     *         required=true,
      *         type="integer"
      *     ),
      *      @SWG\Parameter(
      *         description="DNIS",
      *         name="dnis",
      *         in="query",
-     *         required=true,
      *         type="integer"
      *     ),
      *     @SWG\Response(response="200", description="CDR"),
@@ -198,8 +190,8 @@ class InfoAPIController extends Controller
     public function getCdr()
     {
         $cdrRules = [
-            'ani' => 'required|numeric',
-            'dnis' => 'required|numeric'
+            'ani' => 'numeric',
+            'dnis' => 'numeric'
         ];
 
         $rules = array_merge($cdrRules, $this->usageValidationRules);

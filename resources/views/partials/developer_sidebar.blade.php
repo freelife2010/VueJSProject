@@ -39,13 +39,19 @@
                 <li class=" {{ $helper->isActive('payments') }}">
                     <a href="{{ url('payments') }}" title="CDR">
                         <em class="fa fa-credit-card"></em>
-                        <span>Payment history</span>
+                        <span>Payment History</span>
                     </a>
                 </li>
                 <li class=" {{ $helper->isActive('usage-history') }}">
                     <a href="{{ url('usage-history') }}" title="Usage History">
                         <em class="fa fa-history"></em>
                         <span>Usage History</span>
+                    </a>
+                </li>
+		<li class=" {{ $helper->isActive('credit-history') }}">
+                    <a href="{{ url('credit-history') }}" title="Credit History">
+                        <em class="fa fa-credit-card"></em>
+                        <span>Credit History</span>
                     </a>
                 </li>
                 <li class=" {{ $helper->isActive('app-config') }}">

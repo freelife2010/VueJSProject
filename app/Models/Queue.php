@@ -12,6 +12,8 @@ class Queue extends BaseModel
         'queue_name',
         'client_waiting_prompt',
         'agent_waiting_prompt',
+        'client_waiting_audio',
+        'agent_waiting_audio',
         'created_by'
     ];
 

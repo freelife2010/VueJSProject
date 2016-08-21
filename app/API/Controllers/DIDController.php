@@ -146,12 +146,16 @@ class DIDController extends Controller
             return $this->response->errorNotFound('State not found');
 
         $numbers     = $did->getAvailableNumbers($state, $rateCenter);
-        $didCost = DIDCost::select('value')->where('state', $state)->first();
-        $stateRate = isset($didCost->value) ? $didCost->value : 0;
+        $didCost = DIDCost::select('value', 'one_time_value', 'per_month_value')->where('state', $state)->first();
+        $stateRatePerMinute = isset($didCost->value) ? $didCost->value : 0;
+        $stateOneTimeRate = isset($didCost->one_time_value) ? $didCost->one_time_value : 0;
+        $stateRatePerMonth = isset($didCost->per_month_value) ? $didCost->per_month_value : 0;
         if (!empty($numbers->Numbers)) {
             $numbers = $numbers->Numbers;
             foreach ($numbers as &$n) {
-                $n->RatePerMinute = $stateRate;
+                $n->RatePerMinute = $stateRatePerMinute;
+                $n->OneTimeRate = $stateOneTimeRate;
+                $n->RatePerMonth = $stateRatePerMonth;
             } unset($n);
             $request->session()->put('dids', ($numbers));
         } else $numbers = ['Not found'];

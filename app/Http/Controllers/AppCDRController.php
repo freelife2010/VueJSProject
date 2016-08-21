@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\BillingTrait;
 
 use App\Http\Requests;
+use App\Models\App;
+use App\Models\AppUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use URL;
@@ -25,16 +27,52 @@ class AppCDRController extends AppBaseController
         $title     = $APP->name . ': View CDR';
         $subtitle  = '';
         $callTypes = ['Outgoing calls', 'Incoming calls'];
+        $filterTypes = ['Peer to Peer', 'DID Calls', 'Toll Free Calls', 'Forwarded Calls', 'Dialed Calls', 'Mass Call'];
 
-        return view('appCDR.index', compact('APP', 'title', 'subtitle', 'callTypes'));
+        return view('appCDR.index', compact('APP', 'title', 'subtitle', 'callTypes', 'filterTypes'));
     }
 
     public function getData(Request $request)
     {
         $callType = $request->input('call_type');
-        $cdr      = $this->app->getCDR()->whereCallType($callType);
+        $filter = $request->input('filter');
+        $cdr      = $this->app->getCDR($filter)->whereCallType($callType);
 
-        return Datatables::of($cdr)->make(true);
+        return Datatables::of($cdr)
+            ->edit_column('trunk_id_origination', function($user) use ($callType) {
+                $trunk = $user->trunk_id_origination;
+
+                $trunk = explode('_', $trunk)[0];
+                if ($trunk) {
+                    try {
+                        return App::where('tech_prefix', '=', $trunk)
+                            ->first()
+                            ->alias;
+                    } catch (\Exception $e) {
+                        return '';
+                        die(var_dump($e->getMessage()));
+                    }
+                }
+            })
+            ->edit_column('alias', function($user) use ($callType) {
+                $trunk = $user->trunk_id_termination;
+
+                if ($trunk) {
+                    $trunk = explode('_', $trunk)[0];
+                    $parts = explode('-', $trunk);
+                    try {
+                        return AppUser::select(['users.name as app_user_name'])
+                            ->join('app', 'app.id', '=', 'users.app_id')
+                            ->where('app.tech_prefix', '=', $parts[0])
+                            ->where('users.tech_prefix', '=', $parts[2])
+                            ->first()
+                            ->app_user_name;
+                    } catch (\Exception $e) {
+                        return '';
+                        die(var_dump($e->getMessage()));
+                    }
+                }
+            })->make(true);
     }
 
     public function getChartData(Request $request)

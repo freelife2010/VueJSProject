@@ -162,6 +162,11 @@ class App extends BaseModel
                         'name' => 'Sell rates',
                         'icon' => 'fa fa-phone',
                         'url'  => 'app-rates',
+                    ],
+                    [
+                        'name' => 'Mass rates',
+                        'icon' => 'fa fa-phone',
+                        'url'  => 'app-mass-rates',
                     ]
                 ]
             ],
@@ -244,6 +249,11 @@ class App extends BaseModel
                 'url'        => 'app-users/index',
                 'labelCount' => 'users'
             ],
+            [
+                'name' => 'Invoice',
+                'icon' => 'icon-credit-card',
+                'url'  => 'app-invoice/index',
+            ],
         ];
     }
 
@@ -261,26 +271,43 @@ class App extends BaseModel
         return $this->tech_prefix;
     }
 
-    public function getCDR()
+    public function getCDR($filter = 0)
     {
-        $fields = [
-            'session_id',
-            'start_time_of_date',
-            'release_tod',
-            'ani_code_id',
-            'dnis_code_id',
-            'call_duration',
-            'agent_rate',
-            'agent_cost',
-            'origination_source_number',
-            'origination_destination_number',
-            'resource.alias'
-        ];
 
-        $resource = $this->getResourceByAliasFromBillingDB($this->getAppAlias());
-        $cdr      = $this->getFluentBilling('client_cdr')->select($fields)
-            ->whereEgressClientId($resource->resource_id)
+        $dailyTableName = 'client_cdr' . date('Ymd');//, strtotime('-1 day'));
+        $cdr      = $this->getFluentBilling($dailyTableName)
             ->leftJoin('resource', 'ingress_client_id', '=', 'resource_id');
+
+        switch ($filter) {
+            case 0:
+                $cdr->where('ingress_client_id', '=', 429)
+                    ->where('origination_source_host_name', '!=', '108.165.2.110');
+                break;
+            case 1:
+                $cdr->where('trunk_id_origination', '=', $this->getAppAlias() . '_DID');
+                break;
+            case 2:
+                $clientId = getClientIdByAliasFromBillingDB('Opentact_TF_Term');
+                $cdr->where('egress_client_id', '=', $clientId);
+                break;
+            case 3:
+                $cdr->where('origination_source_host_name', '=', '108.165.2.110');
+                $alias = $this->getAppAlias();
+                $cdr->where('trunk_id_termination', '=', $alias);
+
+                break;
+            case 4:
+                $cdr->where('origination_source_host_name', '!=', '108.165.2.110');
+                $alias = $this->getAppAlias();
+                $cdr->where('trunk_id_termination', '=', $alias);
+                break;
+            case 5:
+                $alias = $this->getAppAlias();
+                $cdr->where('trunk_id_termination', '=', $alias . '_CC_term');
+                break;
+            default:
+                break;
+        }
 
         return $cdr;
     }

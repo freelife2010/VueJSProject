@@ -21,6 +21,7 @@
                     url: "{{ URL::to('cdr/data/') }}",
                     type: "GET",
                     data : function (d) {
+                        d.filter = $('#filter').val();
                         d.call_type = $('#call_type').val();
                     }
                 },
@@ -40,10 +41,10 @@
                     {data: 'trunk_id_origination', name: 'trunk_id_origination'},
                     {data: 'alias', name: 'resource.alias'},
                     {data: 'origination_source_number', name: 'origination_source_number'},
-                    {data: 'origination_destination_number', name: 'origination_destination_number'},
+                    {data: 'routing_digits', name: 'routing_digits'},
                     {data: 'call_duration', name: 'call_duration'},
-                    {data: 'agent_rate', name: 'agent_rate'},
-                    {data: 'agent_cost', name: 'agent_cost'}
+                    {data: 'egress_rate', name: 'egress_rate'},
+                    {data: 'egress_cost', name: 'egress_cost'}
                 ],
                 "fnDrawCallback": function() {
                     $('.col-filter').css('width', '16%');
@@ -72,6 +73,22 @@
                     }
                 });
             }
+        });
+
+        $(document).on('change', '#filter', function() {
+            var val = $(this).val();
+            if (val == 3 || val == 4 || val == 5) {
+                $('#app').attr('disabled', false);
+                $('#app').parents('.app-wrapper').show();
+            } else {
+                $('#app').attr('disabled', true);
+                $('#app').parents('.app-wrapper').hide();
+            }
+            oTable.ajax.reload();
+        });
+
+        $(document).on('change', '#app', function() {
+            oTable.ajax.reload();
         });
 
         function setCallTypeEvents()
@@ -114,7 +131,16 @@
             <br/>
             <div style="width: 40%">
                 <?= Former::horizontal_open() ?>
-                <?= Former::select('filter')->options(['Peer to Peer', 'DID Calls', 'Toll Free Calls', 'Forwarded Callse', 'Diales Calls'], 0)->label('Filter')
+                <?= Former::select('filter')->options($filterTypes, 0)->label('Filter')
+                        ->style('width: 150px')?>
+                <?= Former::close()?>
+            </div>
+            <div style="width: 40%; display: none;" class="app-wrapper">
+                <?= Former::horizontal_open() ?>
+                <?= Former::select('app')
+                        ->addOption('All')
+                        ->options($apps, 0)
+                        ->label('APP')
                         ->style('width: 150px')?>
                 <?= Former::close()?>
             </div>

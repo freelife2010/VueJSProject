@@ -18,27 +18,29 @@
                     url : "{{ URL::to('app-cdr/data/?app='.$APP->id) }}",
                     type: "GET",
                     data : function (d) {
+                        d.filter = $('#filter').val();
                         d.call_type = $('#call_type').val();
                     }
                 },
                 "columns": [
-                    {data: 'session_id', name: 'session_id'},
-                    {data: 'alias', name: 'alias'},
-                    {data: 'start_time_of_date', name: 'start_time_of_date'},
-                    {data: 'release_tod', name: 'release_tod'},
-                    {data: 'ani_code_id', name: 'ani_code_id'},
-                    {data: 'dnis_code_id', name: 'dnis_code_id'},
-                    {data: 'call_duration', name: 'call_duration'},
-                    {data: 'agent_rate', name: 'agent_rate'},
-                    {data: 'agent_cost', name: 'agent_cost'},
+                    {data: 'time', name: 'time'},
+                    {data: 'trunk_id_origination', name: 'trunk_id_origination'},
+                    {data: 'alias', name: 'resource.alias'},
                     {data: 'origination_source_number', name: 'origination_source_number'},
-                    {data: 'origination_destination_number', name: 'origination_destination_number'}
+                    {data: 'routing_digits', name: 'routing_digits'},
+                    {data: 'call_duration', name: 'call_duration'},
+                    {data: 'ingress_client_rate', name: 'ingress_client_rate'},
+                    {data: 'ingress_client_cost', name: 'ingress_client_cost'}
                 ],
                 "fnDrawCallback": function() {
                     $('.col-filter').css('width', '16%');
                     setCallTypeEvents();
                 }
             });
+        });
+
+        $(document).on('change', '#filter', function() {
+            oTable.ajax.reload();
         });
 
         function setCallTypeEvents()
@@ -59,6 +61,8 @@
                 <div class="form-group">
                     <?= Former::horizontal_open() ?>
                     <div class="row">
+                        <?= Former::select('filter')->options($filterTypes, 0)->label('Filter')->style('width: 150px')?>
+
                         <label for="call_type" class="col-sm-3">Call type</label>
                         <?= Former::select('call_type')->options($callTypes, 0)
                                 ->style('width: 150px')->raw()?>
@@ -71,17 +75,14 @@
                     <table id="table" class="table table-striped table-hover cursor-pointer">
                         <thead>
                         <tr>
-                            <th>Session ID</th>
-                            <th>User Alias</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>ANI</th>
-                            <th>DNIS</th>
+                            <th>Time</th>
+                            <th>APP</th>
+                            <th>User</th>
+                            <th>Call From</th>
+                            <th>Call To</th>
                             <th>Duration</th>
                             <th>Rate</th>
                             <th>Cost</th>
-                            <th>Source Number</th>
-                            <th>Destination Number</th>
                         </tr>
                         </thead>
                         <tbody></tbody>

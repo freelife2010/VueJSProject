@@ -90,7 +90,9 @@ class CostController extends Controller
     {
         $this->validate($request, [
             'country_id' => 'required',
-            'value'      => 'required|numeric'
+            'value'      => 'required|numeric',
+            'one_time_value'      => 'required|numeric',
+            'per_month_value'      => 'required|numeric',
         ]);
         $result                = $this->getResult(true, 'Could not set new cost');
         $params                = $request->all();
