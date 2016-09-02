@@ -20,7 +20,7 @@
                     {data: 'id'},
                     {data: 'did'},
                     {data: 'owned_by'},
-                    {data: 'state'},
+//                    {data: 'state'},
                     {data: 'rate_center'},
                     {data: 'name'},
                     {data: 'created_at'},
@@ -58,7 +58,7 @@
                             <th>ID</th>
                             <th>DID</th>
                             <th>APP User</th>
-                            <th>State</th>
+                            <!--<th>State</th>-->
                             <th>Rate Center</th>
                             <th>DID Action</th>
                             <th>Created at</th>

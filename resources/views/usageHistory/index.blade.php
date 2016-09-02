@@ -33,21 +33,21 @@
             });
         });
 
-//        function bindRowEvents() {
-//            var $tr = $('#table').find('tr:not(:first)');
-//            $.each($tr, function (key, val) {
-//                var $this = $(val);
-//                var td = $this.find('td:not(:last)');
-//                var id = $this.prop('id');
-//                td.click(function(e) {
-//                    openAppDashboard(id);
-//                });
-//            });
-//        }
+        function bindRowEvents() {
+            var $tr = $('#table').find('tr:not(:first)');
+            $.each($tr, function (key, val) {
+                var $this = $(val);
+                var td = $this.find('td:not(:last)');
+                var id = $this.prop('id');
+                td.click(function(e) {
+                    openAppDashboard(id);
+                });
+            });
+        }
 
-//        function openAppDashboard(id) {
-//            window.location.href = '/app/dashboard/?app='+id;
-//        }
+        function openAppDashboard(id) {
+            window.location.href = '/app/dashboard/?app='+id;
+        }
     </script>
 @endsection
 @section('subtitle') {{ $subtitle }} @stop

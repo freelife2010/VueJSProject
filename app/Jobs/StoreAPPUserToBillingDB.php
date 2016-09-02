@@ -145,11 +145,11 @@ class StoreAPPUserToBillingDB extends Job implements SelfHandling
 
 
 
-        $this->getFluentBilling('resource_ip')->insert([
-            'resource_id' => $resourceId,
-            'ip'          => '108.165.2.110',
-            'port'        => 5060
-        ]);
+//        $this->getFluentBilling('resource_ip')->insert([
+//            'resource_id' => $resourceId,
+//            'ip'          => '108.165.2.110',
+//            'port'        => 5060
+//        ]);
     }
 
     private function addUserData($clientName, $rateTableId, $resourceId, $resourceIdP2P, $resourceIdDID, $regType, $resPrefix1, $resPrefix2)

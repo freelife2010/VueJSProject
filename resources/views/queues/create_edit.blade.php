@@ -17,13 +17,15 @@
         $edit         = true;
     }
     ?>
-    <?= Former::vertical_open()->action($action_url) ?>
+    <?= Former::vertical_open_for_files()->action($action_url) ?>
     <div style="margin-left: 15px">
         <?= Former::hidden('id');?>
         <?= Former::hidden('app_id')->value($APP->id);?>
         <?= Former::text('queue_name');?>
         <?= Former::text('client_waiting_prompt');?>
+	<?= Former::file('client_waiting_audio');?>
         <?= Former::text('agent_waiting_prompt');?>
+	<?= Former::file('agent_waiting_audio');?>
         <?= Former::hidden('created_by')->value(Auth::user()->id);?>
     </div>
     <div style="clear: both"></div>

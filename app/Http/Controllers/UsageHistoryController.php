@@ -46,7 +46,7 @@ class UsageHistoryController extends AppBaseController
     public function getIndex()
     {
         $title    = 'APP List';
-        $subtitle = 'Usage History';
+        $subtitle = 'Overall Usage Summary';
 
         return view('usageHistory.index', compact('title', 'subtitle'));
     }
@@ -57,5 +57,6 @@ class UsageHistoryController extends AppBaseController
             ->where('name', '=', \Auth::user()->email)
             ->first()
             ->client_id;
+        die(var_dump($developerClientId));
     }
 }

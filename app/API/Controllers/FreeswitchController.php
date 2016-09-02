@@ -8,7 +8,9 @@ use App\Helpers\APILogger;
 use App\Helpers\BillingTrait;
 use App\Helpers\Misc;
 use App\Models\AppUser;
+use App\Models\Conference;
 use App\Models\ConferenceLog;
+use App\Models\Queue;
 use App\Models\DID;
 use App\Models\QueueAgentSession;
 use App\Models\QueueCallerSession;
@@ -132,6 +134,10 @@ class FreeswitchController extends Controller
         $did = $this->findDID($request->dnis);
         if (!$did)
             return ['error' => 'DID not found'];
+	
+	$confName = Conference::where('name', $request->conf_name)->first();
+	if ( !$confName ) 
+	    return response()->json(['error' => 'conf_name not found'], 404);
 
         return $this->createConferenceLogRecord($request, $did);
     }
@@ -196,6 +202,11 @@ class FreeswitchController extends Controller
         $enterSession = ConferenceLog::whereUuid($request->uuid)->first();
         if (!$enterSession)
             return ['error' => 'Couldn\'t find enter conference session record'];
+
+	$confName = Conference::where('name', $request->conf_name)->first();
+        if ( !$confName )
+            return response()->json(['error' => 'conf_name not found'], 404);
+
         $enterSession['owned_by'] = $enterSession->user_id;
 
         return $this->createConferenceLogRecord($request, $enterSession, false);
@@ -262,6 +273,10 @@ class FreeswitchController extends Controller
         if (!$did)
             return ['error' => 'DID not found'];
 
+	$queueName = Queue::where('queue_name', $request->queue_name)->first();
+	if ( !$queueName )
+	    return response()->json(['error' => 'queue_name not found'], 404);
+
         return $this->createQueueSessionRecord($request, $did, new QueueAgentSession());
     }
 
@@ -326,6 +341,10 @@ class FreeswitchController extends Controller
 
         if (!$enterSession)
             return ['error' => 'Couldn\'t find enter queue session record'];
+
+	$queueName = Queue::where('queue_name', $request->queue_name)->first();
+        if ( !$queueName )
+	    return response()->json(['error' => 'queue_name not found'], 404);
 
         return $this->createQueueSessionRecord($request, $enterSession, new QueueAgentSession(), false);
     }

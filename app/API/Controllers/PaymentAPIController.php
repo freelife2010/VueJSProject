@@ -185,6 +185,8 @@ class PaymentAPIController extends Controller
             if ($rateTableId)
                 $response = $this->queryAllowedCountries($rateTableId);
         }
+	
+	// $response = "select country from rate where rate_table_id = ".$rateTableId." AND country IS NOT NULL AND ((now() BETWEEN effective_date AND end_date) OR end_date IS NULL )";
 
         return $this->response->array($response);
     }
@@ -307,7 +309,10 @@ class PaymentAPIController extends Controller
             if ($rateTableId)
                 $response = $this->queryRateByNumber($rateTableId, $request->number);
         }
+	
+	// $response = "select rate from rate where rate_table_id = ".$rateTableId." AND ((now() BETWEEN effective_date AND end_date) OR end_date IS NULL ) AND code @> ".$request->number." ORDER BY length(code::text) desc LIMIT 1";
 
+	
         return $this->response->array($response);
     }
 

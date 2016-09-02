@@ -103,11 +103,12 @@ class ConferenceAPIController extends FileAPIController
         $this->baseDir .= 'conference/';
         $this->request->conf_name = str_replace('|', '', $this->request->conf_name);
         $path                     = $this->baseDir . $this->request->conf_name;
-        $process                  = new Process('ls -al ' . $path);
+        $process                  = new Process('ls -al ' . $path . "/");
         $process->run();
 
         if (!$process->isSuccessful()) {
             return $this->response->errorBadRequest($process->getErrorOutput());
+		// return "ok";
         }
 
         return $process->getOutput();

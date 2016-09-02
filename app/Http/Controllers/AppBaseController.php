@@ -43,6 +43,7 @@ class AppBaseController extends Controller
             '/app/edit',
             '/app/delete',
             '/app/check-billing',
+            '/credit-history'           // Maybe it should not be here
         ];
     }
 }

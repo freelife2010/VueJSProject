@@ -77,12 +77,50 @@ class QueueController extends AppBaseController
 
     public function postCreate(Request $request)
     {
-        $this->validateInput($request);
+	$this->validateInput($request);
         $result = $this->getResult(true, 'Could not create queue');
         if ($queue = Queue::create($request->all()))
-            $result = $this->getResult(false, "Queue [$queue->queue_name] has been created");
+//            $result = $this->getResult(false, "Queue [$queue->queue_name] has been created");
+	    $last_queue = Queue::orderby('id', 'desc')->take(1)->first();
+	    $queueId = $last_queue['id'];
 
-        return $result;
+//$result = $this->getResult(false, $appId);
+//return $result;
+
+        /**
+	 * Add additional feature for video uploading in creating
+	 *
+	 */
+	$appId = $request->app_id;
+        if (!is_dir(public_path() . '/audio/' . $appId . '-client/')) {
+            mkdir(public_path() . '/audio/' . $appId . '-client/', 0777, true);
+        }
+        if (!is_dir(public_path() . '/audio/' . $appId . '-agent/')) {
+            mkdir(public_path() . '/audio/' . $appId . '-agent/', 0777, true);
+        }
+
+        if ($request->file('client_waiting_audio')) {
+	
+		$result = $this->getResult(false, "There is audio file.");
+		return $result;	
+
+            $fileName = date('YmdHis') . '.' . $request->file('client_waiting_audio')->getClientOriginalExtension();
+            $request->file('client_waiting_audio')->move(
+                base_path() . '/public/audio/' . $appId . '-client/', $fileName
+            );
+            Queue::find($queueId)->update(['client_waiting_audio' => $fileName]);
+        }
+        if ($request->file('agent_waiting_audio')) {
+            $fileName = date('YmdHis') . '.' . $request->file('agent_waiting_audio')->getClientOriginalExtension();
+            $request->file('agent_waiting_audio')->move(
+                base_path() . '/public/audio/' . $appId . '-agent/', $fileName
+            );
+            Queue::find($queueId)->update(['agent_waiting_audio' => $fileName]);
+        }
+
+	$result = $this->getResult(false, "A new queue has been created");
+	
+	return $result;
     }
 
     public function getEdit($id)
@@ -162,6 +200,10 @@ class QueueController extends AppBaseController
         }
 
         if ($request->file('client_waiting_audio')) {
+	
+//	    $result = $this->getResult(false, "There is audio file.");
+//	    return $result;
+
             $fileName = date('YmdHis') . '.' . $request->file('client_waiting_audio')->getClientOriginalExtension();
             $request->file('client_waiting_audio')->move(
                 base_path() . '/public/audio/' . $appId . '-client/', $fileName

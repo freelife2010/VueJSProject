@@ -69,4 +69,8 @@
  *   name="rates",
  *   description="Rates"
  * )
+ * @SWG\Tag(
+ *   name="im",
+ *   description="Im"
+ * )
  */

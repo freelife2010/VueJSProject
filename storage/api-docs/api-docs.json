@@ -1388,6 +1388,172 @@
                 }
             }
         },
+        "/api/im/list": {
+            "get": {
+                "tags": [
+                    "im"
+                ],
+                "summary": "Get List",
+                "responses": {
+                    "200": {
+                        "description": "Get List"
+                    },
+                    "401": {
+                        "description": "Auth required"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/api/im/user-list": {
+            "get": {
+                "tags": [
+                    "im"
+                ],
+                "summary": "Get User List",
+                "parameters": [
+                    {
+                        "name": "domain_name",
+                        "in": "formData",
+                        "description": "Domain Name",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get User List"
+                    },
+                    "401": {
+                        "description": "Auth required"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/api/im/name": {
+            "put": {
+                "tags": [
+                    "im"
+                ],
+                "summary": "Put Name",
+                "parameters": [
+                    {
+                        "name": "domain_name",
+                        "in": "formData",
+                        "description": "Domain Name",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Result"
+                    },
+                    "401": {
+                        "description": "Auth required"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "im"
+                ],
+                "summary": "Delete Name",
+                "parameters": [
+                    {
+                        "name": "domain_name",
+                        "in": "formData",
+                        "description": "Domain Name",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Result"
+                    },
+                    "401": {
+                        "description": "Auth required"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/api/im/add-name": {
+            "put": {
+                "tags": [
+                    "im"
+                ],
+                "summary": "Add Name",
+                "parameters": [
+                    {
+                        "name": "domain_name",
+                        "in": "formData",
+                        "description": "Domain Name",
+                        "type": "string"
+                    },
+                    {
+                        "name": "user_name",
+                        "in": "formData",
+                        "description": "User Name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Result"
+                    },
+                    "401": {
+                        "description": "Auth required"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/api/im/user-name": {
+            "delete": {
+                "tags": [
+                    "im"
+                ],
+                "summary": "Delete Name",
+                "parameters": [
+                    {
+                        "name": "domain_name",
+                        "in": "formData",
+                        "description": "Domain Name",
+                        "type": "string"
+                    },
+                    {
+                        "name": "user_name",
+                        "in": "formData",
+                        "description": "User Name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Result"
+                    },
+                    "401": {
+                        "description": "Auth required"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
         "/api/info/daily-usage": {
             "get": {
                 "tags": [
@@ -2926,6 +3092,10 @@
         {
             "name": "rates",
             "description": "Rates"
+        },
+        {
+            "name": "im",
+            "description": "Im"
         }
     ]
 }
