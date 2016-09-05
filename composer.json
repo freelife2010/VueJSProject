@@ -31,7 +31,8 @@
     "didww/php-sdk": "*",
     "laravel/cashier": "~5.0",
     "paypal/rest-api-sdk-php": "*",
-    "league/csv": "^8.0"
+    "league/csv": "^8.0",
+    "hashids/hashids": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.0",
